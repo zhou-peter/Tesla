@@ -1,8 +1,4 @@
 
-Control/Control/.vs/Control/v15/.suo
-Control/Control/.vs/Control/v15/Server/sqlite3/db.lock
-Control/Control/.vs/Control/v15/Server/sqlite3/storage.ide
-Control/Control/.vs/Control/v15/Server/sqlite3/storage.ide-shm
-Control/Control/.vs/Control/v15/Server/sqlite3/storage.ide-wal
+Control/Control/.vs/*
 Control/Control/obj/*
 Control/Control/bin/*
