@@ -48,7 +48,7 @@ namespace Control
             backgroundRectangle.Stroke = new SolidColorBrush(Colors.DarkGray);
             backgroundRectangle.StrokeThickness = 2;
             backgroundRectangle.Fill = new SolidColorBrush(Colors.WhiteSmoke);
-            backgroundRectangle.Opacity = 0.5F;
+            backgroundRectangle.Opacity = 0.75F;
             
             // Set Canvas position    
             Canvas.SetLeft(backgroundRectangle, 0);
@@ -59,6 +59,14 @@ namespace Control
 
         }
 
+
+        Line createLineForSine()
+        {
+            Line l = new Line();
+            l.Stroke = Brushes.Red;
+            l.StrokeThickness = 2;
+            return l;
+        }
 
         Line createLineForSaw()
         {
@@ -82,7 +90,7 @@ namespace Control
             sawOffsetY = height - sawHeight - 10;
 
             //draw F1 Saw
-            double sawOffsetX = f1Width / 4;
+            double sawOffsetX = 0; //use cosinus instead of  f1Width / 4;
             double x = sawOffsetX;
             double y = sawOffsetY;
             double sawStepWidth = f1Width / 2;
@@ -147,9 +155,39 @@ namespace Control
             }
         }
 
-        private void drawSine()
+        public static double ToRadians(double angle)
         {
-            
+            return (angle * Math.PI) / 180;
+        }
+
+        private void drawSine1()
+        {
+
+            double topOffset = height/2;
+            double eF = 30;
+            double x1=0;
+            double y1 = Math.Cos(0) * eF + topOffset;
+            double y2 = 0;
+            double x2 = 0;
+
+            double xDivider = f1Width / 360F;
+
+            for (double angle=1; angle <= 360; angle++)
+            {
+                double a = ToRadians(angle);                    
+                y2 = Math.Cos(a)*eF+topOffset;
+                x2 = angle*xDivider;
+
+                Line l = createLineForSine();
+                l.X1 = x1;
+                l.Y1 = y1;
+                l.X2 = x2;
+                l.Y2 = y2;
+                add(l);
+
+                x1 = x2;
+                y1 = y2;
+            }
         }
 
 
@@ -168,7 +206,7 @@ namespace Control
 
             drawSaw();
 
-            drawSine();
+            drawSine1();
 
             
         }
