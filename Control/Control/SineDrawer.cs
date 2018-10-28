@@ -30,7 +30,12 @@ namespace Control
 
         void add(UIElement element)
         {
-            Canvas.SetZIndex(element, 1);
+            add(element, 2);
+        }
+
+        void add(UIElement element, int zIndex)
+        {
+            Canvas.SetZIndex(element, zIndex);
             canvas.Children.Add(element);
         }
 
@@ -62,6 +67,16 @@ namespace Control
             l.StrokeThickness = 2;
             return l;
         }
+
+
+        Line createLineForPeriod()
+        {
+            Line l = new Line();
+            l.Stroke = Brushes.Green;
+            l.StrokeThickness = 1;
+            return l;
+        }
+
         void drawSaw()
         {
             sawOffsetY = height - sawHeight - 10;
@@ -73,6 +88,26 @@ namespace Control
             double sawStepWidth = f1Width / 2;
             for (int i = 0; i < periodsCount; i++)
             {
+                if (i == periodsCount / 3)
+                {
+                    //draw period
+                    Line periodStart = createLineForPeriod();
+                    periodStart.X1 = x;
+                    periodStart.X2 = x;
+                    periodStart.Y1 = 0;
+                    periodStart.Y2 = height;
+                    add(periodStart,1);
+
+                    Line periodStop = createLineForPeriod();
+                    periodStop.X1 = x + f1Width;
+                    periodStop.X2 = x + f1Width;
+                    periodStop.Y1 = 0;
+                    periodStop.Y2 = height;
+                    add(periodStop, 1);
+                }
+
+
+
                 //draw top horizontal
                 Line l = createLineForSaw();
                 l.X1 = x;
@@ -112,6 +147,12 @@ namespace Control
             }
         }
 
+        private void drawSine()
+        {
+            
+        }
+
+
         public void Draw()
         {
 
@@ -127,9 +168,11 @@ namespace Control
 
             drawSaw();
 
+            drawSine();
 
             
         }
-        
+
+
     }
 }

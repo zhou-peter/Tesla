@@ -11,7 +11,7 @@
             <ImageBrush ImageSource="20181027_151919.jpg" Stretch="UniformToFill"/>
         </Grid.Background>
 
-        <TextBox HorizontalAlignment="Left" Height="35" Margin="53,535,0,0" TextWrapping="Wrap" Text="{Binding F0}" VerticalAlignment="Top" Width="108" FontSize="24" />
+        <TextBox Name="F0TextBox" HorizontalAlignment="Left" Height="35" Margin="53,535,0,0" TextWrapping="Wrap" Text="{Binding F0}" VerticalAlignment="Top" Width="108" FontSize="24" />
         <TextBlock HorizontalAlignment="Left" Margin="14,535,0,0" TextWrapping="Wrap" Text="F" VerticalAlignment="Top" FontSize="24" Foreground="#FFE4E1D8"/>
         <TextBlock HorizontalAlignment="Left" Margin="26,542,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" FontSize="18" Foreground="#FFE4E1D8"/>
         <TextBox HorizontalAlignment="Left" Height="35" Margin="53,491,0,0" TextWrapping="Wrap" Text="{Binding F1}" VerticalAlignment="Top" Width="108" FontSize="24"/>
@@ -32,9 +32,10 @@
                        IsChecked="{Binding TextBoxUse}"/>
         <TextBox HorizontalAlignment="Left" Height="35" Margin="255,584,0,0" TextWrapping="Wrap" Text="{Binding DeltaWidth}" VerticalAlignment="Top" Width="62" FontSize="24"/>
         <TextBlock HorizontalAlignment="Left" Margin="167,584,0,0" TextWrapping="Wrap" Text="ширина" VerticalAlignment="Top" FontSize="24" Foreground="#FFE4E1D8"/>
-        <Button Content="Сохранить настройки" HorizontalAlignment="Left" Margin="322,584,0,0" VerticalAlignment="Top" Width="172" Height="35" FontSize="16" Click="Button_Click"/>
-        <Canvas HorizontalAlignment="Left" Name="SineCanvas" Height="305" VerticalAlignment="Top" Width="512" RenderTransformOrigin="-0.005,-0.016" Margin="540,54,0,0"/>
-        <Button Content="Нарисовать" HorizontalAlignment="Left" Margin="499,584,0,0" VerticalAlignment="Top" Width="113" Height="35" FontSize="16" Click="ButtonDraw_Click"/>
+        <Button Content="Сохранить настройки" HorizontalAlignment="Left" Margin="889,583,0,0" VerticalAlignment="Top" Width="172" Height="35" FontSize="16" Click="Button_Click"/>
+        <Canvas HorizontalAlignment="Left" Name="SineCanvas" Height="494" VerticalAlignment="Top" Width="713" RenderTransformOrigin="-0.005,-0.016" Margin="339,54,0,0"/>
+        <Button Content="Нарисовать" HorizontalAlignment="Left" Margin="452,583,0,0" VerticalAlignment="Top" Width="113" Height="35" FontSize="16" Click="ButtonDraw_Click"/>
+        <Button Content="Расчитать" HorizontalAlignment="Left" Margin="339,583,0,0" VerticalAlignment="Top" Width="96" Height="35" FontSize="16" Click="ButtonCalc_Click"/>
 
     </Grid>
 </Window>

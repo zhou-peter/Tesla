@@ -17,15 +17,28 @@ namespace Control
         public int F0 { get; set; }
         [XmlElement(IsNullable = false)]
         public int F1 { get; set; }
+        double delta = 48;
         [XmlElement(IsNullable = false)]
-        public float Delta { get; set; }
-        [XmlElement(IsNullable = false)]
+        public double Delta
+        {
+            get { return delta; }
+            set
+            {
+                if (delta > 0 && delta < 99)
+                {
+                    {
+                        delta = value;
+                    }
+                }
+            }
+        }
+            [XmlElement(IsNullable = false)]
         public float DeltaWidth { get; set; }
 
         List<int> comboPrescalsers = new List<int>() { 16, 32, 64, 256, 512, 1024, 2048 };
         [XmlIgnore]
         public List<int> ComboPrescalers { get { return comboPrescalsers; } }
-        int currentComboPrescaler = 512;
+        int currentComboPrescaler = 16;
         [XmlElement(IsNullable = false)]
         public int CurrentComboPrescaler { get { return currentComboPrescaler; } set { currentComboPrescaler = value; } }
         int textPrescaler = 200;

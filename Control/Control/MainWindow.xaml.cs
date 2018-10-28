@@ -40,5 +40,11 @@ namespace Control
         {
             drawer.Draw();
         }
+
+        private void ButtonCalc_Click(object sender, RoutedEventArgs e)
+        {
+            state.F0 = state.F1 / state.GetPrescaler();
+            F0TextBox.Text = state.F0.ToString();
+        }
     }
 }
