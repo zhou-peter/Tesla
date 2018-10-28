@@ -22,16 +22,23 @@ namespace Control
     {
 
         MainWindowState state;
+        SineDrawer drawer;
         public MainWindow()
         {
             InitializeComponent();
             state=MainWindowState.Load();
             this.DataContext = state;
+            drawer = new SineDrawer(SineCanvas, state);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             state.Save();
+        }
+
+        private void ButtonDraw_Click(object sender, RoutedEventArgs e)
+        {
+            drawer.Draw();
         }
     }
 }
