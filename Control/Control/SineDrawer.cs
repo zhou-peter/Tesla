@@ -15,13 +15,7 @@ namespace Control
         Canvas canvas;
         MainWindowState state;
 
-        double width;
-        double height;
-        int periodsCount;
-        double sawOffsetY;
-        double sawHeight = 40;
-        double f1Width;
-        double axisXOffset;
+
 
         public SineDrawer(Canvas canvas, MainWindowState state)
         {
@@ -103,9 +97,9 @@ namespace Control
             double x = sawOffsetX;
             double y = sawOffsetY;
             double sawStepWidth = f1Width / 2;
-            for (int i = 0; i < periodsCount; i++)
+            for (int i = 0; i < periodsToDraw; i++)
             {
-                if (i == periodsCount / 3)
+                if (i == periodsToDraw / 3)
                 {
                     //draw period
                     Line periodStart = createLineForPeriod();
@@ -179,11 +173,26 @@ namespace Control
 
             double y1_m = -Math.Sin(0) * eF + axisXOffset;
             double y2_m;
-            
 
+
+            double angle = 0;
             for (double x=1; x <= width; x++)
             {
-                double angle = 180F * (float)(x / width);
+                //if 16 or less
+                if (periodsToDraw == preiodsCount)
+                {
+                    angle = 180F * (float)(x / width);
+                }
+                else
+                {
+                    double k = (double)periodsToDraw / (double)preiodsCount;
+                    double drawAngle = 180F * k;//60 instead for 180
+                    double startAngle = 90F - (drawAngle / 2);
+                    //draw from 60 to 120
+                    angle= startAngle+(drawAngle * (float)(x / width));
+                }
+                
+                
                 double a = ToRadians(angle);
                 double y2_withoutOffset = Math.Sin(a) * eF;
                 y2 = y2_withoutOffset + axisXOffset;
@@ -215,7 +224,7 @@ namespace Control
 
         private void drawSineF1()
         {
-            double eF = 30;
+            double eF = 1;
             double x1 = 0;
             double y1 = Math.Sin(0) * eF + axisXOffset;
             double y2 = 0;
@@ -223,11 +232,10 @@ namespace Control
 
             double xDivider = f1Width / 360F;
             int step = (int)f1Width;
-            int startOffset = -(step / 4) + 2;
+            int startOffset = -(step / 4);
             for (int x = startOffset; x < width; x += step)
             {
                 x1 = x;
-                eF = heightList[x + step / 4];
                 for (double angle = 1; angle <= 360; angle++)
                 {
                     x2 = x + (angle * xDivider);
@@ -263,13 +271,31 @@ namespace Control
 
         //F2 (yellow) sine height for each pixel
         int[] heightList;
+        int preiodsCount;
+        double width;
+        double height;
+        int periodsToDraw;
+        double sawOffsetY;
+        double sawHeight = 40;
+        double f1Width;
+        double axisXOffset;
         public void Draw()
         {
 
             width = canvas.ActualWidth;
             height = canvas.ActualHeight;
-            periodsCount = state.GetPrescaler();
-            f1Width = width / periodsCount;
+
+            preiodsCount = state.GetPrescaler();
+            if (preiodsCount > 16)
+            {
+                periodsToDraw = 16;
+            }
+            else
+            {
+                periodsToDraw = preiodsCount;
+            }
+
+            f1Width = width / periodsToDraw;
             heightList = new int[(int)width + 1];
             axisXOffset = (height - sawHeight) / 2;
 

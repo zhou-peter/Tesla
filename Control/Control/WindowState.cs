@@ -26,16 +26,18 @@ namespace Control
             {
                 if (delta > 0 && delta < 99)
                 {
-                    {
-                        delta = value;
-                    }
+                    delta = value;
+                }
+                else
+                {
+                    delta = 48;
                 }
             }
         }
-            [XmlElement(IsNullable = false)]
+        [XmlElement(IsNullable = false)]
         public float DeltaWidth { get; set; }
 
-        List<int> comboPrescalsers = new List<int>() { 16, 32, 64, 256, 512, 1024, 2048 };
+        List<int> comboPrescalsers = new List<int>() { 16, 32, 64, 128, 256, 512, 1024, 2048 };
         [XmlIgnore]
         public List<int> ComboPrescalers { get { return comboPrescalsers; } }
         int currentComboPrescaler = 16;
