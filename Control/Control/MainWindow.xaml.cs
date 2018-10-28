@@ -29,6 +29,12 @@ namespace Control
             state=MainWindowState.Load();
             this.DataContext = state;
             drawer = new SineDrawer(SineCanvas, state);
+            SineCanvas.MouseDown += SineCanvas_MouseDown;
+        }
+
+        private void SineCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            drawer.mouseClick(e);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

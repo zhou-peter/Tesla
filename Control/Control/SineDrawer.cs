@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -179,14 +180,14 @@ namespace Control
             for (double x=1; x <= width; x++)
             {
                 //if 16 or less
-                if (periodsToDraw == preiodsCount)
+                if (periodsToDraw == periodsCount)
                 {
                     angle = 180F * (float)(x / width);
                 }
                 else
                 {
-                    double k = (double)periodsToDraw / (double)preiodsCount;
-                    double drawAngle = 180F * k;//60 instead for 180
+                    double k = (double)periodsToDraw / (double)periodsCount;
+                    drawAngle = 180F * k;//60 instead for 180
                     double startAngle = 90F - (drawAngle / 2);
                     //draw from 60 to 120
                     angle= startAngle+(drawAngle * (float)(x / width));
@@ -271,7 +272,7 @@ namespace Control
 
         //F2 (yellow) sine height for each pixel
         int[] heightList;
-        int preiodsCount;
+        int periodsCount;
         double width;
         double height;
         int periodsToDraw;
@@ -279,20 +280,22 @@ namespace Control
         double sawHeight = 40;
         double f1Width;
         double axisXOffset;
+        double drawAngle;
+        Line lineBreak = new Line();
         public void Draw()
         {
 
             width = canvas.ActualWidth;
             height = canvas.ActualHeight;
 
-            preiodsCount = state.GetPrescaler();
-            if (preiodsCount > 16)
+            periodsCount = state.GetPrescaler();
+            if (periodsCount > 16)
             {
                 periodsToDraw = 16;
             }
             else
             {
-                periodsToDraw = preiodsCount;
+                periodsToDraw = periodsCount;
             }
 
             f1Width = width / periodsToDraw;
@@ -308,9 +311,30 @@ namespace Control
             drawSineF2();
 
             drawSineF1();
-            
+
+
+            lineBreak.Stroke = Brushes.Red;
+            lineBreak.StrokeThickness = 2;
+            lineBreak.Y1 = 0;
+            lineBreak.Y2 = height;
+
+            canvas.Children.Add(lineBreak);
+
         }
 
+        internal void mouseClick(MouseButtonEventArgs e)
+        {
+            Point p = e.GetPosition(canvas);
+            lineBreak.X1 = p.X;
+            lineBreak.X2 = p.X;
+            double percentOffset = (float)p.X / (float)width;
+            percentOffset *= 100;
+            percentOffset *= (drawAngle / 180F);
+            //Math.Truncate(percentOffset * 100) / 100;
+            //Double.Parse(percentOffset.ToString("0.##"));
+            state.Delta = Math.Truncate(percentOffset * 100) / 100;
+            Console.WriteLine(state.Delta);
+        }
 
     }
 }
