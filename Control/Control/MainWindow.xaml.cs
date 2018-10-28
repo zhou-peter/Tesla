@@ -20,9 +20,18 @@ namespace Control
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        MainWindowState state;
         public MainWindow()
         {
             InitializeComponent();
+            state=MainWindowState.Load();
+            this.DataContext = state;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            state.Save();
         }
     }
 }
