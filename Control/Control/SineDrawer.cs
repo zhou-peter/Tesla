@@ -21,6 +21,8 @@ namespace Control
         double sawOffsetY;
         double sawHeight = 40;
         double f1Width;
+        double axisXOffset;
+
         public SineDrawer(Canvas canvas, MainWindowState state)
         {
             this.canvas = canvas;
@@ -60,7 +62,7 @@ namespace Control
         }
 
 
-        Line createLineForSine()
+        Line createLineForSineF2()
         {
             Line l = new Line();
             l.Stroke = Brushes.Yellow;
@@ -68,6 +70,13 @@ namespace Control
             return l;
         }
 
+        Line createLineForSineF1()
+        {
+            Line l = new Line();
+            l.Stroke = Brushes.Brown;
+            l.StrokeThickness = 2;
+            return l;
+        }
         Line createLineForSaw()
         {
             Line l = new Line();
@@ -162,8 +171,6 @@ namespace Control
 
         private void drawSineF2()
         {
-
-            double axisXOffset = (height-sawHeight)/2;
             double eF = 190;
             double x1=0;
             double y1 = Math.Sin(0) * eF + axisXOffset;
@@ -172,15 +179,18 @@ namespace Control
 
             double y1_m = -Math.Sin(0) * eF + axisXOffset;
             double y2_m;
+            
 
             for (double x=1; x <= width; x++)
             {
                 double angle = 180F * (float)(x / width);
-                double a = ToRadians(angle);                    
-                y2 = Math.Sin(a)*eF+axisXOffset;
+                double a = ToRadians(angle);
+                double y2_withoutOffset = Math.Sin(a) * eF;
+                y2 = y2_withoutOffset + axisXOffset;
                 x2 = x;
+                heightList[(int)x] = (int)y2_withoutOffset;
 
-                Line l = createLineForSine();
+                Line l = createLineForSineF2();
                 l.X1 = x1;
                 l.Y1 = y1;
                 l.X2 = x2;
@@ -190,7 +200,7 @@ namespace Control
 
                 //line below
                 y2_m = -Math.Sin(a) * eF + axisXOffset;
-                l = createLineForSine();
+                l = createLineForSineF2();
                 l.X1 = x1;
                 l.Y1 = y1_m;
                 l.X2 = x2;
@@ -202,36 +212,44 @@ namespace Control
                 y1_m = y2_m;
             }
         }
-        private void drawSine2()
-        {
 
-            double topOffset = height / 2;
+        private void drawSineF1()
+        {
             double eF = 30;
             double x1 = 0;
-            double y1 = Math.Cos(0) * eF + topOffset;
+            double y1 = Math.Sin(0) * eF + axisXOffset;
             double y2 = 0;
             double x2 = 0;
 
             double xDivider = f1Width / 360F;
-
-            for (double angle = 1; angle <= 360; angle++)
+            int step = (int)f1Width;
+            int startOffset = -(step / 4) + 2;
+            for (int x = startOffset; x < width; x += step)
             {
-                double a = ToRadians(angle);
-                y2 = Math.Cos(a) * eF + topOffset;
-                x2 = angle * xDivider;
+                x1 = x;
+                for (double angle = 1; angle <= 360; angle++)
+                {
+                    double a = ToRadians(angle);
+                    y2 = Math.Sin(a) * eF + axisXOffset;
+                    x2 = x + (angle * xDivider);
+                    if ((int)x2 == (int)x1)
+                        continue;
 
-                Line l = createLineForSine();
-                l.X1 = x1;
-                l.Y1 = y1;
-                l.X2 = x2;
-                l.Y2 = y2;
-                add(l);
+                    Line l = createLineForSineF1();
+                    l.X1 = x1;
+                    l.Y1 = y1;
+                    l.X2 = x2;
+                    l.Y2 = y2;
+                    add(l);
 
-                x1 = x2;
-                y1 = y2;
+                    x1 = x2;
+                    y1 = y2;
+                }
             }
         }
 
+        //F2 (yellow) sine height for each pixel
+        int[] heightList;
         public void Draw()
         {
 
@@ -239,7 +257,8 @@ namespace Control
             height = canvas.ActualHeight;
             periodsCount = state.GetPrescaler();
             f1Width = width / periodsCount;
-
+            heightList = new int[(int)width + 1];
+            axisXOffset = (height - sawHeight) / 2;
 
             canvas.Children.Clear();
 
@@ -249,6 +268,7 @@ namespace Control
 
             drawSineF2();
 
+            drawSineF1();
             
         }
 
