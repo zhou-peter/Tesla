@@ -63,8 +63,8 @@ namespace Control
         Line createLineForSine()
         {
             Line l = new Line();
-            l.Stroke = Brushes.Red;
-            l.StrokeThickness = 2;
+            l.Stroke = Brushes.Yellow;
+            l.StrokeThickness = 1;
             return l;
         }
 
@@ -160,23 +160,65 @@ namespace Control
             return (angle * Math.PI) / 180;
         }
 
-        private void drawSine1()
+        private void drawSineF2()
         {
 
-            double topOffset = height/2;
-            double eF = 30;
+            double axisXOffset = (height-sawHeight)/2;
+            double eF = 190;
             double x1=0;
+            double y1 = Math.Sin(0) * eF + axisXOffset;
+            double y2 = 0;
+            double x2 = 0;
+
+            double y1_m = -Math.Sin(0) * eF + axisXOffset;
+            double y2_m;
+
+            for (double x=1; x <= width; x++)
+            {
+                double angle = 180F * (float)(x / width);
+                double a = ToRadians(angle);                    
+                y2 = Math.Sin(a)*eF+axisXOffset;
+                x2 = x;
+
+                Line l = createLineForSine();
+                l.X1 = x1;
+                l.Y1 = y1;
+                l.X2 = x2;
+                l.Y2 = y2;
+                //line above
+                add(l);
+
+                //line below
+                y2_m = -Math.Sin(a) * eF + axisXOffset;
+                l = createLineForSine();
+                l.X1 = x1;
+                l.Y1 = y1_m;
+                l.X2 = x2;
+                l.Y2 = y2_m;
+                add(l);
+
+                x1 = x2;
+                y1 = y2;
+                y1_m = y2_m;
+            }
+        }
+        private void drawSine2()
+        {
+
+            double topOffset = height / 2;
+            double eF = 30;
+            double x1 = 0;
             double y1 = Math.Cos(0) * eF + topOffset;
             double y2 = 0;
             double x2 = 0;
 
             double xDivider = f1Width / 360F;
 
-            for (double angle=1; angle <= 360; angle++)
+            for (double angle = 1; angle <= 360; angle++)
             {
-                double a = ToRadians(angle);                    
-                y2 = Math.Cos(a)*eF+topOffset;
-                x2 = angle*xDivider;
+                double a = ToRadians(angle);
+                y2 = Math.Cos(a) * eF + topOffset;
+                x2 = angle * xDivider;
 
                 Line l = createLineForSine();
                 l.X1 = x1;
@@ -189,7 +231,6 @@ namespace Control
                 y1 = y2;
             }
         }
-
 
         public void Draw()
         {
@@ -206,7 +247,7 @@ namespace Control
 
             drawSaw();
 
-            drawSine1();
+            drawSineF2();
 
             
         }
