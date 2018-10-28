@@ -227,13 +227,26 @@ namespace Control
             for (int x = startOffset; x < width; x += step)
             {
                 x1 = x;
+                eF = heightList[x + step / 4];
                 for (double angle = 1; angle <= 360; angle++)
                 {
-                    double a = ToRadians(angle);
-                    y2 = Math.Sin(a) * eF + axisXOffset;
                     x2 = x + (angle * xDivider);
                     if ((int)x2 == (int)x1)
                         continue;
+                    if (x2 < 0)
+                        continue;
+                    int index = (int)x2;
+                    if (index < heightList.Length)
+                    {
+                        eF = heightList[index];
+                    }
+                    
+
+
+                    double a = ToRadians(angle);
+                    y2 = Math.Sin(a) * eF + axisXOffset;
+
+                    
 
                     Line l = createLineForSineF1();
                     l.X1 = x1;
