@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,8 +12,16 @@ namespace Control
 {
     public enum RadioTypes { RadioUse, TextBoxUse}
     [Serializable]
-    public class MainWindowState
+    public class MainWindowState : INotifyPropertyChanged
     {
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void propChange(string prop)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+
+
         [XmlElement(IsNullable = false)]
         public int F0 { get; set; }
         [XmlElement(IsNullable = false)]
@@ -24,13 +33,10 @@ namespace Control
             get { return delta; }
             set
             {
-                if (delta > 0 && delta < 99)
+                if (value > 0 && value < 99)
                 {
                     delta = value;
-                }
-                else
-                {
-                    delta = 48;
+                    propChange("Delta");
                 }
             }
         }
@@ -47,6 +53,8 @@ namespace Control
         [XmlElement(IsNullable = false)]
         public int TextPrescaler { get { return textPrescaler; } set { textPrescaler = value; } }
         RadioTypes radioType = RadioTypes.RadioUse;
+
+
         [XmlElement(IsNullable = false)]
         public RadioTypes RadioType { get { return radioType; } set { radioType = value; } }
         [XmlIgnore]
