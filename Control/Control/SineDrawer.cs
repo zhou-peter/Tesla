@@ -183,12 +183,14 @@ namespace Control
                 if (periodsToDraw == periodsCount)
                 {
                     angle = 180F * (float)(x / width);
+                    drawAngle = 180;
+                    startAngle = 0;
                 }
                 else
                 {
                     double k = (double)periodsToDraw / (double)periodsCount;
                     drawAngle = 180F * k;//60 instead for 180
-                    double startAngle = 90F - (drawAngle / 2);
+                    startAngle = 90F - (drawAngle / 2);
                     //draw from 60 to 120
                     angle= startAngle+(drawAngle * (float)(x / width));
                 }
@@ -281,6 +283,7 @@ namespace Control
         double f1Width;
         double axisXOffset;
         double drawAngle;
+        double startAngle;
         Line lineBreak = new Line();
         public void Draw()
         {
@@ -327,12 +330,13 @@ namespace Control
             Point p = e.GetPosition(canvas);
             lineBreak.X1 = p.X;
             lineBreak.X2 = p.X;
-            double percentOffset = (float)p.X / (float)width;
-            percentOffset *= 100;
-            percentOffset *= (drawAngle / 180F);
+            //double percentOffset = (float)p.X / (float)width;
+            double angle = startAngle + (drawAngle * (float)((float)p.X / width));
+            //percentOffset *= 100;
+            //percentOffset *= (drawAngle / 180F);
             //Math.Truncate(percentOffset * 100) / 100;
             //Double.Parse(percentOffset.ToString("0.##"));
-            state.Delta = Math.Truncate(percentOffset * 100) / 100;
+            state.Delta = angle;//Math.Truncate(percentOffset * 100) / 100;
             Console.WriteLine(state.Delta);
         }
 
