@@ -55,6 +55,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CalculationResult.cs" />
+    <Compile Include="Calculator.cs" />
     <Compile Include="SineDrawer.cs" />
     <Compile Include="WindowState.cs" />
     <Page Include="MainWindow.xaml">
