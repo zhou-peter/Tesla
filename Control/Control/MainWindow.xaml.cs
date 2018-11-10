@@ -53,7 +53,7 @@ namespace Control
         Calculator c = new Calculator();
         private void ButtonCalc_Click(object sender, RoutedEventArgs e)
         {
-            CalculationResult result = c.calculate(state.F1, state.GetPrescaler(), state.Delta);
+            CalculationResult result = c.calculate(state.F1, state.GetPrescaler(), state.Delta, state.DeltaWidth);
             DataGridElement.applyResult(result);
             state.CalculationChanged();
             
