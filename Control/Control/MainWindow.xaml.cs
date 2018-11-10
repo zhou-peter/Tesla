@@ -50,10 +50,13 @@ namespace Control
         }
 
         
-
+        Calculator c = new Calculator();
         private void ButtonCalc_Click(object sender, RoutedEventArgs e)
         {
-
+            CalculationResult result = c.calculate(state.F1, state.GetPrescaler(), state.Delta);
+            DataGridElement.applyResult(result);
+            state.CalculationChanged();
+            
         }
     }
 }

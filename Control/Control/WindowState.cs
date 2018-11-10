@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -83,16 +84,15 @@ namespace Control
             }
         }
 
-
-        List<DataGridElement> calcResult = new CalculationResult().generateDataContext();
-        public List<DataGridElement> CalcResult {
+        public void CalculationChanged()
+        {
+            propChange("CalcResult");
+        }
+        [XmlIgnore]
+        public ObservableCollection<DataGridElement> CalcResult {
             get
             {
-                return calcResult;
-            }
-            set
-            {
-                calcResult = value;
+                return DataGridElement.getModel();
             }
         }
 

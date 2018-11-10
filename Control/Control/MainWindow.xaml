@@ -37,7 +37,7 @@
         <Button Content="Нарисовать" HorizontalAlignment="Left" Margin="452,583,0,0" VerticalAlignment="Top" Width="113" Height="35" FontSize="16" Click="ButtonDraw_Click"/>
         <Button Content="Расчитать" HorizontalAlignment="Left" Margin="339,583,0,0" VerticalAlignment="Top" Width="96" Height="35" FontSize="16" Click="ButtonCalc_Click"/>
         <DataGrid HorizontalAlignment="Left" Height="124" Margin="14,10,0,0" VerticalAlignment="Top" Width="256"
-                  ItemsSource="{Binding CalcResult}"  Name="resultGrid">
+                  ItemsSource="{Binding CalcResult, Mode=OneWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"  Name="resultGrid">
         </DataGrid>
 
     </Grid>
