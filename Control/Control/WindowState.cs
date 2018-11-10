@@ -60,8 +60,8 @@ namespace Control
         [XmlIgnore]
         public bool DropDownUse
         {
-            get { return radioType == RadioTypes.RadioUse;  }
-            set { radioType = value ? RadioTypes.RadioUse :  RadioTypes.TextBoxUse; }
+            get { return radioType == RadioTypes.RadioUse; }
+            set { radioType = value ? RadioTypes.RadioUse : RadioTypes.TextBoxUse; }
         }
         [XmlIgnore]
         public bool TextBoxUse
@@ -82,6 +82,20 @@ namespace Control
                 return textPrescaler;
             }
         }
+
+
+        List<DataGridElement> calcResult = new CalculationResult().generateDataContext();
+        public List<DataGridElement> CalcResult {
+            get
+            {
+                return calcResult;
+            }
+            set
+            {
+                calcResult = value;
+            }
+        }
+
 
 
         public static MainWindowState Load()
