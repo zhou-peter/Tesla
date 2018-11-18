@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.ServiceModel;
 using System.Threading;
 using System.Windows;
+using TeslaCommunication.Packets;
 
 namespace TeslaCommunication
 {
@@ -62,6 +63,7 @@ namespace TeslaCommunication
             {
                 // Open the ServiceHost to create listeners and start listening for messages.
                 serviceHost.Open();
+                Service.getInstance().Init();
 
                 // The service can now be accessed.
                 Console.WriteLine("The service is ready.");
@@ -77,7 +79,8 @@ namespace TeslaCommunication
 
         }
 
-#region Остановка с кнопки Х
+
+        #region Остановка с кнопки Х
 
         private static bool ConsoleCtrlCheck(CtrlTypes ctrlType)
         {
@@ -141,7 +144,12 @@ namespace TeslaCommunication
             return instance;
         }
 
+        private void Init()
+        {
+            mgr = new PacketsManager();
+        }
 
+        PacketsManager mgr;
         SerialPort sp = null;
         bool connectionOpen = false;
 
@@ -168,23 +176,7 @@ namespace TeslaCommunication
                     sp.DataReceived += new SerialDataReceivedEventHandler(sp_DataReceived);
 
                     connectionOpen = true;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                    return false;
-                }
-            }
-            else//disconnect
-            {
-                try
-                {
-                    if (sp != null && sp.IsOpen)
-                    {
-                        sp.BaseStream.Flush();
-                        sp.Close();
-                    }
-                    connectionOpen = false;
+                    mgr.SetDataChannel(sp);
                 }
                 catch (Exception ex)
                 {
@@ -203,7 +195,10 @@ namespace TeslaCommunication
                 int length = sp.BytesToRead;
                 byte[] buf = new byte[length];
                 sp.Read(buf, 0, length);
-
+                if (mgr != null)
+                {
+                    mgr.AddBytes(buf);
+                }
 
             }
             catch (Exception ex)
@@ -219,6 +214,7 @@ namespace TeslaCommunication
                 sp.BaseStream.Flush();
                 sp.Close();
             }
+            connectionOpen = false;
         }
     }
 

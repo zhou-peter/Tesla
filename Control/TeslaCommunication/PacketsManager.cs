@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Ports;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -60,6 +62,7 @@ namespace TeslaCommunication
         static int MAX_BUF_SIZE_RX = 300;
         static int MAX_BUF_SIZE_TX = 1100;
         static int RECEIVE_TIMEOUT = 100;
+        static int EMPTY_SIZE = 6;
         byte[] rxBuf = new byte[MAX_BUF_SIZE_RX];
         byte[] txBuf = new byte[MAX_BUF_SIZE_TX];
         int rxIndex = 0;
@@ -67,7 +70,7 @@ namespace TeslaCommunication
         int timerCounter = 0;
         bool timerEnabled = false;
         bool shouldStop = false;
-
+        SerialPort sp;
 
         public enum ReceiverStates
         {
@@ -118,7 +121,7 @@ namespace TeslaCommunication
                         timerEnabled = false;
                         return;
                     }
-                    if (inPacksize > MAX_BUF_SIZE_RX - 6)
+                    if (inPacksize > MAX_BUF_SIZE_RX - EMPTY_SIZE)
                     {
                         create_err("Входящий пакет с слишком большим размером");
                         timerEnabled = false;
@@ -175,10 +178,34 @@ namespace TeslaCommunication
             }
         }
 
+        internal void SetDataChannel(SerialPort sp)
+        {
+            this.sp = sp;
+        }
+
         private void processIncomingPacket()
         {
-            
+            int inPacksize = rxBuf[1] | rxBuf[2] << 8;
+            string packetNumber = rxBuf[3].ToString("X2") + rxBuf[4].ToString("X2");
+            try
+            {
+                AbstractPacket pack = null;
+                string packetName = "Packets.Packet_" + packetNumber;
+                Type t = Type.GetType(packetName);
+                ConstructorInfo c = t.GetConstructor(new Type[] { });
+                pack = (AbstractPacket)c.Invoke(new object[] { });
+                if (pack != null)
+                {
+                    receivedPackets.Add(pack);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
+
+ 
 
         void create_err(string msg)
         {
