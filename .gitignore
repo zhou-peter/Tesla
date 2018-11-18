@@ -6,4 +6,10 @@ Hardware/Altium/__Previews/*
 Hardware/Altium/History/*
 Hardware/Altium/International Rectifier/*
 Hardware/Altium/Project Logs for Project/*
-Control/*/bin/*
+Control/TeslaCommunication/obj/*
+Control/TeslaCommunication/bin/*
+Control/TeslaComClient/obj/*
+Control/TeslaComClient/bin/*
+Control/TeslaDesktopClient/obj/*
+Control/TeslaDesktopClient/bin/*
+*.bak
