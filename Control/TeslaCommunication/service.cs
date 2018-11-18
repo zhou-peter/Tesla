@@ -18,6 +18,8 @@ namespace TeslaCommunication
         [OperationContract]
         bool Connect(string comPortName);
 
+        [OperationContract]
+        void Disconnect();
     }
 
     class TeslaServiceHost : ServiceHost
@@ -144,12 +146,8 @@ namespace TeslaCommunication
         bool connectionOpen = false;
 
 
-        public void OnClose() { 
-            if (sp != null && sp.IsOpen)
-            {
-                sp.BaseStream.Flush();
-                sp.Close();
-            }
+        public void OnClose() {
+            Disconnect();
         }
 
 
@@ -214,8 +212,14 @@ namespace TeslaCommunication
             }
         }
 
-
-
+        public void Disconnect()
+        {
+            if (sp != null && sp.IsOpen)
+            {
+                sp.BaseStream.Flush();
+                sp.Close();
+            }
+        }
     }
 
 }
