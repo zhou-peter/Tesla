@@ -45,9 +45,9 @@ typedef enum
 typedef struct
 {
 bool TimerF1:8;
-bool TimerF1:8;
-bool TimerF1:8;
-bool TimerF1:8;
+bool TimerF2:8;
+bool TimerF3:8;
+bool TimerF4:8;
 bool tmp1:1;
 bool Pausing:1;
 

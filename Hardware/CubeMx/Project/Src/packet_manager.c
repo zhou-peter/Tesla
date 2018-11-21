@@ -39,15 +39,7 @@ void PacketTimeOut(void)
 {
 	Env.RxState=ReceivingTimeout;
 }
-void create_rx_err(u8 err){
-	Env.rxIndex=0;
-	Env.RxState=WaitingStart;
-	stopTimer();
-	resetTImer();
-	if (Env.TxState==TxIdle){
-		createOutPacketAndSend(0x02,1,&err);
-	}
-}
+
 //если за 1.2 секунды не получен пакет, что-то не так
 #define RECEIVE_TIMEOUT 120
 
@@ -111,7 +103,15 @@ void restartTimer(){
 	resetTImer();
 	startTimer();
 }
-
+void create_rx_err(u8 err){
+	Env.rxIndex=0;
+	Env.RxState=WaitingStart;
+	stopTimer();
+	resetTImer();
+	if (Env.TxState==TxIdle){
+		createOutPacketAndSend(0x02,1,&err);
+	}
+}
 void PM_Task(){
 
 
@@ -195,7 +195,7 @@ void PM_Task(){
 
 
 void createOutPacketAndSend(u8 command, u8 bodySize, u8* bodyData){
-
+/*
 	CoSchedLock();
 	if (Env.TxState==Sending)
 	{
@@ -204,7 +204,7 @@ void createOutPacketAndSend(u8 command, u8 bodySize, u8* bodyData){
 	}
 	Env.TxState=Sending;
 	CoSchedUnlock();
-
+*/
 
 		u16 i=0;
 		Env.txBufSize=6+bodySize;
