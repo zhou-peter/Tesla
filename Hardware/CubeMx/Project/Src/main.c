@@ -51,8 +51,9 @@
 #include "stm32f1xx_hal.h"
 #include "cmsis_os.h"
 #include "packet_manager.h"
-/* USER CODE BEGIN Includes */
 
+/* USER CODE BEGIN Includes */
+#include "common.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -91,7 +92,7 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-
+volatile Env_t Env;
 /* USER CODE END 0 */
 
 /**
@@ -542,11 +543,13 @@ void StartDefaultTask(void const * argument)
 
   /* USER CODE BEGIN 5 */
   /* Infinite loop */
-  for(;;)
+	PM_Init();
+	PM_Task();
+  /*for(;;)
   {
 	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_12);
 	  osDelay(500);
-  }
+  }-*
   /* USER CODE END 5 */ 
 }
 

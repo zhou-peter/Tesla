@@ -83,9 +83,10 @@
  *----------------------------------------------------------*/
 
 /* USER CODE BEGIN Includes */   	      
+
 /* Section where include file can be added */
 /* USER CODE END Includes */ 
-
+#define configUSE_TIMERS						1
 /* Ensure stdint is only used by the compiler, and not the assembler. */
 #if defined(__ICCARM__) || defined(__CC_ARM) || defined(__GNUC__)
     #include <stdint.h>

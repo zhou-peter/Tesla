@@ -15,7 +15,7 @@ namespace TeslaCommunication.Packets
 
         public abstract IEnumerable<byte> GetBody();
 
-        public static byte PACKET_START = 0xB1;
+        public static byte PACKET_START = 0xCC;
 
         protected byte getByte(bool b)
         {
