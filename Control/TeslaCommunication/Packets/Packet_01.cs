@@ -8,14 +8,15 @@ namespace TeslaCommunication.Packets
     /// <summary>
     /// Текущее состояние
     /// </summary>
-    public class Packet_0001 : AbstractPacket
+    public class Packet_01 : AbstractInPacket
     {
 
-        StateStruct state = new StateStruct();
+        StateStruct state;
 
-
-
-
+        public override void ApplyBody(byte[] buf, int offset, int size)
+        {
+            state = Utils.ByteArrayToStructure<StateStruct>(buf, offset);
+        }
 
         public override IEnumerable<byte> GetBody()
         {

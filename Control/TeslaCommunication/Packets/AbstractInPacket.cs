@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 
 namespace TeslaCommunication.Packets
 {
-    public abstract class AbstractPacket
+    public abstract class AbstractInPacket
     {
 
         public int Command { get; set; }
@@ -15,7 +16,7 @@ namespace TeslaCommunication.Packets
 
         public abstract IEnumerable<byte> GetBody();
 
-        public static byte PACKET_START = 0xCC;
+        
 
         protected byte getByte(bool b)
         {
@@ -55,8 +56,6 @@ namespace TeslaCommunication.Packets
 
 
 
-
-
         public virtual byte[] ToArray()
         {
             if (BodySize > 0)
@@ -74,7 +73,7 @@ namespace TeslaCommunication.Packets
             int i = 0;
             int txBufSize = 6 + bodySize;
             byte[] txBuf = new byte[txBufSize];
-            txBuf[0] = PACKET_START;
+            txBuf[0] = Utils.PACKET_START;
             txBuf[1] = (byte)(txBufSize);
             txBuf[2] = (byte)(txBufSize >> 8);
             txBuf[3] = (byte)command;
@@ -98,5 +97,9 @@ namespace TeslaCommunication.Packets
 
             return txBuf;
         }
+
+
+        public abstract void ApplyBody(Byte[] buf, int offset, int size);
+
     }
 }

@@ -13,3 +13,4 @@ Control/TeslaComClient/bin/*
 Control/TeslaDesktopClient/obj/*
 Control/TeslaDesktopClient/bin/*
 *.bak
+Control/TeslaCommunication/.vs/*

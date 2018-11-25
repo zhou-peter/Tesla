@@ -13,8 +13,8 @@ namespace TeslaCommunication
     public class PacketsManager
     {
 
-        List<AbstractPacket> receivedPackets = new List<AbstractPacket>();
-        List<AbstractPacket> packetsToSend = new List<AbstractPacket>();
+        List<AbstractInPacket> receivedPackets = new List<AbstractInPacket>();
+        List<AbstractInPacket> packetsToSend = new List<AbstractInPacket>();
 
 
 
@@ -50,7 +50,12 @@ namespace TeslaCommunication
         {
             int rxBytesNow = buf.Length;
             int length = MAX_BUF_SIZE_RX - rxIndex;
-            Array.Copy(buf, 0, rxBuf, rxIndex, length);
+            if (rxBytesNow > length)
+            {
+                //create_err("Накопилось много данных");
+                return;
+            }
+            Array.Copy(buf, 0, rxBuf, rxIndex, rxBytesNow);
             rxIndex += rxBytesNow;
             packetFormerCheck();
         }
@@ -96,7 +101,7 @@ namespace TeslaCommunication
                 {
                     return;
                 }
-                if (rxIndex > 0 && rxBuf[0] != AbstractPacket.PACKET_START)
+                if (rxIndex > 0 && rxBuf[0] != Utils.PACKET_START)
                 {
                     rxIndex = 0;
                     create_err("Неправильный стартовый пакет");
@@ -115,7 +120,7 @@ namespace TeslaCommunication
                 if (rxIndex > 3)
                 {
                     int inPacksize = rxBuf[1] | rxBuf[2] << 8;
-                    if (inPacksize < 6)
+                    if (inPacksize < EMPTY_SIZE)
                     {
                         create_err("Слишком маленький пакет");
                         timerEnabled = false;
@@ -161,9 +166,10 @@ namespace TeslaCommunication
                 {
                     crc += rxBuf[i];
                 }
+                byte crcXOR = (byte)(crc ^ (byte)0xAA);
                 //если контрольная сумма сошлась
                 if (crc == rxBuf[rxPackSize - 2] &&
-                        (byte)(crc ^ (byte)0xAA) == rxBuf[rxPackSize - 1])
+                         crcXOR == rxBuf[rxPackSize - 1])
                 {
                     processIncomingPacket();
                 }
@@ -186,16 +192,21 @@ namespace TeslaCommunication
         private void processIncomingPacket()
         {
             int inPacksize = rxBuf[1] | rxBuf[2] << 8;
-            string packetNumber = rxBuf[3].ToString("X2") + rxBuf[4].ToString("X2");
+            string packetNumber = rxBuf[3].ToString("X2");
             try
             {
-                AbstractPacket pack = null;
-                string packetName = "Packets.Packet_" + packetNumber;
+                AbstractInPacket pack = null;
+                string packetName = "TeslaCommunication.Packets.Packet_" + packetNumber;
                 Type t = Type.GetType(packetName);
                 ConstructorInfo c = t.GetConstructor(new Type[] { });
-                pack = (AbstractPacket)c.Invoke(new object[] { });
+                pack = (AbstractInPacket)c.Invoke(new object[] { });
+                
                 if (pack != null)
                 {
+                    if (inPacksize > EMPTY_SIZE)
+                    {
+                        pack.ApplyBody(rxBuf, 4, inPacksize - EMPTY_SIZE);
+                    }
                     receivedPackets.Add(pack);
                 }
             }

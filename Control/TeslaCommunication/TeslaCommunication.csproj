@@ -61,11 +61,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Packets\AbstractPacket.cs" />
+    <Compile Include="Packets\AbstractOutPacket.cs" />
+    <Compile Include="Packets\AbstractInPacket.cs" />
     <Compile Include="PacketsManager.cs" />
-    <Compile Include="Packets\Packet_0001.cs" />
-    <Compile Include="Packets\Packet_0023.cs" />
+    <Compile Include="Packets\Packet_01.cs" />
+    <Compile Include="Packets\Packet_23.cs" />
     <Compile Include="Packets\StateStruct.cs" />
+    <Compile Include="Packets\Utils.cs" />
     <Compile Include="service.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

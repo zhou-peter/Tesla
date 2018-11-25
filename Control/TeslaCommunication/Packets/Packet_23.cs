@@ -9,7 +9,7 @@ namespace TeslaCommunication.Packets
     /// Включить отключить таймеры
     /// Основной, проломы, пропуски прерывания
     /// </summary>
-    public class Packet_0023 : AbstractPacket
+    public class Packet_23 : AbstractOutPacket
     {
         struct body
         {
@@ -21,7 +21,7 @@ namespace TeslaCommunication.Packets
 
         body b;
 
-        public Packet_0023(bool f1, bool f2, bool f3, bool f4)
+        public Packet_23(bool f1, bool f2, bool f3, bool f4)
         {
             b = new body();
             b.enabled_f1 = getByte(f1);
@@ -35,5 +35,7 @@ namespace TeslaCommunication.Packets
         {
             return StructureToByteArray(b);
         }
+
+
     }
 }

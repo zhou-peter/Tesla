@@ -70,6 +70,7 @@ namespace TeslaCommunication
                 SetConsoleCtrlHandler(new HandlerRoutine(ConsoleCtrlCheck), true);
                 Console.WriteLine("CTRL+C,CTRL+BREAK or suppress the application to exit");
                 Console.WriteLine();
+                Service.getInstance().Connect("COM2");
                 Console.ReadLine();
                 // Close the ServiceHost.
                 serviceHost.Close();
