@@ -4,7 +4,8 @@
 
 #include <stdio.h>
 
-
+#include "stm32f1xx_hal.h"
+#include "cmsis_os.h"
 
 typedef enum {FALSE = 0, TRUE = !FALSE} bool;
 #define u32 uint32_t
@@ -17,7 +18,8 @@ typedef enum {FALSE = 0, TRUE = !FALSE} bool;
 #define RX_BUF_SIZE 80
 #define TX_BUF_SIZE 80
 
-
+extern UART_HandleTypeDef huart1;
+extern DMA_HandleTypeDef hdma_usart1_tx;
 
 typedef enum
 {

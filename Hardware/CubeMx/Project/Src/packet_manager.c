@@ -9,6 +9,12 @@
 #include "timers.h"
 #include "packet_manager.h"
 
+extern void PM_TxComplete(DMA_HandleTypeDef * hdma);
+extern void vTimerStateSend(TimerHandle_t xTimer);
+
+#define STATE_SEND_PERIOD 200
+//если за 0.5 секунды не получен пакет, что-то не так
+#define RECEIVE_TIMEOUT 500
 
 void addRxByte(u8 rxByte){
     	if (Env.rxIndex<RX_BUF_SIZE-1){
@@ -40,8 +46,7 @@ void PacketTimeOut(void)
 	Env.RxState=ReceivingTimeout;
 }
 
-//если за 1.2 секунды не получен пакет, что-то не так
-#define RECEIVE_TIMEOUT 120
+
 
 void resetRxBuf(){
 	int i=0;
@@ -51,7 +56,7 @@ void resetRxBuf(){
 	}
 }
 
-
+TimerHandle_t xTimerState;
 TimerHandle_t xTimerTimeout;
 void vTimerCallback( TimerHandle_t xTimer )
 {
@@ -64,13 +69,13 @@ void PM_Init(){
 	xTimerTimeout = xTimerCreate
               ( /* Just a text name, not used by the RTOS
                 kernel. */
-                "Timer",
+                "Rx Timeout",
                 /* The timer period in ticks, must be
                 greater than 0. */
-				pdMS_TO_TICKS(500),
+				pdMS_TO_TICKS(RECEIVE_TIMEOUT),
                 /* The timers will auto-reload themselves
                 when they expire. */
-				pdTRUE ,
+				pdTRUE,
                 /* The ID is used to store a count of the
                 number of times the timer has expired, which
                 is initialised to 0. */
@@ -79,6 +84,9 @@ void PM_Init(){
                 it expires. */
                 vTimerCallback
               );
+	xTimerState=xTimerCreate("Tx State", pdMS_TO_TICKS(STATE_SEND_PERIOD), pdTRUE, ( void * ) 0,
+			vTimerStateSend);
+	hdma_usart1_tx.XferCpltCallback=PM_TxComplete;
 }
 
 void startTimer(){
@@ -113,7 +121,10 @@ void create_rx_err(u8 err){
 	}
 }
 void PM_Task(){
-
+    if( xTimerStart( xTimerState, pdMS_TO_TICKS(1000) ) != pdPASS )
+    {
+    	configASSERT( xTimerTimeout );
+    }
 
 	int i=0;
 
@@ -173,9 +184,10 @@ void PM_Task(){
 			for (i=0;i<Env.rxPackSize-2;i++){
 				crc+=Env.rxBuf[i];
 			}
+			u8 xorCRC=crc^0xAA;
 			//если контрольная сумма сошлась
 			if (crc==Env.rxBuf[Env.rxPackSize-2]&&
-					crc^0xAA==Env.rxBuf[Env.rxPackSize-1]){
+					xorCRC==Env.rxBuf[Env.rxPackSize-1]){
 				Env.RxState=RxProcessing;
 
 			}else{//crc error
@@ -195,16 +207,13 @@ void PM_Task(){
 
 
 void createOutPacketAndSend(u8 command, u8 bodySize, u8* bodyData){
-/*
-	CoSchedLock();
+
 	if (Env.TxState==Sending)
 	{
-		CoSchedUnlock();
 		return;
 	}
-	Env.TxState=Sending;
-	CoSchedUnlock();
-*/
+
+
 
 		u16 i=0;
 		Env.txBufSize=6+bodySize;
@@ -229,5 +238,24 @@ void createOutPacketAndSend(u8 command, u8 bodySize, u8* bodyData){
 
 		Env.txIndex=0;
 
+		HAL_UART_Transmit_DMA(&huart1, &Env.txBuf, Env.txBufSize);
 		//USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
+}
+u8 sentTimes=0;
+void vTimerStateSend(TimerHandle_t xTimer )
+{
+	createOutPacketAndSend(0x01, 8, &Env);
+	sentTimes++;
+	if (sentTimes>2){
+		HAL_GPIO_WritePin(GPIOA,GPIO_PIN_12, GPIO_PIN_RESET);
+		//HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_12);
+	}else{
+		HAL_GPIO_WritePin(GPIOA,GPIO_PIN_12, GPIO_PIN_SET);
+	}
+	if (sentTimes>5){
+		sentTimes=0;
+	}
+}
+void PM_TxComplete(DMA_HandleTypeDef * hdma){
+	Env.TxState=TxIdle;
 }
