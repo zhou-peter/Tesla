@@ -58,8 +58,8 @@ bool Tmp3:8;
 //структура должна быть выравнена по 32 бита по модулю
 typedef struct
 {
-u32 tmp0:24;
-
+u8 halRxBuf:8;
+u32 tmp0:16;
 RxStates RxState:4;
 TxStates TxState:4;//16
 u16 rxIndex;

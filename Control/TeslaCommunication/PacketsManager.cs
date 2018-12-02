@@ -235,10 +235,10 @@ namespace TeslaCommunication
         {
             int inPacksize = rxBuf[1] | rxBuf[2] << 8;
             string packetNumber = rxBuf[3].ToString("X2");
+            string packetName = "TeslaCommunication.Packets.Packet_" + packetNumber;
             try
             {
-                AbstractInPacket pack = null;
-                string packetName = "TeslaCommunication.Packets.Packet_" + packetNumber;
+                AbstractInPacket pack = null;                
                 Type t = Type.GetType(packetName);
                 ConstructorInfo c = t.GetConstructor(new Type[] { });
                 pack = (AbstractInPacket)c.Invoke(new object[] { });
@@ -257,7 +257,7 @@ namespace TeslaCommunication
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                Console.WriteLine("Error instantiate packet " + packetName);
             }
         }
 
