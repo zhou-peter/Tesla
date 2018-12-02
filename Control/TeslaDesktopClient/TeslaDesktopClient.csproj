@@ -53,6 +53,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Extensions.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -83,6 +84,9 @@
     </None>
     <None Include="Connected Services\TeslaCommunication\service2.xsd">
       <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\TeslaCommunication\TeslaDesktopClient.TeslaCommunication.HardwareState.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

@@ -9,7 +9,113 @@
 //------------------------------------------------------------------------------
 
 namespace TeslaDesktopClient.TeslaCommunication {
+    using System.Runtime.Serialization;
+    using System;
     
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="HardwareState", Namespace="http://schemas.datacontract.org/2004/07/TeslaCommunication")]
+    [System.SerializableAttribute()]
+    public partial class HardwareState : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        private bool enabledF1Field;
+        
+        private bool enabledF2Field;
+        
+        private bool enabledF3Field;
+        
+        private bool enabledF4Field;
+        
+        private bool ledLightField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public bool enabledF1 {
+            get {
+                return this.enabledF1Field;
+            }
+            set {
+                if ((this.enabledF1Field.Equals(value) != true)) {
+                    this.enabledF1Field = value;
+                    this.RaisePropertyChanged("enabledF1");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public bool enabledF2 {
+            get {
+                return this.enabledF2Field;
+            }
+            set {
+                if ((this.enabledF2Field.Equals(value) != true)) {
+                    this.enabledF2Field = value;
+                    this.RaisePropertyChanged("enabledF2");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public bool enabledF3 {
+            get {
+                return this.enabledF3Field;
+            }
+            set {
+                if ((this.enabledF3Field.Equals(value) != true)) {
+                    this.enabledF3Field = value;
+                    this.RaisePropertyChanged("enabledF3");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public bool enabledF4 {
+            get {
+                return this.enabledF4Field;
+            }
+            set {
+                if ((this.enabledF4Field.Equals(value) != true)) {
+                    this.enabledF4Field = value;
+                    this.RaisePropertyChanged("enabledF4");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public bool ledLight {
+            get {
+                return this.ledLightField;
+            }
+            set {
+                if ((this.ledLightField.Equals(value) != true)) {
+                    this.ledLightField = value;
+                    this.RaisePropertyChanged("ledLight");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="http://STM32TeslaCommunication", ConfigurationName="TeslaCommunication.ICommunicationProtocol")]
@@ -45,11 +151,11 @@ namespace TeslaDesktopClient.TeslaCommunication {
         [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/setEnabled", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/setEnabledResponse")]
         System.Threading.Tasks.Task setEnabledAsync(int fNum, bool enabled);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/getFStates", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/getFStatesResponse")]
-        bool[] getFStates();
+        [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/getHardwareState", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/getHardwareStateResponse")]
+        TeslaDesktopClient.TeslaCommunication.HardwareState getHardwareState();
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/getFStates", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/getFStatesResponse")]
-        System.Threading.Tasks.Task<bool[]> getFStatesAsync();
+        [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/getHardwareState", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/getHardwareStateResponse")]
+        System.Threading.Tasks.Task<TeslaDesktopClient.TeslaCommunication.HardwareState> getHardwareStateAsync();
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -119,12 +225,12 @@ namespace TeslaDesktopClient.TeslaCommunication {
             return base.Channel.setEnabledAsync(fNum, enabled);
         }
         
-        public bool[] getFStates() {
-            return base.Channel.getFStates();
+        public TeslaDesktopClient.TeslaCommunication.HardwareState getHardwareState() {
+            return base.Channel.getHardwareState();
         }
         
-        public System.Threading.Tasks.Task<bool[]> getFStatesAsync() {
-            return base.Channel.getFStatesAsync();
+        public System.Threading.Tasks.Task<TeslaDesktopClient.TeslaCommunication.HardwareState> getHardwareStateAsync() {
+            return base.Channel.getHardwareStateAsync();
         }
     }
 }

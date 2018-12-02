@@ -145,7 +145,6 @@ namespace TeslaCommunication
 
         PacketsManager mgr;
         SerialPort sp = null;
-        bool connectionOpen = false;
 
 
         public void OnClose() {
@@ -157,7 +156,7 @@ namespace TeslaCommunication
         public bool Connect(string comPortName)
         {
             //If we are not connected, connect
-            if (connectionOpen == false)
+            if (sp==null)
             {
                 try
                 {
@@ -171,7 +170,6 @@ namespace TeslaCommunication
                     sp.BaseStream.Flush();
                     sp.DataReceived += new SerialDataReceivedEventHandler(sp_DataReceived);
 
-                    connectionOpen = true;
                     mgr.SetDataChannel(sp);
                     return true;
                 }
@@ -211,12 +209,14 @@ namespace TeslaCommunication
                 sp.BaseStream.Flush();
                 sp.Close();
             }
-            connectionOpen = false;
+            sp = null;
         }
 
         public bool IsConnected()
         {
-            return connectionOpen;
+            if (sp == null)
+                return false;
+            return sp.IsOpen;
         }
 
         public void ClearQueues()

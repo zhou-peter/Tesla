@@ -7,29 +7,40 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TeslaDesktopClient.TeslaCommunication;
 
 namespace TeslaDesktopClient
 {
     public partial class Form1 : Form
     {
+
         public Form1()
         {
             InitializeComponent();
             client=new TeslaCommunication.CommunicationProtocolClient();
             client.Open();
             updateView();
+            timerAlive= new Timer();
+            timerAlive.Interval = 100;
+            timerAlive.Tick += TimerAlive_Tick;
+            timerAlive.Start();
         }
+
 
         protected override void OnClosed(EventArgs e)
         {
+            timerAlive.Stop();
             base.OnClosed(e);
-            client.Close();
+            client.Close();            
         }
-
-        TeslaCommunication.CommunicationProtocolClient client;
+        Timer timerAlive;
+        HardwareState currentState;
+        CommunicationProtocolClient client;
 
         private void button1_Click(object sender, EventArgs e)
         {
+            
+
             if (client.IsConnected())
             {
                 client.Disconnect();
@@ -42,6 +53,23 @@ namespace TeslaDesktopClient
         }
 
 
+        private void TimerAlive_Tick(object sender, EventArgs e)
+        {
+            currentState = client.getHardwareState();
+            this.Invoke(() => {
+                if (currentState != null)
+                {
+                    if (currentState.ledLight)
+                    {
+                        labelLed.BackColor = Color.Blue;
+                    }
+                    else
+                    {
+                        labelLed.BackColor = Color.Transparent;
+                    }
+                }
+            });
+        }
         void updateView()
         {
             if (client.IsConnected())
