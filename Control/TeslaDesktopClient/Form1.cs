@@ -17,6 +17,7 @@ namespace TeslaDesktopClient
             InitializeComponent();
             client=new TeslaCommunication.CommunicationProtocolClient();
             client.Open();
+            updateView();
         }
 
         protected override void OnClosed(EventArgs e)
@@ -29,7 +30,28 @@ namespace TeslaDesktopClient
 
         private void button1_Click(object sender, EventArgs e)
         {
-            client.Connect(textBoxCom.Text);
+            if (client.IsConnected())
+            {
+                client.Disconnect();
+            }
+            else
+            {
+                client.Connect(textBoxCom.Text);
+            }
+            updateView();
+        }
+
+
+        void updateView()
+        {
+            if (client.IsConnected())
+            {
+                button1.Text = "Отключиться";
+            }
+            else
+            {
+                button1.Text = "Подключиться";
+            }
         }
     }
 }

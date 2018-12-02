@@ -13,8 +13,8 @@ namespace TeslaCommunication
     public class PacketsManager : IDisposable
     {
 
-        Queue<AbstractInPacket> receivedPackets = new Queue<AbstractInPacket>();
-        Queue<AbstractOutPacket> packetsToSend = new Queue<AbstractOutPacket>();
+        public Queue<AbstractInPacket> receivedPackets = new Queue<AbstractInPacket>();
+        public Queue<AbstractOutPacket> packetsToSend = new Queue<AbstractOutPacket>();
         Thread thread;
         bool timerEnabled = false;
         bool shouldStop = false;

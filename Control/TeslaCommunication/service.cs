@@ -81,7 +81,7 @@ namespace TeslaCommunication
                 SetConsoleCtrlHandler(new HandlerRoutine(ConsoleCtrlCheck), true);
                 Console.WriteLine("CTRL+C,CTRL+BREAK or suppress the application to exit");
                 Console.WriteLine();
-                Service.getInstance().Connect("COM2");
+                //Service.getInstance().Connect("COM2");
                 Console.ReadLine();
                 // Close the ServiceHost.
                 serviceHost.Close();
@@ -191,6 +191,7 @@ namespace TeslaCommunication
 
                     connectionOpen = true;
                     mgr.SetDataChannel(sp);
+                    return true;
                 }
                 catch (Exception ex)
                 {
@@ -198,7 +199,7 @@ namespace TeslaCommunication
                     return false;
                 }
             }
-            return true;
+            return false;
         }
 
 
@@ -233,12 +234,13 @@ namespace TeslaCommunication
 
         public bool IsConnected()
         {
-            throw new NotImplementedException();
+            return connectionOpen;
         }
 
         public void ClearQueues()
         {
-            throw new NotImplementedException();
+            mgr.packetsToSend.Clear();
+            mgr.receivedPackets.Clear();
         }
 
         public void setEnabled(int fNum, bool enabled)
