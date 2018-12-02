@@ -52,6 +52,10 @@ namespace TeslaCommunication
                     {
                         processIncomingPacket();
                     }
+                    if (packetsToSend.Count > 0)
+                    {
+                        sendOutPacket();
+                    }
                     Thread.Sleep(10);
                 }
 
@@ -64,6 +68,18 @@ namespace TeslaCommunication
         }
 
         public StateStruct currentState;
+
+        void sendOutPacket()
+        {
+            if (sp.IsOpen && packetsToSend.Count > 0)
+            {
+                AbstractOutPacket packet = packetsToSend.Dequeue();
+                byte[] buf = packet.ToArray();
+                sp.BaseStream.Write(buf, 0, buf.Length);
+                sp.BaseStream.Flush();
+            }
+        }
+
 
         private void processIncomingPacket()
         {
@@ -87,7 +103,7 @@ namespace TeslaCommunication
             int length = MAX_BUF_SIZE_RX - rxIndex;
             if (rxBytesNow > length)
             {
-                //create_err("Накопилось много данных");
+                create_err("Накопилось много данных");
                 return;
             }
             Array.Copy(buf, 0, rxBuf, rxIndex, rxBytesNow);
@@ -199,14 +215,14 @@ namespace TeslaCommunication
                          crcXOR == rxBuf[rxPackSize - 1])
                 {
                     enqeueIncomingPacket();
+                    rxIndex = 0;
+                    CommState = ReceiverStates.WaitingStart;
                 }
                 else
                 {//crc error
                     create_err("Ошибка CRC");
                     return;
                 }
-                rxIndex = 0;
-                CommState = ReceiverStates.WaitingStart;
             }
         }
 
@@ -249,6 +265,8 @@ namespace TeslaCommunication
 
         void create_err(string msg)
         {
+            rxIndex = 0;
+            CommState = ReceiverStates.WaitingStart;
             timerEnabled = false;
             Console.WriteLine(msg);
         }

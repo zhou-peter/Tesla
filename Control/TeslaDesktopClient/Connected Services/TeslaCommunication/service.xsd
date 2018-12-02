@@ -50,7 +50,7 @@
   <xs:element name="setEnabled">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="fNum" type="xs:int" />
+        <xs:element minOccurs="0" name="num" type="xs:unsignedByte" />
         <xs:element minOccurs="0" name="enabled" type="xs:boolean" />
       </xs:sequence>
     </xs:complexType>

@@ -67,6 +67,9 @@ namespace TeslaDesktopClient
                     {
                         labelLed.BackColor = Color.Transparent;
                     }
+
+                    checkBox1.SetChecked(currentState.enabledF1);
+
                 }
             });
         }
@@ -81,5 +84,18 @@ namespace TeslaDesktopClient
                 button1.Text = "Подключиться";
             }
         }
+
+        byte getByte(bool b)
+        {
+            if (b)
+                return 1;
+            return 0;
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            client.setEnabled(1, checkBox1.Checked);
+        }
+
     }
 }

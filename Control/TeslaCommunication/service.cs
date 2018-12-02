@@ -160,6 +160,7 @@ namespace TeslaCommunication
             {
                 try
                 {
+                    ClearQueues();
                     sp = new SerialPort(comPortName);
                     sp.BaudRate = 9600;
                     sp.Parity = Parity.None;
@@ -225,9 +226,10 @@ namespace TeslaCommunication
             mgr.receivedPackets.Clear();
         }
 
-        public void setEnabled(int fNum, bool enabled)
+        public void setEnabled(byte num, bool enabled)
         {
-            throw new NotImplementedException();
+            Packet_02 p2 = new Packet_02(num,enabled);
+            mgr.packetsToSend.Enqueue(p2);
         }
 
         public HardwareState getHardwareState()

@@ -146,10 +146,10 @@ namespace TeslaDesktopClient.TeslaCommunication {
         System.Threading.Tasks.Task ClearQueuesAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/setEnabled", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/setEnabledResponse")]
-        void setEnabled(int fNum, bool enabled);
+        void setEnabled(byte num, bool enabled);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/setEnabled", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/setEnabledResponse")]
-        System.Threading.Tasks.Task setEnabledAsync(int fNum, bool enabled);
+        System.Threading.Tasks.Task setEnabledAsync(byte num, bool enabled);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/getHardwareState", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/getHardwareStateResponse")]
         TeslaDesktopClient.TeslaCommunication.HardwareState getHardwareState();
@@ -217,12 +217,12 @@ namespace TeslaDesktopClient.TeslaCommunication {
             return base.Channel.ClearQueuesAsync();
         }
         
-        public void setEnabled(int fNum, bool enabled) {
-            base.Channel.setEnabled(fNum, enabled);
+        public void setEnabled(byte num, bool enabled) {
+            base.Channel.setEnabled(num, enabled);
         }
         
-        public System.Threading.Tasks.Task setEnabledAsync(int fNum, bool enabled) {
-            return base.Channel.setEnabledAsync(fNum, enabled);
+        public System.Threading.Tasks.Task setEnabledAsync(byte num, bool enabled) {
+            return base.Channel.setEnabledAsync(num, enabled);
         }
         
         public TeslaDesktopClient.TeslaCommunication.HardwareState getHardwareState() {

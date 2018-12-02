@@ -50,7 +50,7 @@ namespace TeslaCommunication
         void ClearQueues();
 
         [OperationContract]
-        void setEnabled(int fNum, bool enabled);
+        void setEnabled(byte num, bool enabled);
 
         [OperationContract]
         HardwareState getHardwareState();
