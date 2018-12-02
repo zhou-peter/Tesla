@@ -20,7 +20,19 @@ namespace TeslaCommunication
         bool Connect(string comPortName);
 
         [OperationContract]
+        bool IsConnected();
+
+        [OperationContract]
         void Disconnect();
+
+        [OperationContract]
+        void ClearQueues();
+
+        [OperationContract]
+        void setEnabled(int fNum, bool enabled);
+
+        [OperationContract]
+        bool[] getFStates();
     }
 
     class TeslaServiceHost : ServiceHost
@@ -53,7 +65,6 @@ namespace TeslaCommunication
     [ServiceBehaviorAttribute(InstanceContextMode =InstanceContextMode.Single)]
     public class Service : ICommunicationProtocol
     {
-
         static ServiceHost serviceHost;
         // Host the service within this EXE console application.
         public static void Main()
@@ -157,6 +168,7 @@ namespace TeslaCommunication
 
         public void OnClose() {
             Disconnect();
+            mgr.Dispose();
         }
 
 
@@ -171,6 +183,7 @@ namespace TeslaCommunication
                     sp.BaudRate = 9600;
                     sp.Parity = Parity.None;
                     sp.DataBits = 8;
+                    sp.StopBits = StopBits.Two;
                     sp.Open();
                     //sp.DtrEnable = true;
                     sp.BaseStream.Flush();
@@ -216,6 +229,26 @@ namespace TeslaCommunication
                 sp.Close();
             }
             connectionOpen = false;
+        }
+
+        public bool IsConnected()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ClearQueues()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void setEnabled(int fNum, bool enabled)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool[] getFStates()
+        {
+            throw new NotImplementedException();
         }
     }
 

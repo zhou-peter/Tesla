@@ -10,15 +10,28 @@ using TeslaCommunication.Packets;
 
 namespace TeslaCommunication
 {
-    public class PacketsManager
+    public class PacketsManager : IDisposable
     {
 
-        List<AbstractInPacket> receivedPackets = new List<AbstractInPacket>();
-        List<AbstractInPacket> packetsToSend = new List<AbstractInPacket>();
+        Queue<AbstractInPacket> receivedPackets = new Queue<AbstractInPacket>();
+        Queue<AbstractOutPacket> packetsToSend = new Queue<AbstractOutPacket>();
+        Thread thread;
+        bool timerEnabled = false;
+        bool shouldStop = false;
+        public PacketsManager()
+        {
+            thread = new Thread(new ThreadStart(run));
+            thread.Start();
+        }
 
 
+        public void Dispose()
+        {
+            shouldStop = true;
+            thread.Join();
+        }
 
-        public void run()
+        void run()
         {
 
             try
@@ -35,6 +48,10 @@ namespace TeslaCommunication
                             CommState = ReceiverStates.ReceivingTimeout;
                         }
                     }
+                    if (receivedPackets.Count > 0)
+                    {
+                        processIncomingPacket();
+                    }
                     Thread.Sleep(10);
                 }
 
@@ -43,6 +60,24 @@ namespace TeslaCommunication
             {
                 MessageBox.Show(ex.ToString());
                 shouldStop = true;
+            }
+        }
+
+        StateStruct currentState;
+
+        private void processIncomingPacket()
+        {
+            while (receivedPackets.Count > 0)
+            {
+                AbstractInPacket pack = receivedPackets.Dequeue();
+                if (pack.Command == 0x01)
+                {
+                    currentState = ((Packet_01)pack).state;
+                }
+                else
+                {
+                    pack.Process();
+                }
             }
         }
 
@@ -65,16 +100,12 @@ namespace TeslaCommunication
         //region packet former
 
         static int MAX_BUF_SIZE_RX = 300;
-        static int MAX_BUF_SIZE_TX = 1100;
-        static int RECEIVE_TIMEOUT = 100;
+        static int RECEIVE_TIMEOUT = 50; //500ms
         static int EMPTY_SIZE = 6;
         byte[] rxBuf = new byte[MAX_BUF_SIZE_RX];
-        byte[] txBuf = new byte[MAX_BUF_SIZE_TX];
         int rxIndex = 0;
-        int txIndex = 0;
         int timerCounter = 0;
-        bool timerEnabled = false;
-        bool shouldStop = false;
+
         SerialPort sp;
 
         public enum ReceiverStates
@@ -87,7 +118,6 @@ namespace TeslaCommunication
         }
 
 
-        static int Processing = 5;
         ReceiverStates CommState = ReceiverStates.WaitingStart;
         int rxPackSize = 0;
         void packetFormerCheck()
@@ -123,13 +153,11 @@ namespace TeslaCommunication
                     if (inPacksize < EMPTY_SIZE)
                     {
                         create_err("Слишком маленький пакет");
-                        timerEnabled = false;
                         return;
                     }
                     if (inPacksize > MAX_BUF_SIZE_RX - EMPTY_SIZE)
                     {
-                        create_err("Входящий пакет с слишком большим размером");
-                        timerEnabled = false;
+                        create_err("Входящий пакет с слишком большим размером");                        
                         return;
                     }
                     rxPackSize = inPacksize;
@@ -153,7 +181,6 @@ namespace TeslaCommunication
             if (CommState == ReceiverStates.ReceivingTimeout)
             {
                 create_err("Таймаут получения пакета");
-                timerEnabled = false;
             }
             if (CommState == ReceiverStates.Processing)
             {
@@ -171,12 +198,11 @@ namespace TeslaCommunication
                 if (crc == rxBuf[rxPackSize - 2] &&
                          crcXOR == rxBuf[rxPackSize - 1])
                 {
-                    processIncomingPacket();
+                    enqeueIncomingPacket();
                 }
                 else
                 {//crc error
                     create_err("Ошибка CRC");
-                    timerEnabled = false;
                     return;
                 }
                 rxIndex = 0;
@@ -189,7 +215,7 @@ namespace TeslaCommunication
             this.sp = sp;
         }
 
-        private void processIncomingPacket()
+        private void enqeueIncomingPacket()
         {
             int inPacksize = rxBuf[1] | rxBuf[2] << 8;
             string packetNumber = rxBuf[3].ToString("X2");
@@ -203,11 +229,14 @@ namespace TeslaCommunication
                 
                 if (pack != null)
                 {
-                    if (inPacksize > EMPTY_SIZE)
+                    pack.Command = rxBuf[3];
+                    int bodySize = inPacksize - EMPTY_SIZE;
+                    if (bodySize>0)
                     {
-                        pack.ApplyBody(rxBuf, 4, inPacksize - EMPTY_SIZE);
+                        pack.BodySize = bodySize;
+                        pack.ApplyBody(rxBuf, 4, bodySize);
                     }
-                    receivedPackets.Add(pack);
+                    receivedPackets.Enqueue(pack);
                 }
             }
             catch (Exception ex)
@@ -220,7 +249,9 @@ namespace TeslaCommunication
 
         void create_err(string msg)
         {
+            timerEnabled = false;
             Console.WriteLine(msg);
         }
+
     }
 }

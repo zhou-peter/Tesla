@@ -11,16 +11,16 @@ namespace TeslaCommunication.Packets
     public class Packet_01 : AbstractInPacket
     {
 
-        StateStruct state;
+        public StateStruct state;
 
         public override void ApplyBody(byte[] buf, int offset, int size)
         {
             state = Utils.ByteArrayToStructure<StateStruct>(buf, offset);
         }
 
-        public override IEnumerable<byte> GetBody()
+        public override void Process()
         {
-            return StructureToByteArray(state);
+           
         }
     }
 }
