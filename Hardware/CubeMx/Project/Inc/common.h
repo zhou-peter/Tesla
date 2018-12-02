@@ -43,16 +43,22 @@ typedef enum
 	PokerRotatingLowPoint
 } PokerStates;
 
-//структура должна быть выравнена по 32 бита по модулю
 typedef struct
 {
 bool TimerF1:8;
 bool TimerF2:8;
 bool TimerF3:8;
 bool TimerF4:8;
-bool tmp1:1;
-bool Pausing:1;
+bool LedLight:8;
+bool Tmp1:8;
+bool Tmp2:8;
+bool Tmp3:8;
+} State_t;
 
+//структура должна быть выравнена по 32 бита по модулю
+typedef struct
+{
+u32 tmp0:24;
 
 RxStates RxState:4;
 TxStates TxState:4;//16
@@ -64,12 +70,12 @@ u16 rxPackSize;
 
 u8 rxBuf[RX_BUF_SIZE];
 u8 txBuf[TX_BUF_SIZE];
-} Env_t;
+} UART_t;
 
 
 
 
-extern volatile Env_t Env;
-
+extern volatile UART_t Uart;
+extern volatile State_t State;
 
 #endif

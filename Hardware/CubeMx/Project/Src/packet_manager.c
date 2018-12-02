@@ -17,9 +17,9 @@ extern void vTimerStateSend(TimerHandle_t xTimer);
 #define RECEIVE_TIMEOUT 500
 
 void addRxByte(u8 rxByte){
-    	if (Env.rxIndex<RX_BUF_SIZE-1){
-    		Env.rxBuf[Env.rxIndex]=rxByte;
-    		Env.rxIndex++;
+    	if (Uart.rxIndex<RX_BUF_SIZE-1){
+    		Uart.rxBuf[Uart.rxIndex]=rxByte;
+    		Uart.rxIndex++;
     		return;
     	}
 /*
@@ -43,16 +43,16 @@ void addRxByte(u8 rxByte){
 }
 void PacketTimeOut(void)
 {
-	Env.RxState=ReceivingTimeout;
+	Uart.RxState=ReceivingTimeout;
 }
 
 
 
 void resetRxBuf(){
 	int i=0;
-	Env.rxIndex=0;
+	Uart.rxIndex=0;
 	for(i=0;i<RX_BUF_SIZE;i++){
-		Env.rxBuf[i]=0;
+		Uart.rxBuf[i]=0;
 	}
 }
 
@@ -60,12 +60,12 @@ TimerHandle_t xTimerState;
 TimerHandle_t xTimerTimeout;
 void vTimerCallback( TimerHandle_t xTimer )
 {
-	Env.RxState=ReceivingTimeout;
+	Uart.RxState=ReceivingTimeout;
 }
 
 
 void PM_Init(){
-	Env.RxState=WaitingStart;
+	Uart.RxState=WaitingStart;
 	xTimerTimeout = xTimerCreate
               ( /* Just a text name, not used by the RTOS
                 kernel. */
@@ -112,11 +112,11 @@ void restartTimer(){
 	startTimer();
 }
 void create_rx_err(u8 err){
-	Env.rxIndex=0;
-	Env.RxState=WaitingStart;
+	Uart.rxIndex=0;
+	Uart.RxState=WaitingStart;
 	stopTimer();
 	resetTImer();
-	if (Env.TxState==TxIdle){
+	if (Uart.TxState==TxIdle){
 		createOutPacketAndSend(0x02,1,&err);
 	}
 }
@@ -131,27 +131,27 @@ void PM_Task(){
 	while(1){
 
 			i=0;
-		if (Env.RxState==WaitingStart){
+		if (Uart.RxState==WaitingStart){
 			//ждем новый пакет
 			//статус может изменить таймер таймаута
-			if (Env.rxIndex==0){
+			if (Uart.rxIndex==0){
 				//получили первый байт, ждем еще 7-8
 				osDelay(10);
 				continue;
 			}
-			else if (Env.rxIndex>0 && Env.rxBuf[0]!=PACKET_START){
-				Env.rxIndex=0;
+			else if (Uart.rxIndex>0 && Uart.rxBuf[0]!=PACKET_START){
+				Uart.rxIndex=0;
 				create_rx_err(0x01);
 				continue;
 			}else{
-				Env.RxState=ReceivingSize;
-				Env.rxPackSize=0;
+				Uart.RxState=ReceivingSize;
+				Uart.rxPackSize=0;
 				restartTimer();
 			}
-		}else if (Env.RxState==ReceivingSize){
-			if (Env.rxIndex>3){
-				u16 inPacksize=Env.rxBuf[1]+
-						(Env.rxBuf[2]*256);
+		}else if (Uart.RxState==ReceivingSize){
+			if (Uart.rxIndex>3){
+				u16 inPacksize=Uart.rxBuf[1]+
+						(Uart.rxBuf[2]*256);
 				if (inPacksize<6){
 					create_rx_err(0x02);
 					continue;
@@ -160,44 +160,44 @@ void PM_Task(){
 					create_rx_err(0x03);
 					continue;
 				}
-				Env.rxPackSize=inPacksize;
-				Env.RxState=ReceivingPacket;
+				Uart.rxPackSize=inPacksize;
+				Uart.RxState=ReceivingPacket;
 			}else{
 				osDelay(3);
 			}
-		}else if (Env.RxState==ReceivingPacket){
-			if (Env.rxIndex>=Env.rxPackSize){
+		}else if (Uart.RxState==ReceivingPacket){
+			if (Uart.rxIndex>=Uart.rxPackSize){
 				//Пакет пришел. останавливаем таймер и проверяем его
 				stopTimer();
-				Env.RxState=RxChecking;
+				Uart.RxState=RxChecking;
 			}else{
 				osDelay(10);
 			}
-		}else if (Env.RxState==ReceivingTimeout){
+		}else if (Uart.RxState==ReceivingTimeout){
 			create_rx_err(0x06);
-		}else if(Env.RxState==RxChecking){
+		}else if(Uart.RxState==RxChecking){
 			//останавливаем таймер таймаута так как пришел весь пакет
 			stopTimer();
 			//check CRC
 			u8 crc=0;
 			//265-2=263
-			for (i=0;i<Env.rxPackSize-2;i++){
-				crc+=Env.rxBuf[i];
+			for (i=0;i<Uart.rxPackSize-2;i++){
+				crc+=Uart.rxBuf[i];
 			}
 			u8 xorCRC=crc^0xAA;
 			//если контрольная сумма сошлась
-			if (crc==Env.rxBuf[Env.rxPackSize-2]&&
-					xorCRC==Env.rxBuf[Env.rxPackSize-1]){
-				Env.RxState=RxProcessing;
+			if (crc==Uart.rxBuf[Uart.rxPackSize-2]&&
+					xorCRC==Uart.rxBuf[Uart.rxPackSize-1]){
+				Uart.RxState=RxProcessing;
 
 			}else{//crc error
 				create_rx_err(0x04);
 			}
-		}else if(Env.RxState==RxProcessing){
+		}else if(Uart.RxState==RxProcessing){
 			osDelay(2);
-		}else if(Env.RxState==RxProcessed){
-			Env.rxIndex=0;
-			Env.RxState=WaitingStart;
+		}else if(Uart.RxState==RxProcessed){
+			Uart.rxIndex=0;
+			Uart.RxState=WaitingStart;
 		}
 
 		}
@@ -208,7 +208,7 @@ void PM_Task(){
 
 void createOutPacketAndSend(u8 command, u8 bodySize, u8* bodyData){
 
-	if (Env.TxState==Sending)
+	if (Uart.TxState==Sending)
 	{
 		return;
 	}
@@ -216,46 +216,48 @@ void createOutPacketAndSend(u8 command, u8 bodySize, u8* bodyData){
 
 
 		u16 i=0;
-		Env.txBufSize=6+bodySize;
-		Env.txBuf[0]=PACKET_START;
-		Env.txBuf[1]=(u8)(Env.txBufSize);
-		Env.txBuf[2]=(u8)(Env.txBufSize>>8);
-		Env.txBuf[3]=command;
+		Uart.txBufSize=6+bodySize;
+		Uart.txBuf[0]=PACKET_START;
+		Uart.txBuf[1]=(u8)(Uart.txBufSize);
+		Uart.txBuf[2]=(u8)(Uart.txBufSize>>8);
+		Uart.txBuf[3]=command;
 
 		if (bodySize>0){
 			for (i=0;i<bodySize;i++){
-				Env.txBuf[4+i]=*(bodyData+i);
+				Uart.txBuf[4+i]=*(bodyData+i);
 			}
 		}
 
 		u8 crc=0;
 		for (i=0;i<4+bodySize;i++){
-			crc+=Env.txBuf[i];
+			crc+=Uart.txBuf[i];
 		}
-		Env.txBuf[4+bodySize]=crc;
-		Env.txBuf[5+bodySize]=crc^0xAA;
+		Uart.txBuf[4+bodySize]=crc;
+		Uart.txBuf[5+bodySize]=crc^0xAA;
 
 
-		Env.txIndex=0;
+		Uart.txIndex=0;
 
-		HAL_UART_Transmit_DMA(&huart1, &Env.txBuf, Env.txBufSize);
+		HAL_UART_Transmit_DMA(&huart1, &Uart.txBuf, Uart.txBufSize);
 		//USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
 }
 u8 sentTimes=0;
 void vTimerStateSend(TimerHandle_t xTimer )
 {
-	createOutPacketAndSend(0x01, 8, &Env);
+	createOutPacketAndSend(0x01, 8, &State);
 	sentTimes++;
 	if (sentTimes>2){
 		HAL_GPIO_WritePin(GPIOA,GPIO_PIN_12, GPIO_PIN_RESET);
+		State.LedLight=FALSE;
 		//HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_12);
 	}else{
 		HAL_GPIO_WritePin(GPIOA,GPIO_PIN_12, GPIO_PIN_SET);
+		State.LedLight=TRUE;
 	}
 	if (sentTimes>5){
 		sentTimes=0;
 	}
 }
 void PM_TxComplete(DMA_HandleTypeDef * hdma){
-	Env.TxState=TxIdle;
+	Uart.TxState=TxIdle;
 }

@@ -12,28 +12,10 @@ using TeslaCommunication.Packets;
 
 namespace TeslaCommunication
 {
-    // Define a service contract.
-    [ServiceContract(Namespace = "http://STM32TeslaCommunication")]
-    public interface ICommunicationProtocol
-    {
-        [OperationContract]
-        bool Connect(string comPortName);
 
-        [OperationContract]
-        bool IsConnected();
+   
 
-        [OperationContract]
-        void Disconnect();
 
-        [OperationContract]
-        void ClearQueues();
-
-        [OperationContract]
-        void setEnabled(int fNum, bool enabled);
-
-        [OperationContract]
-        bool[] getFStates();
-    }
 
     class TeslaServiceHost : ServiceHost
     {
@@ -248,9 +230,9 @@ namespace TeslaCommunication
             throw new NotImplementedException();
         }
 
-        public bool[] getFStates()
+        public HardwareState getHardwareState()
         {
-            throw new NotImplementedException();
+            return new HardwareState(mgr.currentState);
         }
     }
 

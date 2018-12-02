@@ -63,7 +63,7 @@ namespace TeslaCommunication
             }
         }
 
-        StateStruct currentState;
+        public StateStruct currentState;
 
         private void processIncomingPacket()
         {
