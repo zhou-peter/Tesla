@@ -15,7 +15,7 @@ extern void vTimerStateSend(TimerHandle_t xTimer);
 #define STATE_SEND_PERIOD 200
 //если за 0.5 секунды не получен пакет, что-то не так
 #define RECEIVE_TIMEOUT 500
-
+#define BODY_OFFSET 4
 
 void resetRxBuf(){
 	int i=0;
@@ -104,6 +104,7 @@ void onRx(){
 }
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	onRx();
+	HAL_UART_Receive_IT(&huart1, &Uart, 1);
 }
 void PM_Task(){
     if( xTimerStart( xTimerState, pdMS_TO_TICKS(1000) ) != pdPASS )
@@ -173,9 +174,10 @@ void PM_Task(){
 			if (crc==Uart.rxBuf[Uart.rxPackSize-2]&&
 					xorCRC==Uart.rxBuf[Uart.rxPackSize-1]){
 				Uart.RxState=RxProcessing;
-
 				stopTimer();
 				resetTImer();
+				processPacket();
+
 			}else{//crc error
 				create_rx_err(0x04);
 			}
@@ -191,6 +193,27 @@ void PM_Task(){
 
 }
 
+
+void changeTimerState(u8 num, u8 enabled){
+	bool en=FALSE;
+	if (enabled>0)
+		en=TRUE;
+
+	if (num==1){
+		State.TimerF1=en;
+	}
+}
+
+void processPacket(){
+	Uart.RxState=RxProcessing;
+	u8 packetCode=Uart.rxBuf[3];
+	switch(packetCode){
+	case 0x02:
+		changeTimerState(Uart.rxBuf[BODY_OFFSET], Uart.rxBuf[BODY_OFFSET + 1]);
+		break;
+	}
+	Uart.RxState=RxProcessed;
+}
 
 void createOutPacketAndSend(u8 command, u8 bodySize, u8* bodyData){
 

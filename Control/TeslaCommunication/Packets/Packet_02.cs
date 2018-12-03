@@ -21,6 +21,8 @@ namespace TeslaCommunication.Packets
 
         public Packet_02(byte num, bool enabled)
         {
+            Command = 2;
+            BodySize = 2;
             b = new body();
             b.num = num;
             b.enabled = getByte(enabled);
