@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://STM32TeslaCommunication" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://STM32TeslaCommunication" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://STM32TeslaCommunication/Imports">
+      <xsd:import schemaLocation="http://localhost:8282/TeslaCommunication/service?xsd=xsd0" namespace="http://STM32TeslaCommunication" />
+      <xsd:import schemaLocation="http://localhost:8282/TeslaCommunication/service?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:8282/TeslaCommunication/service?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/TeslaCommunication" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="ICommunicationProtocol_Connect_InputMessage">
+    <wsdl:part name="parameters" element="tns:Connect" />
+  </wsdl:message>
+  <wsdl:message name="ICommunicationProtocol_Connect_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ConnectResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICommunicationProtocol_IsConnected_InputMessage">
+    <wsdl:part name="parameters" element="tns:IsConnected" />
+  </wsdl:message>
+  <wsdl:message name="ICommunicationProtocol_IsConnected_OutputMessage">
+    <wsdl:part name="parameters" element="tns:IsConnectedResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICommunicationProtocol_Disconnect_InputMessage">
+    <wsdl:part name="parameters" element="tns:Disconnect" />
+  </wsdl:message>
+  <wsdl:message name="ICommunicationProtocol_Disconnect_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DisconnectResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICommunicationProtocol_ClearQueues_InputMessage">
+    <wsdl:part name="parameters" element="tns:ClearQueues" />
+  </wsdl:message>
+  <wsdl:message name="ICommunicationProtocol_ClearQueues_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ClearQueuesResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICommunicationProtocol_setEnabled_InputMessage">
+    <wsdl:part name="parameters" element="tns:setEnabled" />
+  </wsdl:message>
+  <wsdl:message name="ICommunicationProtocol_setEnabled_OutputMessage">
+    <wsdl:part name="parameters" element="tns:setEnabledResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICommunicationProtocol_getHardwareState_InputMessage">
+    <wsdl:part name="parameters" element="tns:getHardwareState" />
+  </wsdl:message>
+  <wsdl:message name="ICommunicationProtocol_getHardwareState_OutputMessage">
+    <wsdl:part name="parameters" element="tns:getHardwareStateResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ICommunicationProtocol">
+    <wsdl:operation name="Connect">
+      <wsdl:input wsaw:Action="http://STM32TeslaCommunication/ICommunicationProtocol/Connect" message="tns:ICommunicationProtocol_Connect_InputMessage" />
+      <wsdl:output wsaw:Action="http://STM32TeslaCommunication/ICommunicationProtocol/ConnectResponse" message="tns:ICommunicationProtocol_Connect_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="IsConnected">
+      <wsdl:input wsaw:Action="http://STM32TeslaCommunication/ICommunicationProtocol/IsConnected" message="tns:ICommunicationProtocol_IsConnected_InputMessage" />
+      <wsdl:output wsaw:Action="http://STM32TeslaCommunication/ICommunicationProtocol/IsConnectedResponse" message="tns:ICommunicationProtocol_IsConnected_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Disconnect">
+      <wsdl:input wsaw:Action="http://STM32TeslaCommunication/ICommunicationProtocol/Disconnect" message="tns:ICommunicationProtocol_Disconnect_InputMessage" />
+      <wsdl:output wsaw:Action="http://STM32TeslaCommunication/ICommunicationProtocol/DisconnectResponse" message="tns:ICommunicationProtocol_Disconnect_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ClearQueues">
+      <wsdl:input wsaw:Action="http://STM32TeslaCommunication/ICommunicationProtocol/ClearQueues" message="tns:ICommunicationProtocol_ClearQueues_InputMessage" />
+      <wsdl:output wsaw:Action="http://STM32TeslaCommunication/ICommunicationProtocol/ClearQueuesResponse" message="tns:ICommunicationProtocol_ClearQueues_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="setEnabled">
+      <wsdl:input wsaw:Action="http://STM32TeslaCommunication/ICommunicationProtocol/setEnabled" message="tns:ICommunicationProtocol_setEnabled_InputMessage" />
+      <wsdl:output wsaw:Action="http://STM32TeslaCommunication/ICommunicationProtocol/setEnabledResponse" message="tns:ICommunicationProtocol_setEnabled_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="getHardwareState">
+      <wsdl:input wsaw:Action="http://STM32TeslaCommunication/ICommunicationProtocol/getHardwareState" message="tns:ICommunicationProtocol_getHardwareState_InputMessage" />
+      <wsdl:output wsaw:Action="http://STM32TeslaCommunication/ICommunicationProtocol/getHardwareStateResponse" message="tns:ICommunicationProtocol_getHardwareState_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

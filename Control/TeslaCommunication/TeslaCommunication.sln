@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeslaCommunication", "Tesla
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeslaDesktopClient", "..\TeslaDesktopClient\TeslaDesktopClient.csproj", "{5B2AAEC9-2ABE-420A-ABF1-4219BAB38602}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeslaComClient", "..\TeslaComClient\TeslaComClient.csproj", "{74716E28-685B-4FF6-950D-945C0ADE2C28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{5B2AAEC9-2ABE-420A-ABF1-4219BAB38602}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B2AAEC9-2ABE-420A-ABF1-4219BAB38602}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B2AAEC9-2ABE-420A-ABF1-4219BAB38602}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74716E28-685B-4FF6-950D-945C0ADE2C28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74716E28-685B-4FF6-950D-945C0ADE2C28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74716E28-685B-4FF6-950D-945C0ADE2C28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74716E28-685B-4FF6-950D-945C0ADE2C28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

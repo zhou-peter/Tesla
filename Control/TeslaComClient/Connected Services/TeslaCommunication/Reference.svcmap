@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="8a01d484-b3cd-4fe6-8629-e9aa9b70918c" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:8282/TeslaCommunication/service" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="2a407c27-f500-4681-a804-e6f3f4ac7507" SourceId="1" SourceUrl="http://localhost:8282/TeslaCommunication/service?wsdl=wsdl0" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="1b8fe37e-c6c9-401f-9be5-cf571d336f4a" SourceId="1" SourceUrl="http://localhost:8282/TeslaCommunication/service?xsd=xsd0" />
+    <MetadataFile FileName="Service1.wsdl" MetadataType="Wsdl" ID="79826b23-5fd8-40ec-ae92-2bee3c93c49d" SourceId="1" SourceUrl="http://localhost:8282/TeslaCommunication/service?wsdl" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="e5904d56-5400-40ae-9a1b-b02c02d0e64a" SourceId="1" SourceUrl="http://localhost:8282/TeslaCommunication/service?xsd=xsd2" />
+    <MetadataFile FileName="service.disco" MetadataType="Disco" ID="87231029-3f81-4593-9950-924d7eba89a5" SourceId="1" SourceUrl="http://localhost:8282/TeslaCommunication/service?disco" />
+    <MetadataFile FileName="service2.xsd" MetadataType="Schema" ID="a109d20d-85cb-452b-baf3-1a9d1ce5ed40" SourceId="1" SourceUrl="http://localhost:8282/TeslaCommunication/service?xsd=xsd1" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>
