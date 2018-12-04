@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.ServiceModel;
 using System.Text;
 using TeslaCommunication.Packets;
 
 namespace TeslaCommunication
 {
+
     [Serializable]
     public class HardwareState
     {

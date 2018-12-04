@@ -9,34 +9,42 @@ using TeslaComClient.TeslaCommunication;
 namespace TeslaComClient
 {
 
-
-    [Guid("EAA4976A-45C3-4BC5-000B-E474F4C3C83F")]
-    public interface ComClass1Interface
-    {
-        bool Connect(string comPortName);
-    }
-
-
-
-
-
-
+    
     [Guid("0D53A3E8-E51A-49C7-004E-E72A2064F938")]
     [Serializable(), ClassInterface(ClassInterfaceType.AutoDual), ComVisible(true)]
-    public class Main : ComClass1Interface
+    public class Main : IDisposable
     {
 
-
+        CommunicationProtocolClient client;
 
 
         public Main(){
             string assemblyLoc = GetType().Assembly.Location;
             string configName = assemblyLoc + ".config";
             AppDomain.CurrentDomain.SetData("APP_CONFIG_FILE", configName);
+            try
+            {
+                if (client == null)
+                {
+                    client = new CommunicationProtocolClient();
+                    client.Open();
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        public void Dispose()
+        {
+            if (client != null)
+            {
+                client.Close();
+            }
         }
 
 
-        CommunicationProtocolClient client;
+
         public bool Connect(string comPortName)
         {
             if (client == null)
@@ -47,5 +55,22 @@ namespace TeslaComClient
 
             return client.Connect(comPortName);
         }
+        //close Com port connection
+        public void Disconnect()
+        {
+            if (client == null)
+            {
+                client = new CommunicationProtocolClient();
+                client.Open();
+            }
+            //close Com port connection
+            client.Disconnect();
+        }
+        /*
+        public HardwareState GetState()
+        {
+            return new HardwareState(client.getHardwareState());
+        }
+        */
     }
 }
