@@ -12,21 +12,31 @@ namespace TeslaComClient
 
     [Guid("0D53A3E8-E51A-49C7-0011-E72A2064F938")]
     [Serializable(), ClassInterface(ClassInterfaceType.AutoDual), ComVisible(true)]
-    public class HardwareState : TeslaCommunication.HardwareState
+    public class HardwareState
     {
         public bool IsFake = true;
+        public bool enabledF1Field;
+        public bool enabledF2Field;
+        public bool enabledF3Field;
+        public bool enabledF4Field;
+        public bool ledLightField;
+
 
         public HardwareState() { }
 
-        public HardwareState(TeslaCommunication.HardwareState hwState) {
+        /*
+        internal HardwareState(TeslaCommunication.HardwareState hwState) {
+            
+
             if (hwState != null)
             {
-                foreach (var prop in hwState.GetType().GetProperties())
+                foreach (var prop in GetType().GetProperties())
                 {
                     this.GetType().GetProperty(prop.Name).SetValue(this, prop.GetValue(hwState, null), null);
                 }
                 IsFake = false;
             }
         }
+*/
     }
 }
