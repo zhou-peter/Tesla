@@ -15,28 +15,25 @@ namespace TeslaComClient
     public class HardwareState
     {
         public bool IsFake = true;
-        public bool enabledF1Field;
-        public bool enabledF2Field;
-        public bool enabledF3Field;
-        public bool enabledF4Field;
-        public bool ledLightField;
+        public bool enabledF1 { get; set; }
+        public bool enabledF2 { get; set; }
+        public bool enabledF3 { get; set; }
+        public bool enabledF4 { get; set; }
+        public bool ledLight { get; set; }
 
 
         public HardwareState() { }
 
-        /*
+        
         internal HardwareState(TeslaCommunication.HardwareState hwState) {
             
 
             if (hwState != null)
             {
-                foreach (var prop in GetType().GetProperties())
-                {
-                    this.GetType().GetProperty(prop.Name).SetValue(this, prop.GetValue(hwState, null), null);
-                }
+                Utils.Copy(hwState, this);
                 IsFake = false;
             }
         }
-*/
+
     }
 }

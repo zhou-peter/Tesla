@@ -66,11 +66,11 @@ namespace TeslaComClient
             //close Com port connection
             client.Disconnect();
         }
-        /*
+        
         public HardwareState GetState()
         {
             return new HardwareState(client.getHardwareState());
         }
-        */
+        
     }
 }
