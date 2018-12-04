@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace TeslaComClient
 {
 
-    [Guid("0D53A3E8-E51A-49C7-0011-E72A2064F938")]
+    [Guid("0D53A3E8-E51A-49C7-0011-E72A2064F900")]
     [Serializable(), ClassInterface(ClassInterfaceType.AutoDual), ComVisible(true)]
     public class HardwareState
     {
