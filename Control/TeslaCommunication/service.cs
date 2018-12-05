@@ -236,6 +236,13 @@ namespace TeslaCommunication
         {
             return new HardwareState(mgr.currentState);
         }
+
+        public void configTimer(byte num, byte prescaler, int period, int duty)
+        {
+
+        }
+
+
     }
 
 }

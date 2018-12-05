@@ -8,6 +8,7 @@
 #include "cmsis_os.h"
 #include "timers.h"
 #include "packet_manager.h"
+#include "kernel.h"
 
 extern void PM_TxComplete(DMA_HandleTypeDef * hdma);
 extern void vTimerStateSend(TimerHandle_t xTimer);
@@ -16,6 +17,7 @@ extern void vTimerStateSend(TimerHandle_t xTimer);
 //если за 0.5 секунды не получен пакет, что-то не так
 #define RECEIVE_TIMEOUT 500
 #define BODY_OFFSET 4
+#define EMPTY_SIZE 6
 
 void resetRxBuf(){
 	int i=0;
@@ -141,7 +143,7 @@ void PM_Task(){
 					create_rx_err(0x02);
 					continue;
 				}
-				if (inPacksize>RX_BUF_SIZE-6){
+				if (inPacksize>RX_BUF_SIZE-EMPTY_SIZE){
 					create_rx_err(0x03);
 					continue;
 				}
@@ -194,22 +196,15 @@ void PM_Task(){
 }
 
 
-void changeTimerState(u8 num, u8 enabled){
-	bool en=FALSE;
-	if (enabled>0)
-		en=TRUE;
-
-	if (num==1){
-		State.TimerF1=en;
-	}
-}
 
 void processPacket(){
 	Uart.RxState=RxProcessing;
 	u8 packetCode=Uart.rxBuf[3];
+	u8* body=&Uart.rxBuf[BODY_OFFSET];
+	u16 bodySize=Uart.rxPackSize-EMPTY_SIZE;
 	switch(packetCode){
 	case 0x02:
-		changeTimerState(Uart.rxBuf[BODY_OFFSET], Uart.rxBuf[BODY_OFFSET + 1]);
+		packet_02_timer_enable(body, bodySize);
 		break;
 	}
 	Uart.RxState=RxProcessed;

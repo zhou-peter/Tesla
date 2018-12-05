@@ -71,6 +71,13 @@ namespace TeslaComClient
         {
             return new HardwareState(client.getHardwareState());
         }
+
+        public void SetTimerState(int timerNumber, bool enabled)
+        {
+            client.setEnabled((byte)timerNumber, enabled);
+        }
         
+        
+
     }
 }
