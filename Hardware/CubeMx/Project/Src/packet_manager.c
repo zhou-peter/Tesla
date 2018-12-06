@@ -203,9 +203,12 @@ void processPacket(){
 	u8* body=&Uart.rxBuf[BODY_OFFSET];
 	u16 bodySize=Uart.rxPackSize-EMPTY_SIZE;
 	switch(packetCode){
-	case 0x02:
-		packet_02_timer_enable(body, bodySize);
-		break;
+		case 0x02:
+			packet_02_timer_enable(body, bodySize);
+			break;
+		case 0x04:
+			packet_04_timer_config(body, bodySize);
+			break;
 	}
 	Uart.RxState=RxProcessed;
 }

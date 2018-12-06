@@ -32,6 +32,26 @@ void setTimer(u8 num, bool state){
 	}
 }
 
+TIM_HandleTypeDef getTimer(u8 num){
+	switch(num){
+		case 1:
+			//основной
+			return htim1;
+		case 2:
+			//пачки
+			return htim15;
+		case 3:
+			//проломы х2
+			return htim2;
+		case 4:
+			//пропуски
+			return htim3;
+	}
+	//hard fault exception
+	return 0;
+}
+
+
 void packet_02_timer_enable(u8* body, u16 bodySize){
 	u8 num = *(body);
 	bool enable = getBool(*(body+1));
@@ -42,5 +62,8 @@ void packet_04_timer_config(u8* body, u16 bodySize){
 	u8 prescaler = *(body+1);
 	u16 period = getU16(body+2);
 	u16 duty = getU16(body+4);
+
+	TIM_HandleTypeDef t = getTimer(num);
+	t.Init.Prescaler=prescaler;
 
 }
