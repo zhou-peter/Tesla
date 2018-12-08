@@ -1,5 +1,5 @@
 #include "kernel.h"
-
+#include "stm32f1xx_hal_tim.h"
 
 void changeTimerState(u8 num, u8 enabled){
 	bool en=FALSE;
@@ -28,33 +28,39 @@ u16 getU16(u8* ptr){
 
 
 
-TIM_HandleTypeDef getTimer(u8 num){
+TIM_HandleTypeDef* getTimer(u8 num){
 	switch(num){
 		case 1:
 			//основной
-			return htim1;
+			return &htim1;
 		case 2:
 			//пачки
-			return htim15;
+			return &htim15;
 		case 3:
 			//проломы х2
-			return htim2;
+			return &htim2;
 		case 4:
 			//пропуски
-			return htim3;
+			return &htim3;
 	}
 	//hard fault exception
 	TIM_HandleTypeDef n;
-	return n;
+	return &n;
 }
 
 
 void setTimer(u8 num, bool state){
-	TIM_HandleTypeDef t = getTimer(num);
+	TIM_HandleTypeDef* t = getTimer(num);
 	if (state==TRUE){
-		HAL_TIM_Base_Start(&t);
+		HAL_TIM_Base_Start(t);
+		if (num==1){
+			HAL_TIM_PWM_Start(t, TIM_CHANNEL_1);
+		}
 	}else{
-		HAL_TIM_Base_Stop(&t);
+		HAL_TIM_Base_Stop(t);
+		if (num==1){
+			HAL_TIM_PWM_Stop(t, TIM_CHANNEL_1);
+		}
 	}
 
 	if (num==1){
@@ -96,17 +102,17 @@ void packet_04_timer_config(u8* body, u16 bodySize){
 	u16 period = getU16(body+2);
 	u16 duty = getU16(body+4);
 
-	TIM_HandleTypeDef t = getTimer(num);
+	TIM_HandleTypeDef* t = getTimer(num);
 	bool timerState=getTimerState(num);
 	//если таймер в рабочем состояние, останавливаем его
 	if (timerState==TRUE){
-		HAL_TIM_Base_Stop(&t);
+		HAL_TIM_Base_Stop(t);
 	}
 
 
-	t.Init.Prescaler=prescaler;
-	t.Init.Period=period;
-	HAL_TIM_Base_Init(&t);
+	t->Init.Prescaler=prescaler;
+	t->Init.Period=period;
+	HAL_TIM_Base_Init(t);
 
 	if (num==1){
 		TIM_OC_InitTypeDef sConfigOC;
@@ -117,7 +123,8 @@ void packet_04_timer_config(u8* body, u16 bodySize){
 		sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
 		sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
 		sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
-		if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+
+		if (HAL_TIM_PWM_ConfigChannel(t, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
 		{
 			_Error_Handler(__FILE__, __LINE__);
 		}
@@ -127,6 +134,6 @@ void packet_04_timer_config(u8* body, u16 bodySize){
 	//если таймер был в рабочем состояние,
 	//опять запускаем его
 	if (timerState==TRUE){
-		HAL_TIM_Base_Start(&t);
+		HAL_TIM_Base_Start(t);
 	}
 }
