@@ -151,6 +151,18 @@ namespace TeslaDesktopClient.TeslaCommunication {
         [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/setEnabled", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/setEnabledResponse")]
         System.Threading.Tasks.Task setEnabledAsync(byte num, bool enabled);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/configTimer", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/configTimerResponse")]
+        void configTimer(byte num, byte prescaler, int period, int duty);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/configTimer", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/configTimerResponse")]
+        System.Threading.Tasks.Task configTimerAsync(byte num, byte prescaler, int period, int duty);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/configTimer2", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/configTimer2Response")]
+        void configTimer2(byte num, byte prescaler, int period, int duty1, int duty2);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/configTimer2", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/configTimer2Response")]
+        System.Threading.Tasks.Task configTimer2Async(byte num, byte prescaler, int period, int duty1, int duty2);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/getHardwareState", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/getHardwareStateResponse")]
         TeslaDesktopClient.TeslaCommunication.HardwareState getHardwareState();
         
@@ -223,6 +235,22 @@ namespace TeslaDesktopClient.TeslaCommunication {
         
         public System.Threading.Tasks.Task setEnabledAsync(byte num, bool enabled) {
             return base.Channel.setEnabledAsync(num, enabled);
+        }
+        
+        public void configTimer(byte num, byte prescaler, int period, int duty) {
+            base.Channel.configTimer(num, prescaler, period, duty);
+        }
+        
+        public System.Threading.Tasks.Task configTimerAsync(byte num, byte prescaler, int period, int duty) {
+            return base.Channel.configTimerAsync(num, prescaler, period, duty);
+        }
+        
+        public void configTimer2(byte num, byte prescaler, int period, int duty1, int duty2) {
+            base.Channel.configTimer2(num, prescaler, period, duty1, duty2);
+        }
+        
+        public System.Threading.Tasks.Task configTimer2Async(byte num, byte prescaler, int period, int duty1, int duty2) {
+            return base.Channel.configTimer2Async(num, prescaler, period, duty1, duty2);
         }
         
         public TeslaDesktopClient.TeslaCommunication.HardwareState getHardwareState() {

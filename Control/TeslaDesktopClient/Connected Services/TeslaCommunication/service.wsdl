@@ -37,6 +37,18 @@
   <wsdl:message name="ICommunicationProtocol_setEnabled_OutputMessage">
     <wsdl:part name="parameters" element="tns:setEnabledResponse" />
   </wsdl:message>
+  <wsdl:message name="ICommunicationProtocol_configTimer_InputMessage">
+    <wsdl:part name="parameters" element="tns:configTimer" />
+  </wsdl:message>
+  <wsdl:message name="ICommunicationProtocol_configTimer_OutputMessage">
+    <wsdl:part name="parameters" element="tns:configTimerResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICommunicationProtocol_configTimer2_InputMessage">
+    <wsdl:part name="parameters" element="tns:configTimer2" />
+  </wsdl:message>
+  <wsdl:message name="ICommunicationProtocol_configTimer2_OutputMessage">
+    <wsdl:part name="parameters" element="tns:configTimer2Response" />
+  </wsdl:message>
   <wsdl:message name="ICommunicationProtocol_getHardwareState_InputMessage">
     <wsdl:part name="parameters" element="tns:getHardwareState" />
   </wsdl:message>
@@ -63,6 +75,14 @@
     <wsdl:operation name="setEnabled">
       <wsdl:input wsaw:Action="http://STM32TeslaCommunication/ICommunicationProtocol/setEnabled" message="tns:ICommunicationProtocol_setEnabled_InputMessage" />
       <wsdl:output wsaw:Action="http://STM32TeslaCommunication/ICommunicationProtocol/setEnabledResponse" message="tns:ICommunicationProtocol_setEnabled_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="configTimer">
+      <wsdl:input wsaw:Action="http://STM32TeslaCommunication/ICommunicationProtocol/configTimer" message="tns:ICommunicationProtocol_configTimer_InputMessage" />
+      <wsdl:output wsaw:Action="http://STM32TeslaCommunication/ICommunicationProtocol/configTimerResponse" message="tns:ICommunicationProtocol_configTimer_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="configTimer2">
+      <wsdl:input wsaw:Action="http://STM32TeslaCommunication/ICommunicationProtocol/configTimer2" message="tns:ICommunicationProtocol_configTimer2_InputMessage" />
+      <wsdl:output wsaw:Action="http://STM32TeslaCommunication/ICommunicationProtocol/configTimer2Response" message="tns:ICommunicationProtocol_configTimer2_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="getHardwareState">
       <wsdl:input wsaw:Action="http://STM32TeslaCommunication/ICommunicationProtocol/getHardwareState" message="tns:ICommunicationProtocol_getHardwareState_InputMessage" />

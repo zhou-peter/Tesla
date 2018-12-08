@@ -16,6 +16,7 @@ namespace TeslaCommunication.Packets
             public byte prescaler;
             public ushort period;
             public ushort duty;
+            public ushort duty2;//для проломов
         }
 
         body b;
@@ -30,7 +31,11 @@ namespace TeslaCommunication.Packets
             b.period = (ushort)period;
             b.duty = (ushort)duty;
         }
-
+        public Packet_04(byte num, byte prescaler, int period, int duty, int duty2)
+            : this(num, prescaler, period, duty)
+        {
+            b.duty2 = (ushort)duty2;
+        }
 
         public override IEnumerable<byte> GetBody()
         {

@@ -239,9 +239,15 @@ namespace TeslaCommunication
 
         public void configTimer(byte num, byte prescaler, int period, int duty)
         {
-
+            Packet_04 p4 = new Packet_04(num, prescaler, period, duty);
+            mgr.packetsToSend.Enqueue(p4);
         }
 
+        public void configTimer2(byte num, byte prescaler, int period, int duty1, int duty2)
+        {
+            Packet_04 p4 = new Packet_04(num, prescaler, period, duty1, duty2);
+            mgr.packetsToSend.Enqueue(p4);
+        }
 
     }
 

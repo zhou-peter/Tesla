@@ -60,6 +60,37 @@
       <xs:sequence />
     </xs:complexType>
   </xs:element>
+  <xs:element name="configTimer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="num" type="xs:unsignedByte" />
+        <xs:element minOccurs="0" name="prescaler" type="xs:unsignedByte" />
+        <xs:element minOccurs="0" name="period" type="xs:int" />
+        <xs:element minOccurs="0" name="duty" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="configTimerResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="configTimer2">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="num" type="xs:unsignedByte" />
+        <xs:element minOccurs="0" name="prescaler" type="xs:unsignedByte" />
+        <xs:element minOccurs="0" name="period" type="xs:int" />
+        <xs:element minOccurs="0" name="duty1" type="xs:int" />
+        <xs:element minOccurs="0" name="duty2" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="configTimer2Response">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
   <xs:element name="getHardwareState">
     <xs:complexType>
       <xs:sequence />

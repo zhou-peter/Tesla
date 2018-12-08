@@ -53,8 +53,15 @@ namespace TeslaCommunication
 
         [OperationContract]
         void setEnabled(byte num, bool enabled);
+        [OperationContract]
+        void configTimer(byte num, byte prescaler, int period, int duty);
+        [OperationContract]
+        void configTimer2(byte num, byte prescaler, int period, int duty1, int duty2);
 
         [OperationContract]
         HardwareState getHardwareState();
+
+
+
     }
 }
