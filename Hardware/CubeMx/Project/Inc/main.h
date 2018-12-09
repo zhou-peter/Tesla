@@ -58,7 +58,7 @@
 /* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/
-#define TIMER_PERIOD 24000
+#define TIMER_PERIOD 5000
 #define TIMER_PRESCALER 1
 
 /* ########################## Assert Selection ############################## */

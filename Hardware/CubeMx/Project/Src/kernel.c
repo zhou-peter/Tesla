@@ -1,15 +1,7 @@
 #include "kernel.h"
 #include "stm32f1xx_hal_tim.h"
 
-void changeTimerState(u8 num, u8 enabled){
-	bool en=FALSE;
-	if (enabled>0)
-		en=TRUE;
 
-	if (num==1){
-		State.TimerF1=en;
-	}
-}
 
 bool getBool(u8* ptr){
 	bool result=FALSE;
@@ -48,17 +40,23 @@ TIM_HandleTypeDef* getTimer(u8 num){
 }
 
 
-void setTimer(u8 num, bool state){
+volatile void setTimer(u8 num, bool state){
 	TIM_HandleTypeDef* t = getTimer(num);
 	if (state==TRUE){
 		HAL_TIM_Base_Start(t);
 		if (num==1){
 			HAL_TIM_PWM_Start(t, TIM_CHANNEL_1);
+		}else if (num==4){
+			HAL_TIM_PWM_Start(t, TIM_CHANNEL_3);
+			HAL_TIM_PWM_Start(t, TIM_CHANNEL_4);
 		}
 	}else{
 		HAL_TIM_Base_Stop(t);
 		if (num==1){
 			HAL_TIM_PWM_Stop(t, TIM_CHANNEL_1);
+		}else if (num==4){
+			HAL_TIM_PWM_Stop(t, TIM_CHANNEL_3);
+			HAL_TIM_PWM_Stop(t, TIM_CHANNEL_4);
 		}
 	}
 

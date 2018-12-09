@@ -64,6 +64,7 @@ namespace TeslaDesktopClient
             updateView();
         }
 
+        object checkBoxLock = new object();
 
         private void TimerAlive_Tick(object sender, EventArgs e)
         {
@@ -80,8 +81,13 @@ namespace TeslaDesktopClient
                         labelLed.BackColor = Color.Transparent;
                     }
 
-                    checkBox1.SetChecked(currentState.enabledF1);
-
+                    lock (checkBoxLock)
+                    {
+                        checkBox1.SetChecked(currentState.enabledF1);
+                        checkBox2.SetChecked(currentState.enabledF2);
+                        checkBox3.SetChecked(currentState.enabledF3);
+                        checkBox4.SetChecked(currentState.enabledF4);
+                    }
                 }
             });
         }
@@ -106,14 +112,45 @@ namespace TeslaDesktopClient
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            client.setEnabled(1, checkBox1.Checked);
+            lock (checkBoxLock)
+            {
+                client.setEnabled(1, checkBox1.Checked);
+            }
         }
+
+
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            lock (checkBoxLock)
+            {
+                client.setEnabled(2, checkBox2.Checked);
+            }
+        }
+
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        {
+            lock (checkBoxLock)
+            {
+                client.setEnabled(3, checkBox3.Checked);
+            }
+        }
+
+        private void checkBox4_CheckedChanged(object sender, EventArgs e)
+        {
+            lock (checkBoxLock)
+            {
+                client.setEnabled(4, checkBox4.Checked);
+            }
+        }
+
 
         private void button3_Click(object sender, EventArgs e)
         {
             client.configTimer(1, 1, 1000, 500);
             
         }
+
+
 
     }
 }
