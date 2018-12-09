@@ -27,7 +27,6 @@ u16 getU16(u8* ptr){
 }
 
 
-
 TIM_HandleTypeDef* getTimer(u8 num){
 	switch(num){
 		case 1:
@@ -109,12 +108,20 @@ void packet_04_timer_config(u8* body, u16 bodySize){
 		HAL_TIM_Base_Stop(t);
 	}
 
+	//HAL_TIM_Base_Init()
+	TIM_TypeDef* timerInstance=htim1.Instance;
 
+	timerInstance->ARR = period;
+	timerInstance->CCR1 = duty;
+
+/*
 	t->Init.Prescaler=prescaler;
 	t->Init.Period=period;
 	HAL_TIM_Base_Init(t);
 
+
 	if (num==1){
+
 		TIM_OC_InitTypeDef sConfigOC;
 		sConfigOC.OCMode = TIM_OCMODE_PWM1;
 		sConfigOC.Pulse = duty;
@@ -129,7 +136,7 @@ void packet_04_timer_config(u8* body, u16 bodySize){
 			_Error_Handler(__FILE__, __LINE__);
 		}
 	}
-
+*/
 
 	//если таймер был в рабочем состояние,
 	//опять запускаем его
