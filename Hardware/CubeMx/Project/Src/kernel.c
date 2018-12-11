@@ -19,11 +19,11 @@ u16 getU16(u8* ptr){
 }
 
 #define	FEATURE_CARRIER 1
+#define	FEATURE_BUNCH 2
 
+volatile void setFeatureState(u8 feature, bool state){
 
-volatile void setFeatureState(u8 num, bool state){
-
-	if (num==1){
+	if (feature==FEATURE_CARRIER){
 		State.F1=state;
 		if (state==TRUE){
 			HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
@@ -32,11 +32,16 @@ volatile void setFeatureState(u8 num, bool state){
 			HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
 			HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_1);
 		}
-	}else if (num==2){
+	}else if (feature==FEATURE_BUNCH){
 		State.F2=state;
-	}else if (num==3){
+		if (state==TRUE){
+			HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
+		}else{
+			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_2);
+		}
+	}else if (feature==3){
 		State.F3=state;
-	}else if (num==4){
+	}else if (feature==4){
 		State.F4=state;
 	}
 
