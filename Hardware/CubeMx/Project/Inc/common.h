@@ -45,10 +45,10 @@ typedef enum
 
 typedef struct
 {
-bool TimerF1:8;
-bool TimerF2:8;
-bool TimerF3:8;
-bool TimerF4:8;
+bool F1:8;
+bool F2:8;
+bool F3:8;
+bool F4:8;
 bool LedLight:8;
 bool Tmp1:8;
 bool Tmp2:8;

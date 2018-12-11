@@ -204,7 +204,7 @@ void processPacket(){
 	u16 bodySize=Uart.rxPackSize-EMPTY_SIZE;
 	switch(packetCode){
 		case 0x02:
-			packet_02_timer_enable(body, bodySize);
+			packet_02_feature_change(body, bodySize);
 			break;
 		case 0x04:
 			packet_04_timer_config(body, bodySize);

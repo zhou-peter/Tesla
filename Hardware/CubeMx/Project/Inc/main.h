@@ -60,6 +60,8 @@
 /* Private define ------------------------------------------------------------*/
 #define TIMER_PERIOD 5000
 #define TIMER_PRESCALER 1
+#define BUNCH 60000
+#define BUNCH_DUTY 20000
 
 /* ########################## Assert Selection ############################## */
 /**
