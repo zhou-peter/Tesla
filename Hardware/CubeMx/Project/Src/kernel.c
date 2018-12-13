@@ -18,6 +18,14 @@ u16 getU16(u8* ptr){
 	return result;
 }
 
+void resetTimerCounters(){
+	htim4.Instance->CNT=0;
+	htim2.Instance->CNT=0;
+	htim1.Instance->CNT=0;
+	htim3.Instance->CNT=0;
+}
+
+
 #define	FEATURE_CARRIER 1
 #define	FEATURE_BUNCH 	2
 #define	FEATURE_GAP 	3
@@ -27,6 +35,7 @@ volatile void setFeatureState(u8 feature, bool state){
 	if (feature==FEATURE_CARRIER){
 		State.F1=state;
 		if (state==TRUE){
+			resetTimerCounters();
 			HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
 			HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
 		}else{
@@ -36,6 +45,7 @@ volatile void setFeatureState(u8 feature, bool state){
 	}else if (feature==FEATURE_BUNCH){
 		State.F2=state;
 		if (state==TRUE){
+			resetTimerCounters();
 			HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
 		}else{
 			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_2);
@@ -43,6 +53,7 @@ volatile void setFeatureState(u8 feature, bool state){
 	}else if (feature==FEATURE_GAP){
 		State.F3=state;
 		if (state==TRUE){
+			resetTimerCounters();
 			HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
 			HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
 		}else{
