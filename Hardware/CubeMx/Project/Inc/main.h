@@ -58,10 +58,10 @@
 /* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/
-#define TIMER_PERIOD 6000
+#define TIMER_PERIOD 5000
 #define TIMER_PRESCALER 1
-#define BUNCH 60000 + (10-1)
-#define BUNCH_DUTY 24000
+#define BUNCH 60011
+#define BUNCH_DUTY 20000
 
 /* ########################## Assert Selection ############################## */
 /**
