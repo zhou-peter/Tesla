@@ -212,7 +212,7 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 1 */
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = TIMER_PRESCALER;
+  htim1.Init.Prescaler = 1;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim1.Init.Period = TIMER_PERIOD;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -358,7 +358,7 @@ static void MX_TIM3_Init(void)
   htim3.Instance = TIM3;
   htim3.Init.Prescaler = 1;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = TIMER_PERIOD/2;
+  htim3.Init.Period = GAP_PERIOD;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
@@ -386,16 +386,15 @@ static void MX_TIM3_Init(void)
   {
     Error_Handler();
   }
-  int pulse=(TIMER_PERIOD/4);
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = pulse;
+  sConfigOC.Pulse = GAP_START;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_LOW;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_3) != HAL_OK)
   {
     Error_Handler();
   }
-  sConfigOC.Pulse = pulse + 500;
+  sConfigOC.Pulse = GAP_STOP;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_4) != HAL_OK)
   {
