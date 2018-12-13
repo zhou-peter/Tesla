@@ -30,6 +30,8 @@ void resetTimerCounters(){
 #define	FEATURE_BUNCH 			2
 #define	FEATURE_GAP				3
 #define	FEATURE_GAP_INDENT		6
+#define	FEATURE_SKIP_HIGH		4
+#define	FEATURE_SKIP_LOW		5
 
 volatile void setFeatureState(u8 feature, bool state){
 
@@ -70,6 +72,26 @@ volatile void setFeatureState(u8 feature, bool state){
 		}else{
 			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_3);
 			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_4);
+		}
+	}else if (feature==FEATURE_SKIP_HIGH){
+		State.F4=state;
+		if (state==TRUE){
+			resetTimerCounters();
+			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
+			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+		}else{
+			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_3);
+			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_4);
+		}
+	}else if (feature==FEATURE_SKIP_LOW){
+		State.F5=state;
+		if (state==TRUE){
+			resetTimerCounters();
+			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+		}else{
+			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
+			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
 		}
 	}
 
