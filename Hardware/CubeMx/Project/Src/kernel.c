@@ -26,9 +26,10 @@ void resetTimerCounters(){
 }
 
 
-#define	FEATURE_CARRIER 1
-#define	FEATURE_BUNCH 	2
-#define	FEATURE_GAP 	3
+#define	FEATURE_CARRIER 		1
+#define	FEATURE_BUNCH 			2
+#define	FEATURE_GAP				3
+#define	FEATURE_GAP_INDENT		6
 
 volatile void setFeatureState(u8 feature, bool state){
 
@@ -60,23 +61,18 @@ volatile void setFeatureState(u8 feature, bool state){
 			HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_3);
 			HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_4);
 		}
-	}else if (feature==4){
-		State.F4=state;
+	}else if (feature==FEATURE_GAP_INDENT){
+		State.F6=state;
+		if (state==TRUE){
+			resetTimerCounters();
+			HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
+			HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
+		}else{
+			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_3);
+			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_4);
+		}
 	}
 
-}
-
-bool getFeatureState(num){
-	if (num==1){
-		return State.F1;
-	}else if (num==2){
-		return State.F2;
-	}else if (num==3){
-		return State.F3;
-	}else if (num==4){
-		return State.F4;
-	}
-	return FALSE;
 }
 
 

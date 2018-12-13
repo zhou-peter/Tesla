@@ -14,8 +14,8 @@ namespace TeslaCommunication.Packets
         public byte enabled_f4;
 
         public byte led_light;
-        public byte tmp1;
-        public byte tmp2;
+        public byte enabled_f5;
+        public byte enabled_f6;
         public byte tmp3;
     }
 }

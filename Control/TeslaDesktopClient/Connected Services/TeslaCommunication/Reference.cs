@@ -30,6 +30,10 @@ namespace TeslaDesktopClient.TeslaCommunication {
         
         private bool enabledF4Field;
         
+        private bool enabledF5Field;
+        
+        private bool enabledF6Field;
+        
         private bool ledLightField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
@@ -90,6 +94,32 @@ namespace TeslaDesktopClient.TeslaCommunication {
                 if ((this.enabledF4Field.Equals(value) != true)) {
                     this.enabledF4Field = value;
                     this.RaisePropertyChanged("enabledF4");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public bool enabledF5 {
+            get {
+                return this.enabledF5Field;
+            }
+            set {
+                if ((this.enabledF5Field.Equals(value) != true)) {
+                    this.enabledF5Field = value;
+                    this.RaisePropertyChanged("enabledF5");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public bool enabledF6 {
+            get {
+                return this.enabledF6Field;
+            }
+            set {
+                if ((this.enabledF6Field.Equals(value) != true)) {
+                    this.enabledF6Field = value;
+                    this.RaisePropertyChanged("enabledF6");
                 }
             }
         }

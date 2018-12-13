@@ -50,8 +50,8 @@ bool F2:8;
 bool F3:8;
 bool F4:8;
 bool LedLight:8;
-bool Tmp1:8;
-bool Tmp2:8;
+bool F5:8;
+bool F6:8;
 bool Tmp3:8;
 } State_t;
 

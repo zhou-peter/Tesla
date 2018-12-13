@@ -87,6 +87,8 @@ namespace TeslaDesktopClient
                         checkBox2.SetChecked(currentState.enabledF2);
                         checkBox3.SetChecked(currentState.enabledF3);
                         checkBox4.SetChecked(currentState.enabledF4);
+                        checkBox5.SetChecked(currentState.enabledF5);
+                        checkBox6.SetChecked(currentState.enabledF6);
                     }
                 }
             });
@@ -110,6 +112,11 @@ namespace TeslaDesktopClient
             return 0;
         }
 
+        private void button3_Click(object sender, EventArgs e)
+        {
+            client.configTimer(1, 1, 1000, 500);
+
+        }
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             lock (checkBoxLock)
@@ -143,14 +150,21 @@ namespace TeslaDesktopClient
             }
         }
 
-
-        private void button3_Click(object sender, EventArgs e)
+        private void checkBox5_CheckedChanged(object sender, EventArgs e)
         {
-            client.configTimer(1, 1, 1000, 500);
-            
+            lock (checkBoxLock)
+            {
+                client.setEnabled(5, checkBox5.Checked);
+            }
         }
 
-
+        private void checkBox6_CheckedChanged(object sender, EventArgs e)
+        {
+            lock (checkBoxLock)
+            {
+                client.setEnabled(6, checkBox6.Checked);
+            }
+        }
 
     }
 }

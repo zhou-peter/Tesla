@@ -6,6 +6,8 @@
       <xs:element name="enabledF2" type="xs:boolean" />
       <xs:element name="enabledF3" type="xs:boolean" />
       <xs:element name="enabledF4" type="xs:boolean" />
+      <xs:element name="enabledF5" type="xs:boolean" />
+      <xs:element name="enabledF6" type="xs:boolean" />
       <xs:element name="ledLight" type="xs:boolean" />
     </xs:sequence>
   </xs:complexType>
