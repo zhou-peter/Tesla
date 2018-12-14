@@ -10,31 +10,30 @@ namespace TeslaCommunication.Packets
     /// </summary>
     public class Packet_04 : AbstractOutPacket
     {
+
         struct body
         {
-            public byte num;
-            public byte prescaler;
-            public ushort period;
-            public ushort duty;
-            public ushort duty2;//для проломов
+            public ushort periodCarrier;
+            public ushort periodGap;
+            public ushort onGap;
+            public ushort offGap;
+            public ushort periodBunch;
+            public ushort dutyBunch;
+            public ushort startGap;
+            public ushort stopGap;
+            public ushort startHigh;
+            public ushort stopHigh;
+            public ushort startLow;
+            public ushort stopLow;
         }
 
-        body b;
 
-        public Packet_04(byte num, byte prescaler, int period, int duty)
+        private body b;
+        public Packet_04(TimersConfiguration timersConfiguration)
         {
-            Command = 4;
-            BodySize = 6;
-            b = new body();
-            b.num = num;
-            b.prescaler = prescaler;
-            b.period = (ushort)period;
-            b.duty = (ushort)duty;
-        }
-        public Packet_04(byte num, byte prescaler, int period, int duty, int duty2)
-            : this(num, prescaler, period, duty)
-        {
-            b.duty2 = (ushort)duty2;
+            Command = 4;            
+            b = Utils.Create<body>(timersConfiguration);
+            BodySize = getSize(b);
         }
 
         public override IEnumerable<byte> GetBody()

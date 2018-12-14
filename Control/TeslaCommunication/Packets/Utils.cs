@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -58,6 +59,41 @@ namespace TeslaCommunication.Packets
             txBuf[5 + bodySize] = (byte)(crc ^ (byte)0xAA);
 
             return txBuf;
+        }
+
+
+
+        public static T Create<T>(object from)
+        {
+            Type t = typeof(T);
+            object to = Activator.CreateInstance<T>();
+            foreach (var toPropInfo in to.GetType().GetProperties())
+            {
+                PropertyInfo fromPropInfo = from.GetType().GetProperty(toPropInfo.Name);
+                if (fromPropInfo != null)
+                {
+                    toPropInfo.SetValue(to, fromPropInfo.GetValue(from, null), null);
+                }
+            }
+
+            foreach (var toFieldInfo in to.GetType().GetFields())
+            {
+                FieldInfo fromPropInfo = from.GetType().GetField(toFieldInfo.Name);
+                if (fromPropInfo != null)
+                {
+                    object value = fromPropInfo.GetValue(from);
+                    if (toFieldInfo.FieldType == typeof(UInt16))
+                    {
+                        toFieldInfo.SetValue(to, Convert.ToUInt16(value));
+                    }
+                    else
+                    {
+                        toFieldInfo.SetValue(to, value);
+                    }                    
+                }
+            }
+
+            return (T)to;
         }
     }
 }

@@ -147,6 +147,215 @@ namespace TeslaDesktopClient.TeslaCommunication {
         }
     }
     
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="TimersConfiguration", Namespace="http://schemas.datacontract.org/2004/07/TeslaCommunication")]
+    [System.SerializableAttribute()]
+    public partial class TimersConfiguration : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        private int dutyBunchField;
+        
+        private int offGapField;
+        
+        private int onGapField;
+        
+        private int periodBunchField;
+        
+        private int periodCarrierField;
+        
+        private int periodGapField;
+        
+        private int startGapField;
+        
+        private int startHighField;
+        
+        private int startLowField;
+        
+        private int stopGapField;
+        
+        private int stopHighField;
+        
+        private int stopLowField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public int dutyBunch {
+            get {
+                return this.dutyBunchField;
+            }
+            set {
+                if ((this.dutyBunchField.Equals(value) != true)) {
+                    this.dutyBunchField = value;
+                    this.RaisePropertyChanged("dutyBunch");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public int offGap {
+            get {
+                return this.offGapField;
+            }
+            set {
+                if ((this.offGapField.Equals(value) != true)) {
+                    this.offGapField = value;
+                    this.RaisePropertyChanged("offGap");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public int onGap {
+            get {
+                return this.onGapField;
+            }
+            set {
+                if ((this.onGapField.Equals(value) != true)) {
+                    this.onGapField = value;
+                    this.RaisePropertyChanged("onGap");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public int periodBunch {
+            get {
+                return this.periodBunchField;
+            }
+            set {
+                if ((this.periodBunchField.Equals(value) != true)) {
+                    this.periodBunchField = value;
+                    this.RaisePropertyChanged("periodBunch");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public int periodCarrier {
+            get {
+                return this.periodCarrierField;
+            }
+            set {
+                if ((this.periodCarrierField.Equals(value) != true)) {
+                    this.periodCarrierField = value;
+                    this.RaisePropertyChanged("periodCarrier");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public int periodGap {
+            get {
+                return this.periodGapField;
+            }
+            set {
+                if ((this.periodGapField.Equals(value) != true)) {
+                    this.periodGapField = value;
+                    this.RaisePropertyChanged("periodGap");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public int startGap {
+            get {
+                return this.startGapField;
+            }
+            set {
+                if ((this.startGapField.Equals(value) != true)) {
+                    this.startGapField = value;
+                    this.RaisePropertyChanged("startGap");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public int startHigh {
+            get {
+                return this.startHighField;
+            }
+            set {
+                if ((this.startHighField.Equals(value) != true)) {
+                    this.startHighField = value;
+                    this.RaisePropertyChanged("startHigh");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public int startLow {
+            get {
+                return this.startLowField;
+            }
+            set {
+                if ((this.startLowField.Equals(value) != true)) {
+                    this.startLowField = value;
+                    this.RaisePropertyChanged("startLow");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public int stopGap {
+            get {
+                return this.stopGapField;
+            }
+            set {
+                if ((this.stopGapField.Equals(value) != true)) {
+                    this.stopGapField = value;
+                    this.RaisePropertyChanged("stopGap");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public int stopHigh {
+            get {
+                return this.stopHighField;
+            }
+            set {
+                if ((this.stopHighField.Equals(value) != true)) {
+                    this.stopHighField = value;
+                    this.RaisePropertyChanged("stopHigh");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public int stopLow {
+            get {
+                return this.stopLowField;
+            }
+            set {
+                if ((this.stopLowField.Equals(value) != true)) {
+                    this.stopLowField = value;
+                    this.RaisePropertyChanged("stopLow");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="http://STM32TeslaCommunication", ConfigurationName="TeslaCommunication.ICommunicationProtocol")]
     public interface ICommunicationProtocol {
@@ -181,23 +390,19 @@ namespace TeslaDesktopClient.TeslaCommunication {
         [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/setEnabled", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/setEnabledResponse")]
         System.Threading.Tasks.Task setEnabledAsync(byte num, bool enabled);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/configTimer", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/configTimerResponse")]
-        void configTimer(byte num, byte prescaler, int period, int duty);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/configTimer", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/configTimerResponse")]
-        System.Threading.Tasks.Task configTimerAsync(byte num, byte prescaler, int period, int duty);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/configTimer2", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/configTimer2Response")]
-        void configTimer2(byte num, byte prescaler, int period, int duty1, int duty2);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/configTimer2", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/configTimer2Response")]
-        System.Threading.Tasks.Task configTimer2Async(byte num, byte prescaler, int period, int duty1, int duty2);
-        
         [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/getHardwareState", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/getHardwareStateResponse")]
         TeslaDesktopClient.TeslaCommunication.HardwareState getHardwareState();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/getHardwareState", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/getHardwareStateResponse")]
         System.Threading.Tasks.Task<TeslaDesktopClient.TeslaCommunication.HardwareState> getHardwareStateAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/setTimersConfiguration", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/setTimersConfigurationRespo" +
+            "nse")]
+        void setTimersConfiguration(TeslaDesktopClient.TeslaCommunication.TimersConfiguration timersConfiguration);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/setTimersConfiguration", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/setTimersConfigurationRespo" +
+            "nse")]
+        System.Threading.Tasks.Task setTimersConfigurationAsync(TeslaDesktopClient.TeslaCommunication.TimersConfiguration timersConfiguration);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -267,28 +472,20 @@ namespace TeslaDesktopClient.TeslaCommunication {
             return base.Channel.setEnabledAsync(num, enabled);
         }
         
-        public void configTimer(byte num, byte prescaler, int period, int duty) {
-            base.Channel.configTimer(num, prescaler, period, duty);
-        }
-        
-        public System.Threading.Tasks.Task configTimerAsync(byte num, byte prescaler, int period, int duty) {
-            return base.Channel.configTimerAsync(num, prescaler, period, duty);
-        }
-        
-        public void configTimer2(byte num, byte prescaler, int period, int duty1, int duty2) {
-            base.Channel.configTimer2(num, prescaler, period, duty1, duty2);
-        }
-        
-        public System.Threading.Tasks.Task configTimer2Async(byte num, byte prescaler, int period, int duty1, int duty2) {
-            return base.Channel.configTimer2Async(num, prescaler, period, duty1, duty2);
-        }
-        
         public TeslaDesktopClient.TeslaCommunication.HardwareState getHardwareState() {
             return base.Channel.getHardwareState();
         }
         
         public System.Threading.Tasks.Task<TeslaDesktopClient.TeslaCommunication.HardwareState> getHardwareStateAsync() {
             return base.Channel.getHardwareStateAsync();
+        }
+        
+        public void setTimersConfiguration(TeslaDesktopClient.TeslaCommunication.TimersConfiguration timersConfiguration) {
+            base.Channel.setTimersConfiguration(timersConfiguration);
+        }
+        
+        public System.Threading.Tasks.Task setTimersConfigurationAsync(TeslaDesktopClient.TeslaCommunication.TimersConfiguration timersConfiguration) {
+            return base.Channel.setTimersConfigurationAsync(timersConfiguration);
         }
     }
 }

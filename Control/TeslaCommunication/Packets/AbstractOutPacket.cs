@@ -24,6 +24,11 @@ namespace TeslaCommunication.Packets
             return 0;
         }
 
+        protected int getSize(object obj)
+        {
+            return Marshal.SizeOf(obj);
+        }
+
         protected byte[] StructureToByteArray(object obj)
         {
             int len = Marshal.SizeOf(obj);

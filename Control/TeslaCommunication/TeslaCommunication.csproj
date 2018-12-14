@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HardwareState.cs" />
     <Compile Include="ICommunicationProtocol.cs" />
     <Compile Include="Packets\AbstractOutPacket.cs" />
     <Compile Include="Packets\AbstractInPacket.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Packets\Utils.cs" />
     <Compile Include="service.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TimersConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

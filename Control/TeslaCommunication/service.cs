@@ -51,6 +51,11 @@ namespace TeslaCommunication
         // Host the service within this EXE console application.
         public static void Main()
         {
+            /*
+            TimersConfiguration tc = new TimersConfiguration();
+            tc.dutyBunch = 100;
+            var a = new Packet_04(tc).GetBody();
+            */
             // Create a ServiceHost for the CalculatorService type.
             using (serviceHost = new TeslaServiceHost())
             {
@@ -237,18 +242,12 @@ namespace TeslaCommunication
             return new HardwareState(mgr.currentState);
         }
 
-        public void configTimer(byte num, byte prescaler, int period, int duty)
+        public void setTimersConfiguration(TimersConfiguration timersConfiguration)
         {
-            Packet_04 p4 = new Packet_04(num, prescaler, period, duty);
-            mgr.packetsToSend.Enqueue(p4);
-        }
+            Packet_04 p4 = new Packet_04(timersConfiguration);
+            mgr.packetsToSend.Enqueue(p4);           
 
-        public void configTimer2(byte num, byte prescaler, int period, int duty1, int duty2)
-        {
-            Packet_04 p4 = new Packet_04(num, prescaler, period, duty1, duty2);
-            mgr.packetsToSend.Enqueue(p4);
         }
-
     }
 
 }

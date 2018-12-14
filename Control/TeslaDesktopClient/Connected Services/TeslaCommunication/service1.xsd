@@ -12,4 +12,21 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="HardwareState" nillable="true" type="tns:HardwareState" />
+  <xs:complexType name="TimersConfiguration">
+    <xs:sequence>
+      <xs:element name="dutyBunch" type="xs:int" />
+      <xs:element name="offGap" type="xs:int" />
+      <xs:element name="onGap" type="xs:int" />
+      <xs:element name="periodBunch" type="xs:int" />
+      <xs:element name="periodCarrier" type="xs:int" />
+      <xs:element name="periodGap" type="xs:int" />
+      <xs:element name="startGap" type="xs:int" />
+      <xs:element name="startHigh" type="xs:int" />
+      <xs:element name="startLow" type="xs:int" />
+      <xs:element name="stopGap" type="xs:int" />
+      <xs:element name="stopHigh" type="xs:int" />
+      <xs:element name="stopLow" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TimersConfiguration" nillable="true" type="tns:TimersConfiguration" />
 </xs:schema>
