@@ -112,11 +112,6 @@ namespace TeslaDesktopClient
             return 0;
         }
 
-        private void button3_Click(object sender, EventArgs e)
-        {
-            client.configTimer(1, 1, 1000, 500);
-
-        }
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             lock (checkBoxLock)
@@ -166,5 +161,21 @@ namespace TeslaDesktopClient
             }
         }
 
+
+
+
+
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            TimersConfiguration tc = new TimersConfiguration();
+            tc.offGap = 1;
+            tc.periodBunch = 33;
+            tc.startGap = 44;
+            tc.periodBunch = 23;
+            TeslaCommunication.TimersConfiguration tc2 = new TeslaCommunication.TimersConfiguration();
+            Utils.Copy(tc, tc2);
+
+        }
     }
 }

@@ -76,9 +76,12 @@ namespace TeslaComClient
         {
             client.setEnabled((byte)timerNumber, enabled);
         }
-        
-       
-        
 
+        public void SetTimersConfiguraion(TimersConfiguration timersConfiguration)
+        {
+            TeslaCommunication.TimersConfiguration tc = new TeslaCommunication.TimersConfiguration();
+            Utils.Copy(timersConfiguration, tc);
+            client.setTimersConfiguration(tc);
+        }
     }
 }

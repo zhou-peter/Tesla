@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TimersConfiguration.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="HardwareState.cs" />
     <Compile Include="Main.cs" />
