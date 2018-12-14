@@ -24,6 +24,18 @@ void resetTimerCounters(){
 	htim1.Instance->CNT=0;
 	htim3.Instance->CNT=0;
 }
+void stopTimers(){
+  HAL_TIM_Base_Stop(&htim2);
+  HAL_TIM_Base_Stop(&htim3);
+  HAL_TIM_Base_Stop(&htim4);
+  HAL_TIM_Base_Stop(&htim1);
+}
+void startTimers(){
+  HAL_TIM_Base_Start(&htim2);
+  HAL_TIM_Base_Start(&htim3);
+  HAL_TIM_Base_Start(&htim4);
+  HAL_TIM_Base_Start(&htim1);
+}
 
 
 #define	FEATURE_CARRIER 		1
@@ -106,54 +118,48 @@ void packet_02_feature_change(u8* body, u16 bodySize){
 	setFeatureState(num, enable);
 }
 void packet_04_timer_config(u8* body, u16 bodySize){
-	u8 num = *(body);
-	u8 prescaler = *(body+1);
-	u16 period = getU16(body+2);
-	u16 duty = getU16(body+4);
-/*
-	TIM_HandleTypeDef* t = getTimer(num);
-	bool timerState=getFeatureState(num);
-	//если таймер в рабочем состояние, останавливаем его
-	if (timerState==TRUE){
-		HAL_TIM_Base_Stop(t);
-	}
+	stopTimers();
+	resetTimerCounters();
+	/*
+Период несущей
+Период проломов
+Старт пролома
+Стоп пролома
+Период пачки
+Скважность пачки
+Отступ пролома в рабочей области пачки
+Стоп пролома в рабочей области пачки
+Отступ пропуск верхнее плечо
+Стоп пропуска верхнего плеча
+Отступ пропуск нижнее плечо
+Стоп пропуска нижнее плеча
+	*/
+	u8* p=body;
+	htim1.Instance->ARR=getU16(p);
+	p+=2;
+	htim1.Instance->CCR1=getU16(p);
+	htim3.Instance->ARR=getU16(p);
+	p+=2;
+	htim3.Instance->CCR3=getU16(p);
+	p+=2;
+	htim3.Instance->CCR4=getU16(p);
+	p+=2;
+	htim2.Instance->ARR=getU16(p);
+	htim4.Instance->ARR=getU16(p);
+	p+=2;
+	htim4.Instance->CCR2=getU16(p);
+	p+=2;
+	htim4.Instance->CCR3=getU16(p);
+	p+=2;
+	htim4.Instance->CCR4=getU16(p);
+	p+=2;
+	htim2.Instance->CCR3=getU16(p);
+	p+=2;
+	htim2.Instance->CCR4=getU16(p);
+	p+=2;
+	htim2.Instance->CCR1=getU16(p);
+	p+=2;
+	htim2.Instance->CCR2=getU16(p);
 
-	//HAL_TIM_Base_Init()
-	TIM_TypeDef* timerInstance=htim1.Instance;
-
-	timerInstance->ARR = period;
-	timerInstance->CCR1 = duty;
-
-
-	t->Init.Prescaler=prescaler;
-	t->Init.Period=period;
-	HAL_TIM_Base_Init(t);
-
-
-	if (num==1){
-
-		TIM_OC_InitTypeDef sConfigOC;
-		sConfigOC.OCMode = TIM_OCMODE_PWM1;
-		sConfigOC.Pulse = duty;
-		sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-		sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;
-		sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-		sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
-		sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
-
-		if (HAL_TIM_PWM_ConfigChannel(t, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
-		{
-			_Error_Handler(__FILE__, __LINE__);
-		}
-	}
-
-
-	//если таймер был в рабочем состояние,
-	//опять запускаем его
-	if (timerState==TRUE){
-		HAL_TIM_Base_Start(t);
-	}
-
-*/
-
+	startTimers();
 }
