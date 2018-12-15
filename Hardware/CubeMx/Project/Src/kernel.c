@@ -46,11 +46,13 @@ void startTimers(){
 #define	FEATURE_SKIP_LOW		5
 
 volatile void setFeatureState(u8 feature, bool state){
+	stopTimers();
+	resetTimerCounters();
+
 
 	if (feature==FEATURE_CARRIER){
 		State.F1=state;
 		if (state==TRUE){
-			resetTimerCounters();
 			HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
 			HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
 		}else{
@@ -60,7 +62,6 @@ volatile void setFeatureState(u8 feature, bool state){
 	}else if (feature==FEATURE_BUNCH){
 		State.F2=state;
 		if (state==TRUE){
-			resetTimerCounters();
 			HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
 		}else{
 			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_2);
@@ -68,7 +69,6 @@ volatile void setFeatureState(u8 feature, bool state){
 	}else if (feature==FEATURE_GAP){
 		State.F3=state;
 		if (state==TRUE){
-			resetTimerCounters();
 			HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
 			HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
 		}else{
@@ -78,7 +78,6 @@ volatile void setFeatureState(u8 feature, bool state){
 	}else if (feature==FEATURE_GAP_INDENT){
 		State.F6=state;
 		if (state==TRUE){
-			resetTimerCounters();
 			HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
 			HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
 		}else{
@@ -88,7 +87,6 @@ volatile void setFeatureState(u8 feature, bool state){
 	}else if (feature==FEATURE_SKIP_HIGH){
 		State.F4=state;
 		if (state==TRUE){
-			resetTimerCounters();
 			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
 			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
 		}else{
@@ -98,7 +96,6 @@ volatile void setFeatureState(u8 feature, bool state){
 	}else if (feature==FEATURE_SKIP_LOW){
 		State.F5=state;
 		if (state==TRUE){
-			resetTimerCounters();
 			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
 			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
 		}else{
@@ -107,6 +104,13 @@ volatile void setFeatureState(u8 feature, bool state){
 		}
 	}
 
+	if (State.F1==TRUE){
+		HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
+		HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_1);
+		HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+		HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
+	}
+	startTimers();
 }
 
 
