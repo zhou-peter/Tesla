@@ -19,6 +19,8 @@ namespace TeslaComClient
         public bool enabledF2 { get; set; }
         public bool enabledF3 { get; set; }
         public bool enabledF4 { get; set; }
+        public bool enabledF5 { get; set; }
+        public bool enabledF6 { get; set; }
         public bool ledLight { get; set; }
 
 
