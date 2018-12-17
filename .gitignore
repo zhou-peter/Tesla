@@ -12,6 +12,8 @@ Control/TeslaComClient/obj/*
 Control/TeslaComClient/bin/*
 Control/TeslaDesktopClient/obj/*
 Control/TeslaDesktopClient/bin/*
+Control/Excel2013Control/obj/*
+Control/Excel2013Control/bin/*
 *.bak
 Control/TeslaCommunication/.vs/*
 Control/~$ExcelControl.xlsm
