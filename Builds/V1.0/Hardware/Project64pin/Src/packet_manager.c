@@ -254,11 +254,11 @@ void vTimerStateSend(TimerHandle_t xTimer )
 	createOutPacketAndSend(0x01, 8, &State);
 	sentTimes++;
 	if (sentTimes>5){
-		HAL_GPIO_WritePin(GPIOA,GPIO_PIN_12, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8, GPIO_PIN_RESET);
 		State.LedLight=FALSE;
 		//HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_12);
 	}else{
-		HAL_GPIO_WritePin(GPIOA,GPIO_PIN_12, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8, GPIO_PIN_SET);
 		State.LedLight=TRUE;
 	}
 	if (sentTimes>10){
