@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using Excel = Microsoft.Office.Interop.Excel;
 using Office = Microsoft.Office.Core;
 using Microsoft.Office.Tools.Excel;
+using Excel2013Control.TeslaCommunication;
 
 namespace Excel2013Control
 {
@@ -18,7 +19,6 @@ namespace Excel2013Control
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
         {
         }
-
         public Excel.Worksheet GetActiveWorksheet()
         {
             return Application.ActiveSheet;

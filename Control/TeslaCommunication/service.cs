@@ -181,6 +181,7 @@ namespace TeslaCommunication
                 }
                 catch (Exception ex)
                 {
+                    sp = null;
                     MessageBox.Show(ex.ToString());
                     return false;
                 }

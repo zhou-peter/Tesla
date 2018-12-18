@@ -36,7 +36,17 @@
         {
             this.tab1 = this.Factory.CreateRibbonTab();
             this.group1 = this.Factory.CreateRibbonGroup();
-            this.button1 = this.Factory.CreateRibbonButton();
+            this.buttonService = this.Factory.CreateRibbonButton();
+            this.separator1 = this.Factory.CreateRibbonSeparator();
+            this.buttonPort = this.Factory.CreateRibbonButton();
+            this.checkBox1 = this.Factory.CreateRibbonCheckBox();
+            this.checkBox2 = this.Factory.CreateRibbonCheckBox();
+            this.checkBox3 = this.Factory.CreateRibbonCheckBox();
+            this.separator2 = this.Factory.CreateRibbonSeparator();
+            this.checkBox4 = this.Factory.CreateRibbonCheckBox();
+            this.checkBox5 = this.Factory.CreateRibbonCheckBox();
+            this.checkBox6 = this.Factory.CreateRibbonCheckBox();
+            this.buttonConfig = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.SuspendLayout();
@@ -50,15 +60,81 @@
             // 
             // group1
             // 
-            this.group1.Items.Add(this.button1);
-            this.group1.Label = "group1";
+            this.group1.Items.Add(this.buttonService);
+            this.group1.Items.Add(this.buttonPort);
+            this.group1.Items.Add(this.buttonConfig);
+            this.group1.Items.Add(this.separator1);
+            this.group1.Items.Add(this.checkBox1);
+            this.group1.Items.Add(this.checkBox2);
+            this.group1.Items.Add(this.checkBox3);
+            this.group1.Items.Add(this.separator2);
+            this.group1.Items.Add(this.checkBox4);
+            this.group1.Items.Add(this.checkBox5);
+            this.group1.Items.Add(this.checkBox6);
+            this.group1.Label = "TeslaCommunication";
             this.group1.Name = "group1";
             // 
-            // button1
+            // buttonService
             // 
-            this.button1.Label = "button1";
-            this.button1.Name = "button1";
-            this.button1.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button1_Click);
+            this.buttonService.Label = "Подключиться к службе";
+            this.buttonService.Name = "buttonService";
+            this.buttonService.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.buttonService_Click);
+            // 
+            // separator1
+            // 
+            this.separator1.Name = "separator1";
+            // 
+            // buttonPort
+            // 
+            this.buttonPort.Label = "Открыть порт";
+            this.buttonPort.Name = "buttonPort";
+            this.buttonPort.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.buttonPort_Click);
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.Label = "1 Несущая";
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.checkBox1_Click);
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.Label = "2 Пачки";
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.checkBox2_Click);
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.Label = "3 Проломы";
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.checkBox3_Click);
+            // 
+            // separator2
+            // 
+            this.separator2.Name = "separator2";
+            // 
+            // checkBox4
+            // 
+            this.checkBox4.Label = "4 Отступ проломов";
+            this.checkBox4.Name = "checkBox4";
+            this.checkBox4.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.checkBox4_Click);
+            // 
+            // checkBox5
+            // 
+            this.checkBox5.Label = "5 Пропуск верхнего плеча";
+            this.checkBox5.Name = "checkBox5";
+            this.checkBox5.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.checkBox5_Click);
+            // 
+            // checkBox6
+            // 
+            this.checkBox6.Label = "6 Пропуск нижнего плеча";
+            this.checkBox6.Name = "checkBox6";
+            this.checkBox6.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.checkBox6_Click);
+            // 
+            // buttonConfig
+            // 
+            this.buttonConfig.Label = "Отправить конфигурацию";
+            this.buttonConfig.Name = "buttonConfig";
+            this.buttonConfig.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.buttonConfig_Click);
             // 
             // ToolBox
             // 
@@ -78,7 +154,17 @@
 
         internal Microsoft.Office.Tools.Ribbon.RibbonTab tab1;
         internal Microsoft.Office.Tools.Ribbon.RibbonGroup group1;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton button1;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton buttonService;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton buttonPort;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton buttonConfig;
+        internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator1;
+        internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox checkBox1;
+        internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox checkBox2;
+        internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox checkBox3;
+        internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator2;
+        internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox checkBox4;
+        internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox checkBox5;
+        internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox checkBox6;
     }
 
     partial class ThisRibbonCollection
