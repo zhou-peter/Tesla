@@ -37,8 +37,9 @@
             this.tab1 = this.Factory.CreateRibbonTab();
             this.group1 = this.Factory.CreateRibbonGroup();
             this.buttonService = this.Factory.CreateRibbonButton();
-            this.separator1 = this.Factory.CreateRibbonSeparator();
             this.buttonPort = this.Factory.CreateRibbonButton();
+            this.buttonConfig = this.Factory.CreateRibbonButton();
+            this.separator1 = this.Factory.CreateRibbonSeparator();
             this.checkBox1 = this.Factory.CreateRibbonCheckBox();
             this.checkBox2 = this.Factory.CreateRibbonCheckBox();
             this.checkBox3 = this.Factory.CreateRibbonCheckBox();
@@ -46,7 +47,7 @@
             this.checkBox4 = this.Factory.CreateRibbonCheckBox();
             this.checkBox5 = this.Factory.CreateRibbonCheckBox();
             this.checkBox6 = this.Factory.CreateRibbonCheckBox();
-            this.buttonConfig = this.Factory.CreateRibbonButton();
+            this.labelBlink = this.Factory.CreateRibbonLabel();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.SuspendLayout();
@@ -71,6 +72,7 @@
             this.group1.Items.Add(this.checkBox4);
             this.group1.Items.Add(this.checkBox5);
             this.group1.Items.Add(this.checkBox6);
+            this.group1.Items.Add(this.labelBlink);
             this.group1.Label = "TeslaCommunication";
             this.group1.Name = "group1";
             // 
@@ -80,15 +82,21 @@
             this.buttonService.Name = "buttonService";
             this.buttonService.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.buttonService_Click);
             // 
-            // separator1
-            // 
-            this.separator1.Name = "separator1";
-            // 
             // buttonPort
             // 
             this.buttonPort.Label = "Открыть порт";
             this.buttonPort.Name = "buttonPort";
             this.buttonPort.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.buttonPort_Click);
+            // 
+            // buttonConfig
+            // 
+            this.buttonConfig.Label = "Отправить конфигурацию";
+            this.buttonConfig.Name = "buttonConfig";
+            this.buttonConfig.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.buttonConfig_Click);
+            // 
+            // separator1
+            // 
+            this.separator1.Name = "separator1";
             // 
             // checkBox1
             // 
@@ -130,11 +138,10 @@
             this.checkBox6.Name = "checkBox6";
             this.checkBox6.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.checkBox6_Click);
             // 
-            // buttonConfig
+            // labelBlink
             // 
-            this.buttonConfig.Label = "Отправить конфигурацию";
-            this.buttonConfig.Name = "buttonConfig";
-            this.buttonConfig.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.buttonConfig_Click);
+            this.labelBlink.Label = "[ ● ]";
+            this.labelBlink.Name = "labelBlink";
             // 
             // ToolBox
             // 
@@ -165,6 +172,7 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox checkBox4;
         internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox checkBox5;
         internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox checkBox6;
+        internal Microsoft.Office.Tools.Ribbon.RibbonLabel labelBlink;
     }
 
     partial class ThisRibbonCollection

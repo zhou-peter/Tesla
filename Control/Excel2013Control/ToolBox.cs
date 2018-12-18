@@ -6,6 +6,8 @@ using Excel = Microsoft.Office.Interop.Excel;
 using Microsoft.Office.Tools.Ribbon;
 using Microsoft.Office.Interop.Excel;
 using Excel2013Control.TeslaCommunication;
+using System.Windows.Forms;
+using System.Drawing;
 
 namespace Excel2013Control
 {
@@ -13,18 +15,27 @@ namespace Excel2013Control
     {
         private void ToolBox_Load(object sender, RibbonUIEventArgs e)
         {
-            GetClient();
+            client = new CommunicationProtocolClient();
+            this.Close += ToolBox_Close;
             updateView();
         }
-        CommunicationProtocolClient client;
-        public CommunicationProtocolClient GetClient()
+
+        private void ToolBox_Close(object sender, EventArgs e)
         {
-            if (client == null)
+            if (timerAlive != null)
             {
-                client = new CommunicationProtocolClient();
+                timerAlive.Stop();
             }
-            return client;
+            if (client != null)
+            {
+                client.Close();
+            }
         }
+
+        Timer timerAlive;
+        HardwareState currentState;
+        CommunicationProtocolClient client;
+
 
         Worksheet Activesheet
         {
@@ -42,6 +53,18 @@ namespace Excel2013Control
             checkBox5.Enabled = enabled;
             checkBox6.Enabled = enabled;
         }
+
+        void setCheckboxState(RibbonCheckBox checkBox, bool check)
+        {
+            if (checkBox.Checked != check)
+            {
+                checkBox.Enabled = false;
+                checkBox.Checked = check;
+                checkBox.Enabled = true;
+            }
+        }
+
+
         void updateView()
         {
             if (isServiceConnected())
@@ -91,6 +114,10 @@ namespace Excel2013Control
             try
             {
                 client.Open();
+                timerAlive = new Timer();
+                timerAlive.Interval = 500;
+                timerAlive.Tick += TimerAlive_Tick;
+                timerAlive.Start();
             }
             catch (Exception ex)
             {
@@ -115,6 +142,29 @@ namespace Excel2013Control
             updateView();
         }
 
+        private void TimerAlive_Tick(object sender, EventArgs e)
+        {
+            currentState = client.getHardwareState();
+            if (currentState != null)
+            {
+                if (currentState.ledLight)
+                {
+                    labelBlink.Visible =true;
+                }
+                else
+                {
+                    labelBlink.Visible = false;
+                }
+                setCheckboxState(checkBox1, currentState.enabledF1);
+                setCheckboxState(checkBox2, currentState.enabledF2);
+                setCheckboxState(checkBox3, currentState.enabledF3);
+                setCheckboxState(checkBox4, currentState.enabledF4);
+                setCheckboxState(checkBox5, currentState.enabledF5);
+                setCheckboxState(checkBox6, currentState.enabledF6);
+            }
+        }
+
+
         private void buttonConfig_Click(object sender, RibbonControlEventArgs e)
         {
 
@@ -122,32 +172,32 @@ namespace Excel2013Control
 
         private void checkBox1_Click(object sender, RibbonControlEventArgs e)
         {
-
+            client.setEnabled(1, checkBox1.Checked);
         }
 
         private void checkBox2_Click(object sender, RibbonControlEventArgs e)
         {
-
+            client.setEnabled(2, checkBox1.Checked);
         }
 
         private void checkBox3_Click(object sender, RibbonControlEventArgs e)
         {
-
+            client.setEnabled(3, checkBox1.Checked);
         }
 
         private void checkBox4_Click(object sender, RibbonControlEventArgs e)
         {
-
+            client.setEnabled(4, checkBox1.Checked);
         }
 
         private void checkBox5_Click(object sender, RibbonControlEventArgs e)
         {
-
+            client.setEnabled(5, checkBox1.Checked);
         }
 
         private void checkBox6_Click(object sender, RibbonControlEventArgs e)
         {
-
+            client.setEnabled(6, checkBox1.Checked);
         }
     }
 }
