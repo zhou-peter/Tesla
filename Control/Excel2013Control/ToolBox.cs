@@ -113,6 +113,10 @@ namespace Excel2013Control
         {
             try
             {
+                if (client.State == System.ServiceModel.CommunicationState.Faulted)
+                {
+                    client = new CommunicationProtocolClient();
+                }
                 client.Open();
                 timerAlive = new Timer();
                 timerAlive.Interval = 500;
@@ -123,7 +127,7 @@ namespace Excel2013Control
             {
                 showMessage(ex.ToString());
             }
-           
+
             updateView();
         }
 
@@ -149,7 +153,7 @@ namespace Excel2013Control
             {
                 if (currentState.ledLight)
                 {
-                    labelBlink.Visible =true;
+                    labelBlink.Visible = true;
                 }
                 else
                 {
@@ -167,7 +171,70 @@ namespace Excel2013Control
 
         private void buttonConfig_Click(object sender, RibbonControlEventArgs e)
         {
+            TimersConfiguration timersConfig = new TimersConfiguration();
 
+            Range range = Activesheet.Range["T6:U17"];
+
+
+            try
+            {
+                int rowStart = range.Row;
+                int colStart = range.Column;
+                for (int rowIndex = 0; rowIndex < 12; rowIndex++)
+                {
+                    Range valueRange = Activesheet.Cells[rowStart + rowIndex, colStart];
+                    int value = (int)valueRange.Value;
+
+                    Range keyRange = Activesheet.Cells[rowStart + rowIndex, colStart + 1];
+                    String key = keyRange.Value.ToString();
+
+                    switch (key)
+                    {
+                        case "AZQ9":
+                            timersConfig.periodCarrier = value;
+                            break;
+                        case "AZQ8":
+                            timersConfig.periodGap = value;
+                            break;
+                        case "AZQ22":
+                            timersConfig.onGap = value;
+                            break;
+                        case "AZQ23":
+                            timersConfig.offGap = value;
+                            break;
+                        case "AZQ13":
+                            timersConfig.periodBunch = value;
+                            break;
+                        case "AZQ16":
+                            timersConfig.dutyBunch = value;
+                            break;
+                        case "AZQ27":
+                            timersConfig.startGap = value;
+                            break;
+                        case "AZQ28":
+                            timersConfig.stopGap = value;
+                            break;
+                        case "AZQ35":
+                            timersConfig.startHigh = value;
+                            break;
+                        case "AZQ36":
+                            timersConfig.stopHigh = value;
+                            break;
+                        case "AZQ43":
+                            timersConfig.startLow = value;
+                            break;
+                        case "AZQ44":
+                            timersConfig.stopLow = value;
+                            break;
+                    }
+
+                }
+                client.setTimersConfiguration(timersConfig);
+            }
+            catch (Exception ex)
+            {
+                showMessage(ex.ToString());
+            }
         }
 
         private void checkBox1_Click(object sender, RibbonControlEventArgs e)
