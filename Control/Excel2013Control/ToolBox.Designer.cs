@@ -122,19 +122,19 @@
             // 
             // checkBox4
             // 
-            this.checkBox4.Label = "4 Отступ проломов";
+            this.checkBox4.Label = "4 Пропуск верхнего плеча";
             this.checkBox4.Name = "checkBox4";
             this.checkBox4.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.checkBox4_Click);
             // 
             // checkBox5
             // 
-            this.checkBox5.Label = "5 Пропуск верхнего плеча";
+            this.checkBox5.Label = "5 Пропуск нижнего плеча";
             this.checkBox5.Name = "checkBox5";
             this.checkBox5.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.checkBox5_Click);
             // 
             // checkBox6
             // 
-            this.checkBox6.Label = "6 Пропуск нижнего плеча";
+            this.checkBox6.Label = "6 Бездействия проломов";
             this.checkBox6.Name = "checkBox6";
             this.checkBox6.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.checkBox6_Click);
             // 

@@ -135,7 +135,7 @@ namespace Excel2013Control
         {
             try
             {
-                string portName = Activesheet.Range["A1"].Value2;
+                string portName = Activesheet.Range["A2"].Value2;
                 client.Connect(portName);
             }
             catch (Exception ex)
@@ -244,27 +244,27 @@ namespace Excel2013Control
 
         private void checkBox2_Click(object sender, RibbonControlEventArgs e)
         {
-            client.setEnabled(2, checkBox1.Checked);
+            client.setEnabled(2, checkBox2.Checked);
         }
 
         private void checkBox3_Click(object sender, RibbonControlEventArgs e)
         {
-            client.setEnabled(3, checkBox1.Checked);
+            client.setEnabled(3, checkBox3.Checked);
         }
 
         private void checkBox4_Click(object sender, RibbonControlEventArgs e)
         {
-            client.setEnabled(4, checkBox1.Checked);
+            client.setEnabled(4, checkBox4.Checked);
         }
 
         private void checkBox5_Click(object sender, RibbonControlEventArgs e)
         {
-            client.setEnabled(5, checkBox1.Checked);
+            client.setEnabled(5, checkBox5.Checked);
         }
 
         private void checkBox6_Click(object sender, RibbonControlEventArgs e)
         {
-            client.setEnabled(6, checkBox1.Checked);
+            client.setEnabled(6, checkBox6.Checked);
         }
     }
 }
