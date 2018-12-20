@@ -31,9 +31,9 @@ void stopTimers(){
   HAL_TIM_Base_Stop(&htim1);
 }
 void startTimers(){
-  HAL_TIM_Base_Start(&htim2);
-  HAL_TIM_Base_Start(&htim3);
-  HAL_TIM_Base_Start(&htim4);
+  //HAL_TIM_Base_Start(&htim2);
+  //HAL_TIM_Base_Start(&htim3);
+  //HAL_TIM_Base_Start(&htim4);
   HAL_TIM_Base_Start(&htim1);
 }
 
@@ -105,12 +105,8 @@ volatile void setFeatureState(u8 feature, bool state){
 	}
 
 	if (State.F1==TRUE){
-		HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
-		HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_1);
-		HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-		HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
+		startTimers();
 	}
-	startTimers();
 }
 
 
