@@ -1,6 +1,6 @@
 #include "kernel.h"
 #include "stm32f1xx_hal_tim.h"
-
+#include "stm32f1xx_hal_tim_ex.h"
 
 
 bool getBool(u8* ptr){
@@ -47,17 +47,47 @@ void startTimers(){
 
 volatile void setFeatureState(u8 feature, bool state){
 	stopTimers();
-	resetTimerCounters();
 
+	TIM_TypeDef* t1=htim1.Instance;
 
 	if (feature==FEATURE_CARRIER){
 		State.F1=state;
 		if (state==TRUE){
 			HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
 			HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
+			//Восстанавливаем другие таймеры
+			if (State.F2==TRUE){
+				HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
+			}
+			if (State.F3==TRUE){
+				HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
+				HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
+			}
+			if (State.F4==TRUE){
+				HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
+				HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+			}
+			if (State.F5==TRUE){
+				HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+				HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+			}
+			if (State.F6==TRUE){
+				HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
+				HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
+			}
 		}else{
 			HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
 			HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_1);
+			//При отключение основного, отключем всё
+			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_2);
+			HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_3);
+			HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_4);
+			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_3);
+			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_4);
+			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_3);
+			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_4);
+			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
+			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
 		}
 	}else if (feature==FEATURE_BUNCH){
 		State.F2=state;
@@ -107,6 +137,17 @@ volatile void setFeatureState(u8 feature, bool state){
 	if (State.F1==TRUE){
 		startTimers();
 	}
+
+/*
+	u16 cntT1=htim1.Instance->CNT;
+	u16 cntT2=htim2.Instance->CNT;
+	u16 cntT3=htim3.Instance->CNT;
+	u16 cntT4=htim4.Instance->CNT;
+	ITM_SendChar('A');
+*/
+	stopTimers();
+	resetTimerCounters();
+	startTimers();
 }
 
 
