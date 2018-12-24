@@ -30,7 +30,20 @@ namespace TeslaDesktopClient
             }
             if (client != null)
             {
-                client.Close();
+                try
+                {
+                    client.Close();
+                }
+                catch (System.ServiceModel.EndpointNotFoundException)
+                {
+
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.ToString());
+                }
+                
             }        
         }
         Timer timerAlive;
@@ -68,30 +81,49 @@ namespace TeslaDesktopClient
 
         private void TimerAlive_Tick(object sender, EventArgs e)
         {
-            currentState = client.getHardwareState();
-            this.Invoke(() => {
-                if (currentState != null)
+            if (client.State == System.ServiceModel.CommunicationState.Faulted)
+            {
+                this.Close();
+                return;
+            }
+            if (client.State == System.ServiceModel.CommunicationState.Opened)
+            {
+                try
                 {
-                    if (currentState.ledLight)
-                    {
-                        labelLed.BackColor = Color.Blue;
-                    }
-                    else
-                    {
-                        labelLed.BackColor = Color.Transparent;
-                    }
-
-                    lock (checkBoxLock)
-                    {
-                        checkBox1.SetChecked(currentState.enabledF1);
-                        checkBox2.SetChecked(currentState.enabledF2);
-                        checkBox3.SetChecked(currentState.enabledF3);
-                        checkBox4.SetChecked(currentState.enabledF4);
-                        checkBox5.SetChecked(currentState.enabledF5);
-                        checkBox6.SetChecked(currentState.enabledF6);
-                    }
+                    currentState = client.getHardwareState();
                 }
-            });
+                catch (Exception)
+                {
+                    this.Close();
+                    return;
+                }
+                
+                
+                this.Invoke(() => {
+                    if (currentState != null)
+                    {
+                        if (currentState.ledLight)
+                        {
+                            labelLed.BackColor = Color.Blue;
+                        }
+                        else
+                        {
+                            labelLed.BackColor = Color.Transparent;
+                        }
+
+                        lock (checkBoxLock)
+                        {
+                            checkBox1.SetChecked(currentState.enabledF1);
+                            checkBox2.SetChecked(currentState.enabledF2);
+                            checkBox3.SetChecked(currentState.enabledF3);
+                            checkBox4.SetChecked(currentState.enabledF4);
+                            checkBox5.SetChecked(currentState.enabledF5);
+                            checkBox6.SetChecked(currentState.enabledF6);
+                        }
+                    }
+                });
+            }
+
         }
         void updateView()
         {

@@ -211,10 +211,13 @@ namespace TeslaCommunication
 
         public void Disconnect()
         {
-            if (sp != null && sp.IsOpen)
+            if (sp != null)
             {
-                sp.BaseStream.Flush();
-                sp.Close();
+                if (sp.IsOpen) { 
+                    sp.BaseStream.Flush();
+                    sp.Close();
+                }
+                sp.Dispose();
             }
             sp = null;
         }
