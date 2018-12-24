@@ -59,9 +59,10 @@ bool Tmp3:8;
 typedef struct
 {
 u8 halRxBuf:8;
-u32 tmp0:16;
+u32 tmp0:24;
 RxStates RxState:4;
 TxStates TxState:4;//16
+u32 tmp1:24;
 u16 rxIndex;
 u16 txIndex;
 u16 txBufSize;

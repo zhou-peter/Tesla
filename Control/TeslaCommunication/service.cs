@@ -182,7 +182,7 @@ namespace TeslaCommunication
                 catch (Exception ex)
                 {
                     sp = null;
-                    MessageBox.Show(ex.ToString());
+                    Console.WriteLine(ex.ToString());
                     return false;
                 }
             }
@@ -205,7 +205,7 @@ namespace TeslaCommunication
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(), "On receive");
+                Console.WriteLine(ex.ToString(), "On receive");
             }
         }
 

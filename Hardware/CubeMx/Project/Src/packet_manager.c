@@ -12,7 +12,8 @@
 
 extern void PM_TxComplete(DMA_HandleTypeDef * hdma);
 extern void vTimerStateSend(TimerHandle_t xTimer);
-
+extern void vTimerCallback( TimerHandle_t xTimer );
+extern void processPacket();
 #define STATE_SEND_PERIOD 200
 //если за 0.5 секунды не получен пакет, что-то не так
 #define RECEIVE_TIMEOUT 500
@@ -29,20 +30,12 @@ void resetRxBuf(){
 
 TimerHandle_t xTimerState;
 TimerHandle_t xTimerTimeout;
-void vTimerCallback( TimerHandle_t xTimer )
-{
-	if (Uart.RxState==WaitingStart){
-		stopTimer();
-		resetTImer();
-		return;
-	}
-	Uart.RxState=ReceivingTimeout;
-}
+
 
 
 void PM_Init(){
 	Uart.RxState=WaitingStart;
-	HAL_UART_Receive_IT(&huart1, &Uart, 1);
+
 	xTimerTimeout = xTimerCreate
               ( /* Just a text name, not used by the RTOS
                 kernel. */
@@ -64,35 +57,36 @@ void PM_Init(){
 	xTimerState=xTimerCreate("Tx State", pdMS_TO_TICKS(STATE_SEND_PERIOD), pdTRUE, ( void * ) 0,
 			vTimerStateSend);
 	hdma_usart1_tx.XferCpltCallback=PM_TxComplete;
+
+	HAL_UART_Receive_IT(&huart1, &Uart, 1);
 }
 
 void startTimer(){
+	xTimerReset(xTimerTimeout,100);
     /* Start the timer.  No block time is specified, and
     even if one was it would be ignored because the RTOS
     scheduler has not yet been started. */
-    if( xTimerStart( xTimerTimeout, 0 ) != pdPASS )
+    if( xTimerStart( xTimerTimeout, 0  ) != pdPASS )
     {
         /* The timer could not be set into the Active
         state. */
     	configASSERT( xTimerTimeout );
     }
-}
+    }
 void stopTimer(){
-	xTimerStop( xTimerTimeout,0);
+	if (xTimerStop( xTimerTimeout,100)==pdFAIL){
+		configASSERT(xTimerTimeout);
+	}
 }
-void resetTImer(){
-	xTimerReset(xTimerTimeout,0);
-}
+
 void restartTimer(){
 	stopTimer();
-	resetTImer();
 	startTimer();
 }
 void create_rx_err(u8 err){
 	Uart.rxIndex=0;
 	Uart.RxState=WaitingStart;
 	stopTimer();
-	resetTImer();
 	if (Uart.TxState==TxIdle){
 		createOutPacketAndSend(0x03,1,&err);
 	}
@@ -108,6 +102,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	onRx();
 	HAL_UART_Receive_IT(&huart1, &Uart, 1);
 }
+void vTimerCallback( TimerHandle_t xTimer )
+{
+	Uart.RxState=ReceivingTimeout;
+}
 void PM_Task(){
     if( xTimerStart( xTimerState, pdMS_TO_TICKS(1000) ) != pdPASS )
     {
@@ -118,7 +116,7 @@ void PM_Task(){
 
 	while(1){
 
-			i=0;
+		i=0;
 		if (Uart.RxState==WaitingStart){
 			//ждем новый пакет
 			//статус может изменить таймер таймаута
@@ -127,13 +125,16 @@ void PM_Task(){
 				osDelay(4);
 				continue;
 			}
-			else if (Uart.rxIndex>0 && Uart.rxBuf[0]!=PACKET_START){
-				create_rx_err(0x01);
-				continue;
-			}else{
-				Uart.RxState=ReceivingSize;
-				Uart.rxPackSize=0;
-				restartTimer();
+			else if (Uart.rxIndex>0)
+			{
+				if (Uart.rxBuf[0]!=PACKET_START){
+					create_rx_err(0x01);
+					continue;
+				}else{
+					Uart.RxState=ReceivingSize;
+					Uart.rxPackSize=0;
+					restartTimer();
+				}
 			}
 		}else if (Uart.RxState==ReceivingSize){
 			if (Uart.rxIndex>3){
@@ -161,6 +162,7 @@ void PM_Task(){
 				osDelay(10);
 			}
 		}else if (Uart.RxState==ReceivingTimeout){
+			stopTimer();
 			create_rx_err(0x06);
 		}else if(Uart.RxState==RxChecking){
 			//останавливаем таймер таймаута так как пришел весь пакет
@@ -177,7 +179,6 @@ void PM_Task(){
 					xorCRC==Uart.rxBuf[Uart.rxPackSize-1]){
 				Uart.RxState=RxProcessing;
 				stopTimer();
-				resetTImer();
 				processPacket();
 
 			}else{//crc error
@@ -213,7 +214,7 @@ void processPacket(){
 	Uart.RxState=RxProcessed;
 }
 
-void createOutPacketAndSend(u8 command, u8 bodySize, u8* bodyData){
+void createOutPacketAndSend(u8 command, u16 bodySize, u8* bodyData){
 
 	if (Uart.TxState==Sending)
 	{
