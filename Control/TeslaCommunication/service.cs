@@ -182,7 +182,7 @@ namespace TeslaCommunication
                 catch (Exception ex)
                 {
                     sp = null;
-                    MessageBox.Show(ex.ToString());
+                    Console.WriteLine(ex.ToString());
                     return false;
                 }
             }
@@ -205,16 +205,19 @@ namespace TeslaCommunication
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(), "On receive");
+                Console.WriteLine(ex.ToString(), "On receive");
             }
         }
 
         public void Disconnect()
         {
-            if (sp != null && sp.IsOpen)
+            if (sp != null)
             {
-                sp.BaseStream.Flush();
-                sp.Close();
+                if (sp.IsOpen) { 
+                    sp.BaseStream.Flush();
+                    sp.Close();
+                }
+                sp.Dispose();
             }
             sp = null;
         }

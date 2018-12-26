@@ -12,7 +12,7 @@
 
 extern void PM_Init();
 extern void PM_Task();
-extern void createOutPacketAndSend(u8 command, u8 bodySize, u8* bodyData);
+extern void createOutPacketAndSend(u8 command, u16 bodySize, u8* bodyData);
 extern void onRx();
 
 #endif /* PACKET_MANAGER_H_ */

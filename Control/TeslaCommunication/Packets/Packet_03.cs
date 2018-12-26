@@ -20,7 +20,7 @@ namespace TeslaCommunication.Packets
 
         public override void Process()
         {
-            Console.WriteLine("Ошибка приема пакета железом: " + getErrorCode());
+            Console.WriteLine(DateTime.Now.ToString("HH:mm:ss ") + "Ошибка приема пакета железом: " + getErrorCode());
         }
 
         private string getErrorCode()

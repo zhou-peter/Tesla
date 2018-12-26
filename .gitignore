@@ -17,3 +17,4 @@ Control/Excel2013Control/bin/*
 *.bak
 Control/TeslaCommunication/.vs/*
 Control/~$ExcelControl.xlsm
+Control/TeslaComClient/~$ExcelControl.xlsm
