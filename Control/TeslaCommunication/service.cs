@@ -157,7 +157,7 @@ namespace TeslaCommunication
             mgr.Dispose();
         }
 
-
+        string comPortName;
         public bool Connect(string comPortName)
         {
             //If we are not connected, connect
@@ -172,10 +172,10 @@ namespace TeslaCommunication
                     sp.DataBits = 8;
                     sp.StopBits = StopBits.Two;
                     sp.Open();
-                    //sp.DtrEnable = true;
+                    this.comPortName = comPortName;
                     sp.BaseStream.Flush();
                     sp.DataReceived += new SerialDataReceivedEventHandler(sp_DataReceived);
-
+                    sp.ErrorReceived += Sp_ErrorReceived;
                     mgr.SetDataChannel(sp);
                     return true;
                 }
@@ -189,6 +189,11 @@ namespace TeslaCommunication
             return false;
         }
 
+        private void Sp_ErrorReceived(object sender, SerialErrorReceivedEventArgs e)
+        {
+            Disconnect();
+            Connect(comPortName);
+        }
 
         void sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
