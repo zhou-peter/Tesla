@@ -90,12 +90,12 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define TIMER_PERIOD 5001
-#define BUNCH 60023
-#define BUNCH_DUTY 20000
-#define GAP_PERIOD 2500
-#define GAP_START 2000
-#define GAP_STOP 2200
+#define TIMER_PERIOD 201
+#define BUNCH 6059
+#define BUNCH_DUTY 3015
+#define GAP_PERIOD 100
+#define GAP_START 75
+#define GAP_STOP 85
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
