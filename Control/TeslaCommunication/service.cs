@@ -191,8 +191,10 @@ namespace TeslaCommunication
 
         private void Sp_ErrorReceived(object sender, SerialErrorReceivedEventArgs e)
         {
-            Disconnect();
-            Connect(comPortName);
+            Console.WriteLine("Serial port error " + e.EventType.ToString());
+            //Disconnect();
+            //Thread.Sleep(500);
+            //Connect(comPortName);
         }
 
         void sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
