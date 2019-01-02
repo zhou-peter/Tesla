@@ -203,12 +203,22 @@ void processPacket(){
 	u8 packetCode=Uart.rxBuf[3];
 	u8* body=&Uart.rxBuf[BODY_OFFSET];
 	u16 bodySize=Uart.rxPackSize-EMPTY_SIZE;
+
 	switch(packetCode){
 		case 0x02:
 			packet_02_feature_change(body, bodySize);
 			break;
 		case 0x04:
 			packet_04_timer_config(body, bodySize);
+			break;
+		case 0x06:
+			packet_06_search(body, bodySize);
+			break;
+		case 0x08:
+			packet_08_search_stop(body, bodySize);
+			break;
+		case 0x0A:
+			packet_0A_just_generate(body, bodySize);
 			break;
 	}
 	Uart.RxState=RxProcessed;
@@ -252,7 +262,7 @@ void createOutPacketAndSend(u8 command, u16 bodySize, u8* bodyData){
 u8 sentTimes=0;
 void vTimerStateSend(TimerHandle_t xTimer )
 {
-	createOutPacketAndSend(0x01, 8, &State);
+	createOutPacketAndSend(0x01, 10, &State);
 	sentTimes++;
 	if (sentTimes>5){
 		HAL_GPIO_WritePin(GPIOA,GPIO_PIN_12, GPIO_PIN_RESET);

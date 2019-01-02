@@ -83,5 +83,20 @@ namespace TeslaComClient
             Utils.Copy(timersConfiguration, tc);
             client.setTimersConfiguration(tc);
         }
+
+
+        public void StartSearch(int start, int stop, int delay)
+        {
+            client.searchStart(start, stop, delay);
+        }
+        public void StopSearch()
+        {
+            client.searchStop();
+        }
+        public void GeneratePWM(int period)
+        {
+            client.searchGeneratePWM(period);
+        }
+
     }
 }

@@ -22,6 +22,10 @@ namespace TeslaComClient.TeslaCommunication {
         [System.NonSerializedAttribute()]
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
+        private int currentPeriodField;
+        
+        private TeslaComClient.TeslaCommunication.HardwareState.SearchState currentStateField;
+        
         private bool enabledF1Field;
         
         private bool enabledF2Field;
@@ -43,6 +47,32 @@ namespace TeslaComClient.TeslaCommunication {
             }
             set {
                 this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public int currentPeriod {
+            get {
+                return this.currentPeriodField;
+            }
+            set {
+                if ((this.currentPeriodField.Equals(value) != true)) {
+                    this.currentPeriodField = value;
+                    this.RaisePropertyChanged("currentPeriod");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public TeslaComClient.TeslaCommunication.HardwareState.SearchState currentState {
+            get {
+                return this.currentStateField;
+            }
+            set {
+                if ((this.currentStateField.Equals(value) != true)) {
+                    this.currentStateField = value;
+                    this.RaisePropertyChanged("currentState");
+                }
             }
         }
         
@@ -144,6 +174,20 @@ namespace TeslaComClient.TeslaCommunication {
             if ((propertyChanged != null)) {
                 propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
+        }
+        
+        [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+        [System.Runtime.Serialization.DataContractAttribute(Name="HardwareState.SearchState", Namespace="http://schemas.datacontract.org/2004/07/TeslaCommunication")]
+        public enum SearchState : int {
+            
+            [System.Runtime.Serialization.EnumMemberAttribute()]
+            Idle = 0,
+            
+            [System.Runtime.Serialization.EnumMemberAttribute()]
+            Searching = 1,
+            
+            [System.Runtime.Serialization.EnumMemberAttribute()]
+            Generating = 2,
         }
     }
     
@@ -403,6 +447,24 @@ namespace TeslaComClient.TeslaCommunication {
         [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/setTimersConfiguration", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/setTimersConfigurationRespo" +
             "nse")]
         System.Threading.Tasks.Task setTimersConfigurationAsync(TeslaComClient.TeslaCommunication.TimersConfiguration timersConfiguration);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/searchStart", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/searchStartResponse")]
+        void searchStart(int periodStart, int periodStop, int delay);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/searchStart", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/searchStartResponse")]
+        System.Threading.Tasks.Task searchStartAsync(int periodStart, int periodStop, int delay);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/searchStop", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/searchStopResponse")]
+        void searchStop();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/searchStop", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/searchStopResponse")]
+        System.Threading.Tasks.Task searchStopAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/searchGeneratePWM", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/searchGeneratePWMResponse")]
+        void searchGeneratePWM(int period);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/searchGeneratePWM", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/searchGeneratePWMResponse")]
+        System.Threading.Tasks.Task searchGeneratePWMAsync(int period);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -486,6 +548,30 @@ namespace TeslaComClient.TeslaCommunication {
         
         public System.Threading.Tasks.Task setTimersConfigurationAsync(TeslaComClient.TeslaCommunication.TimersConfiguration timersConfiguration) {
             return base.Channel.setTimersConfigurationAsync(timersConfiguration);
+        }
+        
+        public void searchStart(int periodStart, int periodStop, int delay) {
+            base.Channel.searchStart(periodStart, periodStop, delay);
+        }
+        
+        public System.Threading.Tasks.Task searchStartAsync(int periodStart, int periodStop, int delay) {
+            return base.Channel.searchStartAsync(periodStart, periodStop, delay);
+        }
+        
+        public void searchStop() {
+            base.Channel.searchStop();
+        }
+        
+        public System.Threading.Tasks.Task searchStopAsync() {
+            return base.Channel.searchStopAsync();
+        }
+        
+        public void searchGeneratePWM(int period) {
+            base.Channel.searchGeneratePWM(period);
+        }
+        
+        public System.Threading.Tasks.Task searchGeneratePWMAsync(int period) {
+            return base.Channel.searchGeneratePWMAsync(period);
         }
     }
 }

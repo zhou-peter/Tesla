@@ -259,6 +259,24 @@ namespace TeslaCommunication
             mgr.packetsToSend.Enqueue(p4);           
 
         }
+
+        public void searchStart(int periodStart, int periodStop, int delay)
+        {
+            Packet_06 p = new Packet_06(periodStart,periodStop,delay);
+            mgr.packetsToSend.Enqueue(p);
+        }
+
+        public void searchStop()
+        {
+            Packet_08 p = new Packet_08();
+            mgr.packetsToSend.Enqueue(p);
+        }
+
+        public void searchGeneratePWM(int period)
+        {
+            Packet_0A p = new Packet_0A(period);
+            mgr.packetsToSend.Enqueue(p);
+        }
     }
 
 }

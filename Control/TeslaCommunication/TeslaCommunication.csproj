@@ -66,6 +66,9 @@
     <Compile Include="Packets\AbstractOutPacket.cs" />
     <Compile Include="Packets\AbstractInPacket.cs" />
     <Compile Include="PacketsManager.cs" />
+    <Compile Include="Packets\Packet_08.cs" />
+    <Compile Include="Packets\Packet_0A.cs" />
+    <Compile Include="Packets\Packet_06.cs" />
     <Compile Include="Packets\Packet_04.cs" />
     <Compile Include="Packets\Packet_03.cs" />
     <Compile Include="Packets\Packet_01.cs" />

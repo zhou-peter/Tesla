@@ -40,8 +40,14 @@ typedef enum
 typedef enum
 {
 	SearchIdle=0,
-	Searching
+	Searching,
+	Generating
 } SearcherStates;
+typedef enum
+{
+	SearchPeriodIncrease=0,
+	SearchPeriodDecrease
+} SearchDirections;
 
 
 typedef struct
@@ -53,7 +59,8 @@ bool F4:8;
 bool LedLight:8;
 bool F5:8;
 bool F6:8;
-SearcherStates SearcherState:8;
+SearcherStates SearcherState:4;
+SearchDirections SearchDirection:4;
 u16	CurrentSearchPeriod:16;
 } State_t;
 

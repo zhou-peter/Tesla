@@ -35,5 +35,14 @@ namespace TeslaCommunication
         [OperationContract]
         void setTimersConfiguration(TimersConfiguration timersConfiguration);
 
+        [OperationContract]
+        void searchStart(int periodStart, int periodStop, int delay);
+
+        [OperationContract]
+        void searchStop();
+
+        [OperationContract]
+        void searchGeneratePWM(int period);
+
     }
 }

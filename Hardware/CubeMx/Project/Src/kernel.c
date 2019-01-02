@@ -212,8 +212,19 @@ void vTimerSearcher(TimerHandle_t xTimer )
 {
 	if (State.SearcherState==Searching){
 		u32 current=htim15.Instance->ARR;
-		if (current<SearchState.SearchTo){
+		bool continueSearch=FALSE;
+		if (current<SearchState.SearchTo &&
+				State.SearchDirection==SearchPeriodIncrease){
 			current++;
+			continueSearch=TRUE;
+		}
+		if (current>SearchState.SearchTo &&
+				State.SearchDirection==SearchPeriodDecrease){
+			current--;
+			continueSearch=TRUE;
+		}
+
+		if (continueSearch==TRUE){
 			htim15.Instance->ARR=current;
 			htim15.Instance->CCR1=current/2;
 			State.CurrentSearchPeriod=current;
@@ -224,7 +235,7 @@ void vTimerSearcher(TimerHandle_t xTimer )
 	}
 }
 
-void packet_06_timer_config(u8* body, u16 bodySize){
+void packet_06_search(u8* body, u16 bodySize){
 	u8* p=body;
 	if (State.SearcherState==SearchIdle){
 		SearchState.SearchFrom=getU16(p);
@@ -232,6 +243,12 @@ void packet_06_timer_config(u8* body, u16 bodySize){
 		SearchState.SearchTo=getU16(p);
 		p+=2;
 		u16 delay=getU16(p);
+		if (SearchState.SearchFrom<SearchState.SearchTo){
+			State.SearchDirection=SearchPeriodIncrease;
+		}else{
+			State.SearchDirection=SearchPeriodDecrease;
+		}
+
 
 		htim15.Instance->ARR=SearchState.SearchFrom;
 		htim15.Instance->CCR1=SearchState.SearchFrom/2;
@@ -243,4 +260,21 @@ void packet_06_timer_config(u8* body, u16 bodySize){
 		}
 		State.SearcherState=Searching;
 	}
+}
+void packet_08_search_stop(u8* body, u16 bodySize){
+	if (State.SearcherState!=SearchIdle){
+		HAL_TIM_PWM_Stop(&htim15, TIM_CHANNEL_1);
+		State.SearcherState=SearchIdle;
+	}
+}
+void packet_0A_just_generate(u8* body, u16 bodySize){
+	u8* p=body;
+	if (State.SearcherState!=SearchIdle){
+		HAL_TIM_PWM_Stop(&htim15, TIM_CHANNEL_1);
+		State.SearcherState=SearchIdle;
+	}
+	u16 value=getU16(p);
+	htim15.Instance->ARR=value;
+	htim15.Instance->CCR1=value/2;
+	HAL_TIM_PWM_Start(&htim15, TIM_CHANNEL_1);
 }
