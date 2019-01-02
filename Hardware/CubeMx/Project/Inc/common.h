@@ -36,12 +36,13 @@ typedef enum
 	TxIdle,
 	Sending
 }TxStates;
+
 typedef enum
 {
-	PokerIdle=0,
-	PokerRotatingTime,
-	PokerRotatingLowPoint
-} PokerStates;
+	SearchIdle=0,
+	Searching
+} SearcherStates;
+
 
 typedef struct
 {
@@ -52,7 +53,8 @@ bool F4:8;
 bool LedLight:8;
 bool F5:8;
 bool F6:8;
-bool Tmp3:8;
+SearcherStates SearcherState:8;
+u16	CurrentSearchPeriod:16;
 } State_t;
 
 //структура должна быть выравнена по 32 бита по модулю
@@ -73,7 +75,11 @@ u8 rxBuf[RX_BUF_SIZE];
 u8 txBuf[TX_BUF_SIZE];
 } UART_t;
 
-
+typedef struct
+{
+	u16 SearchFrom:16;
+	u16 SearchTo:16;
+}SearchEnv_t;
 
 
 extern volatile UART_t Uart;
