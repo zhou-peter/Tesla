@@ -37,10 +37,16 @@
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.checkBox4 = new System.Windows.Forms.CheckBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.checkBox5 = new System.Windows.Forms.CheckBox();
             this.checkBox6 = new System.Windows.Forms.CheckBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.textBoxStart = new System.Windows.Forms.TextBox();
+            this.textBoxStop = new System.Windows.Forms.TextBox();
+            this.textBoxCurrent = new System.Windows.Forms.TextBox();
+            this.button4 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
+            this.textBoxDelay = new System.Windows.Forms.TextBox();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBoxCom
@@ -94,11 +100,11 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(479, 12);
+            this.button3.Location = new System.Drawing.Point(154, 33);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(171, 23);
+            this.button3.Size = new System.Drawing.Size(142, 23);
             this.button3.TabIndex = 5;
-            this.button3.Text = "Сконфигурировать таймер";
+            this.button3.Text = "Искать";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
@@ -138,15 +144,6 @@
             this.checkBox4.UseVisualStyleBackColor = true;
             this.checkBox4.CheckedChanged += new System.EventHandler(this.checkBox4_CheckedChanged);
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.InitialImage = null;
-            this.pictureBox1.Location = new System.Drawing.Point(12, 187);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(638, 518);
-            this.pictureBox1.TabIndex = 6;
-            this.pictureBox1.TabStop = false;
-            // 
             // checkBox5
             // 
             this.checkBox5.AutoSize = true;
@@ -171,18 +168,84 @@
             this.checkBox6.UseVisualStyleBackColor = true;
             this.checkBox6.CheckedChanged += new System.EventHandler(this.checkBox6_CheckedChanged);
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.textBoxDelay);
+            this.groupBox1.Controls.Add(this.button5);
+            this.groupBox1.Controls.Add(this.button4);
+            this.groupBox1.Controls.Add(this.textBoxCurrent);
+            this.groupBox1.Controls.Add(this.textBoxStop);
+            this.groupBox1.Controls.Add(this.textBoxStart);
+            this.groupBox1.Controls.Add(this.button3);
+            this.groupBox1.Location = new System.Drawing.Point(44, 145);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(311, 145);
+            this.groupBox1.TabIndex = 12;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Поиск резонансной частоты";
+            // 
+            // textBoxStart
+            // 
+            this.textBoxStart.Location = new System.Drawing.Point(19, 33);
+            this.textBoxStart.Name = "textBoxStart";
+            this.textBoxStart.Size = new System.Drawing.Size(112, 20);
+            this.textBoxStart.TabIndex = 0;
+            this.textBoxStart.Text = "20000";
+            // 
+            // textBoxStop
+            // 
+            this.textBoxStop.Location = new System.Drawing.Point(19, 59);
+            this.textBoxStop.Name = "textBoxStop";
+            this.textBoxStop.Size = new System.Drawing.Size(112, 20);
+            this.textBoxStop.TabIndex = 1;
+            this.textBoxStop.Text = "10000";
+            // 
+            // textBoxCurrent
+            // 
+            this.textBoxCurrent.Location = new System.Drawing.Point(19, 111);
+            this.textBoxCurrent.Name = "textBoxCurrent";
+            this.textBoxCurrent.Size = new System.Drawing.Size(112, 20);
+            this.textBoxCurrent.TabIndex = 2;
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(154, 57);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(142, 23);
+            this.button4.TabIndex = 6;
+            this.button4.Text = "Стоп";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(154, 108);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(142, 23);
+            this.button5.TabIndex = 13;
+            this.button5.Text = "Генерить";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // textBoxDelay
+            // 
+            this.textBoxDelay.Location = new System.Drawing.Point(19, 85);
+            this.textBoxDelay.Name = "textBoxDelay";
+            this.textBoxDelay.Size = new System.Drawing.Size(112, 20);
+            this.textBoxDelay.TabIndex = 14;
+            this.textBoxDelay.Text = "200";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(660, 717);
+            this.ClientSize = new System.Drawing.Size(660, 452);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.checkBox6);
             this.Controls.Add(this.checkBox5);
             this.Controls.Add(this.checkBox4);
             this.Controls.Add(this.checkBox3);
             this.Controls.Add(this.checkBox2);
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.labelLed);
@@ -190,7 +253,8 @@
             this.Controls.Add(this.textBoxCom);
             this.Name = "Form1";
             this.Text = "Form1";
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -204,12 +268,18 @@
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.CheckBox checkBox4;
         private System.Windows.Forms.CheckBox checkBox5;
         private System.Windows.Forms.CheckBox checkBox6;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.TextBox textBoxCurrent;
+        private System.Windows.Forms.TextBox textBoxStop;
+        private System.Windows.Forms.TextBox textBoxStart;
+        private System.Windows.Forms.TextBox textBoxDelay;
     }
 }
 

@@ -120,6 +120,10 @@ namespace TeslaDesktopClient
                             checkBox5.SetChecked(currentState.enabledF5);
                             checkBox6.SetChecked(currentState.enabledF6);
                         }
+                        if (currentState.currentState == HardwareState.SearchState.Searching)
+                        {
+                            textBoxCurrent.Text = currentState.currentPeriod.ToString();
+                        }
                     }
                 });
             }
@@ -200,14 +204,22 @@ namespace TeslaDesktopClient
 
         private void button3_Click(object sender, EventArgs e)
         {
-            TimersConfiguration tc = new TimersConfiguration();
-            tc.offGap = 1;
-            tc.periodBunch = 33;
-            tc.startGap = 44;
-            tc.periodBunch = 23;
-            TeslaCommunication.TimersConfiguration tc2 = new TeslaCommunication.TimersConfiguration();
-            Utils.Copy(tc, tc2);
+            int start = int.Parse(textBoxStart.Text);
+            int stop = int.Parse(textBoxStop.Text);
+            int delay = int.Parse(textBoxDelay.Text);
+            client.searchStart(start, stop, delay);
 
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            client.searchStop();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            int period = int.Parse(textBoxCurrent.Text);
+            client.searchGeneratePWM(period);
         }
     }
 }

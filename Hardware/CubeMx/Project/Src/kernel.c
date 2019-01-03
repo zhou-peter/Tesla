@@ -1,7 +1,7 @@
 #include "kernel.h"
 #include "stm32f1xx_hal_tim.h"
 #include "stm32f1xx_hal_tim_ex.h"
-
+#include "timers.h"
 
 bool getBool(u8* ptr){
 	bool result=FALSE;
@@ -231,6 +231,7 @@ void vTimerSearcher(TimerHandle_t xTimer )
 		}else{
 			HAL_TIM_PWM_Stop(&htim15, TIM_CHANNEL_1);
 			State.SearcherState=SearchIdle;
+			xTimerStop(xTimerSearch, 100);
 		}
 	}
 }
@@ -257,8 +258,11 @@ void packet_06_search(u8* body, u16 bodySize){
 		if (xTimerSearch==0){
 			xTimerSearch=xTimerCreate("Searcher", pdMS_TO_TICKS(delay), pdTRUE, ( void * ) 0,
 					vTimerSearcher);
+		}else{
+			xTimerChangePeriod(xTimerSearch, pdMS_TO_TICKS(delay), 200);
 		}
 		State.SearcherState=Searching;
+		xTimerStart(xTimerSearch, 100);
 	}
 }
 void packet_08_search_stop(u8* body, u16 bodySize){
@@ -266,6 +270,7 @@ void packet_08_search_stop(u8* body, u16 bodySize){
 		HAL_TIM_PWM_Stop(&htim15, TIM_CHANNEL_1);
 		State.SearcherState=SearchIdle;
 	}
+	xTimerStop(xTimerSearch, 100);
 }
 void packet_0A_just_generate(u8* body, u16 bodySize){
 	u8* p=body;
