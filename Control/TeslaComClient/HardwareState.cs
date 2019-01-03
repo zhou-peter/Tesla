@@ -14,6 +14,14 @@ namespace TeslaComClient
     [Serializable(), ClassInterface(ClassInterfaceType.AutoDual), ComVisible(true)]
     public class HardwareState
     {
+        public enum SearchState
+        {
+            Idle = 0,
+            Searching,
+            Generating
+        }
+
+
         public bool IsFake = true;
         public bool enabledF1 { get; set; }
         public bool enabledF2 { get; set; }
@@ -22,6 +30,18 @@ namespace TeslaComClient
         public bool enabledF5 { get; set; }
         public bool enabledF6 { get; set; }
         public bool ledLight { get; set; }
+        public int currentPeriod { get; set; }
+        public SearchState currentState { get; set; }
+
+        public bool IsSearchIdle
+        {
+            get
+            {
+                return currentState == SearchState.Idle;
+            }
+            set { }
+        }
+
 
 
         public HardwareState() { }

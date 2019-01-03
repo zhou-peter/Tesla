@@ -21,7 +21,7 @@ namespace TeslaComClient
                     toPropInfo.SetValue(to, fromPropInfo.GetValue(from), null);
                 }
             }
-
+            /*
             foreach (var toPropInfo in to.GetType().GetFields())
             {
                 FieldInfo fromPropInfo = from.GetType().GetField(toPropInfo.Name);
@@ -30,7 +30,7 @@ namespace TeslaComClient
                     toPropInfo.SetValue(to, fromPropInfo.GetValue(from));
                 }
             }
-
+            */
         }
     }
 }
