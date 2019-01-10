@@ -208,6 +208,25 @@ void packet_04_timer_config(u8* body, u16 bodySize){
 
 volatile SearchEnv_t SearchState;
 TimerHandle_t xTimerSearch;
+extern void vTimerSearcher(TimerHandle_t xTimer );
+
+void stopSearchTimer(){
+	if (State.SearchTimerEnabled==TRUE){
+		xTimerStop(xTimerSearch, 100);
+	}
+	State.SearchTimerEnabled=FALSE;
+}
+void startSearchTimer(u16 delay){
+	if (xTimerSearch==0){
+		xTimerSearch=xTimerCreate("Searcher", pdMS_TO_TICKS(delay), pdTRUE, ( void * ) 0,
+				vTimerSearcher);
+	}else{
+		xTimerChangePeriod(xTimerSearch, pdMS_TO_TICKS(delay), 200);
+	}
+	State.SearchTimerEnabled=TRUE;
+}
+
+
 void vTimerSearcher(TimerHandle_t xTimer )
 {
 	if (State.SearcherState==Searching){
@@ -231,14 +250,15 @@ void vTimerSearcher(TimerHandle_t xTimer )
 		}else{
 			HAL_TIM_PWM_Stop(&htim15, TIM_CHANNEL_1);
 			State.SearcherState=SearchIdle;
-			xTimerStop(xTimerSearch, 100);
+			stopSearchTimer();
 		}
 	}
 }
 
+
 void packet_06_search(u8* body, u16 bodySize){
 	u8* p=body;
-	if (State.SearcherState==SearchIdle){
+	if (State.SearcherState!=Searching){
 		SearchState.SearchFrom=getU16(p);
 		p+=2;
 		SearchState.SearchTo=getU16(p);
@@ -251,35 +271,34 @@ void packet_06_search(u8* body, u16 bodySize){
 		}
 
 
+
 		htim15.Instance->ARR=SearchState.SearchFrom;
 		htim15.Instance->CCR1=SearchState.SearchFrom/2;
 		HAL_TIM_PWM_Start(&htim15, TIM_CHANNEL_1);
 
-		if (xTimerSearch==0){
-			xTimerSearch=xTimerCreate("Searcher", pdMS_TO_TICKS(delay), pdTRUE, ( void * ) 0,
-					vTimerSearcher);
-		}else{
-			xTimerChangePeriod(xTimerSearch, pdMS_TO_TICKS(delay), 200);
-		}
+
 		State.SearcherState=Searching;
-		xTimerStart(xTimerSearch, 100);
+		startSearchTimer(delay);
 	}
 }
 void packet_08_search_stop(u8* body, u16 bodySize){
-	if (State.SearcherState!=SearchIdle){
-		HAL_TIM_PWM_Stop(&htim15, TIM_CHANNEL_1);
-		State.SearcherState=SearchIdle;
-	}
-	xTimerStop(xTimerSearch, 100);
+	HAL_TIM_PWM_Stop(&htim15, TIM_CHANNEL_1);
+	State.SearcherState=SearchIdle;
+	stopSearchTimer();
 }
+
 void packet_0A_just_generate(u8* body, u16 bodySize){
 	u8* p=body;
-	if (State.SearcherState!=SearchIdle){
-		HAL_TIM_PWM_Stop(&htim15, TIM_CHANNEL_1);
-		State.SearcherState=SearchIdle;
+	if (State.SearcherState!=Generating){
+		stopSearchTimer();
+		HAL_TIM_PWM_Start(&htim15, TIM_CHANNEL_1);
+		State.SearcherState=Generating;
 	}
+
 	u16 value=getU16(p);
 	htim15.Instance->ARR=value;
-	htim15.Instance->CCR1=value/2;
-	HAL_TIM_PWM_Start(&htim15, TIM_CHANNEL_1);
+	p+=2;
+	value=getU16(p);
+	htim15.Instance->CCR1=value;
+
 }

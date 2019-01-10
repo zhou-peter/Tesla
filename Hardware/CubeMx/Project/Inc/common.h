@@ -60,7 +60,8 @@ bool LedLight:8;
 bool F5:8;
 bool F6:8;
 SearcherStates SearcherState:4;
-SearchDirections SearchDirection:4;
+bool SearchTimerEnabled:1;
+SearchDirections SearchDirection:3;
 u16	CurrentSearchPeriod:16;
 } State_t;
 
