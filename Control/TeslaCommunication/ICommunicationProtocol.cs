@@ -42,7 +42,7 @@ namespace TeslaCommunication
         void searchStop();
 
         [OperationContract]
-        void searchGeneratePWM(int period);
+        void searchGeneratePWM(int period, int duty);
 
     }
 }

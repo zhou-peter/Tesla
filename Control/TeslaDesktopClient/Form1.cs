@@ -17,8 +17,22 @@ namespace TeslaDesktopClient
         public Form1()
         {
             InitializeComponent();
+            trackBarDuty.MouseDown += TrackBarDuty_MouseDown;
+            textBoxStart.TextChanged += TextBoxStart_TextChanged;
+            textBoxStop.TextChanged += TextBoxStop_TextChanged;
+            updateTrackBarFreqRanges();
+            onFreqChange();
         }
 
+        private void TextBoxStop_TextChanged(object sender, EventArgs e)
+        {
+            updateTrackBarFreqRanges();
+        }
+
+        private void TextBoxStart_TextChanged(object sender, EventArgs e)
+        {
+            updateTrackBarFreqRanges();
+        }
 
         protected override void OnClosed(EventArgs e)
         {
@@ -79,6 +93,9 @@ namespace TeslaDesktopClient
 
         object checkBoxLock = new object();
 
+        int lastSentPeriod = 0;
+        int lastSentDuty = 0;
+
         private void TimerAlive_Tick(object sender, EventArgs e)
         {
             if (client.State == System.ServiceModel.CommunicationState.Faulted)
@@ -91,6 +108,14 @@ namespace TeslaDesktopClient
                 try
                 {
                     currentState = client.getHardwareState();
+                    if (pwmGenerating)
+                    {
+                        if (lastSentPeriod!=trackBarFreq.Value ||
+                            lastSentDuty != trackBarDuty.Value)
+                        {
+                            sendNewPwmPeriodAndDuty();
+                        }
+                    }
                 }
                 catch (Exception)
                 {
@@ -199,7 +224,7 @@ namespace TeslaDesktopClient
 
 
 
-
+        bool pwmGenerating = false;
 
 
         private void button3_Click(object sender, EventArgs e)
@@ -213,13 +238,89 @@ namespace TeslaDesktopClient
 
         private void button4_Click(object sender, EventArgs e)
         {
+            pwmGenerating = false;
             client.searchStop();
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            int period = int.Parse(textBoxCurrent.Text);
-            client.searchGeneratePWM(period);
+            pwmGenerating = true;
         }
+        void sendNewPwmPeriodAndDuty()
+        {
+            int period = int.Parse(textBoxPWMGenerate.Text);            
+            int duty = int.Parse(textBoxDuty.Text);
+            client.searchGeneratePWM(period, duty);
+        }
+
+
+        void updateTrackBarFreqRanges()
+        {
+            int start = int.Parse(textBoxStart.Text);
+            int stop = int.Parse(textBoxStop.Text);
+            if (stop > start)
+            {
+                trackBarFreq.Minimum = start;
+                trackBarFreq.Maximum = stop;
+            }
+            else
+            {
+                trackBarFreq.Minimum = stop;
+                trackBarFreq.Maximum = start;
+            }
+
+            
+        }
+
+        long freq = 20000000;
+        void onFreqChange()
+        {
+            if (trackBarFreq.Value > 0)
+            {
+                labelfreqValue.Text = (freq / trackBarFreq.Value).ToString();
+                textBoxPWMGenerate.Text = trackBarFreq.Value.ToString();
+                trackBarDuty.Maximum = trackBarFreq.Value;
+                if (halfDutyMode)
+                {
+                    trackBarDuty.Value = trackBarDuty.Maximum / 2;
+                }
+                textBoxDuty.Text = trackBarDuty.Value.ToString();
+            }
+        }
+
+
+        private void trackBarFreq_Scroll(object sender, EventArgs e)
+        {
+            onFreqChange();
+        }
+
+        private void buttonCopy_Click(object sender, EventArgs e)
+        {
+            textBoxPWMGenerate.Text = textBoxCurrent.Text;
+            updateTrackBarFreqRanges();
+            trackBarFreq.Value = int.Parse(textBoxPWMGenerate.Text);
+            onFreqChange();
+        }
+
+
+
+
+
+        bool halfDutyMode = true;
+        private void trackBarDuty_Scroll(object sender, EventArgs e)
+        {
+            halfDutyMode = false;
+        }
+
+        private void TrackBarDuty_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button== MouseButtons.Right)
+            {
+                int half = trackBarDuty.Maximum / 2;
+                halfDutyMode = true;
+                trackBarDuty.Value = half;
+            }
+        }
+
     }
 }
