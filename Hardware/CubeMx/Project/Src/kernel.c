@@ -23,11 +23,13 @@ void resetTimerCounters(){
 	htim2.Instance->CNT=0;
 	htim1.Instance->CNT=0;
 	htim3.Instance->CNT=0;
+	htim15.Instance->CNT=0;
 }
 void stopTimers(){
   HAL_TIM_Base_Stop(&htim2);
   HAL_TIM_Base_Stop(&htim3);
   HAL_TIM_Base_Stop(&htim4);
+  HAL_TIM_Base_Stop(&htim15);
   HAL_TIM_Base_Stop(&htim1);
 }
 void startTimers(){
@@ -48,8 +50,6 @@ void startTimers(){
 volatile void setFeatureState(u8 feature, bool state){
 	stopTimers();
 
-	TIM_TypeDef* t1=htim1.Instance;
-
 	if (feature==FEATURE_CARRIER){
 		State.F1=state;
 		if (state==TRUE){
@@ -57,7 +57,7 @@ volatile void setFeatureState(u8 feature, bool state){
 			HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
 			//Восстанавливаем другие таймеры
 			if (State.F2==TRUE){
-				HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
+				HAL_TIM_PWM_Start(&htim15, TIM_CHANNEL_1);
 			}
 			if (State.F3==TRUE){
 				HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
@@ -73,7 +73,7 @@ volatile void setFeatureState(u8 feature, bool state){
 			}
 			if (State.F6==TRUE){
 				HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
-				HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
+				HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
 			}
 		}else{
 			HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
@@ -82,7 +82,7 @@ volatile void setFeatureState(u8 feature, bool state){
 			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_2);
 			HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_3);
 			HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_4);
-			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_3);
+			HAL_TIM_PWM_Stop(&htim15, TIM_CHANNEL_1);
 			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_4);
 			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_3);
 			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_4);
@@ -92,9 +92,9 @@ volatile void setFeatureState(u8 feature, bool state){
 	}else if (feature==FEATURE_BUNCH){
 		State.F2=state;
 		if (state==TRUE){
-			HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
+			HAL_TIM_PWM_Start(&htim15, TIM_CHANNEL_1);
 		}else{
-			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_2);
+			HAL_TIM_PWM_Stop(&htim15, TIM_CHANNEL_1);
 		}
 	}else if (feature==FEATURE_GAP){
 		State.F3=state;
@@ -109,9 +109,9 @@ volatile void setFeatureState(u8 feature, bool state){
 		State.F6=state;
 		if (state==TRUE){
 			HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
-			HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
+			HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
 		}else{
-			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_3);
+			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_2);
 			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_4);
 		}
 	}else if (feature==FEATURE_SKIP_HIGH){
@@ -185,16 +185,17 @@ void packet_04_timer_config(u8* body, u16 bodySize){
 	p+=2;
 	htim3.Instance->CCR4=getU16(p);
 	p+=2;
-	htim2.Instance->ARR=getU16(p);
+	htim2.Instance->ARR=getU16(p);//Период пачки
 	htim4.Instance->ARR=getU16(p);
+	htim15.Instance->ARR=getU16(p);
+	p+=2;
+	htim15.Instance->CCR1=getU16(p);//Скважность пачки
 	p+=2;
 	htim4.Instance->CCR2=getU16(p);
 	p+=2;
-	htim4.Instance->CCR3=getU16(p);
-	p+=2;
 	htim4.Instance->CCR4=getU16(p);
 	p+=2;
-	htim2.Instance->CCR3=getU16(p);
+	htim2.Instance->CCR3=getU16(p);//Отступ пропуск верхнее плечо
 	p+=2;
 	htim2.Instance->CCR4=getU16(p);
 	p+=2;
@@ -210,13 +211,13 @@ volatile SearchEnv_t SearchState;
 TimerHandle_t xTimerSearch;
 extern void vTimerSearcher(TimerHandle_t xTimer );
 
-void stopSearchTimer(){
+void stopSearchSoftTimer(){
 	if (State.SearchTimerEnabled==TRUE){
 		xTimerStop(xTimerSearch, 100);
 	}
 	State.SearchTimerEnabled=FALSE;
 }
-void startSearchTimer(u16 delay){
+void startSearchSoftTimer(u16 delay){
 	if (xTimerSearch==0){
 		xTimerSearch=xTimerCreate("Searcher", pdMS_TO_TICKS(delay), pdTRUE, ( void * ) 0,
 				vTimerSearcher);
@@ -230,7 +231,7 @@ void startSearchTimer(u16 delay){
 void vTimerSearcher(TimerHandle_t xTimer )
 {
 	if (State.SearcherState==Searching){
-		u32 current=htim15.Instance->ARR;
+		u32 current=htim16.Instance->ARR;
 		bool continueSearch=FALSE;
 		if (current<SearchState.SearchTo &&
 				State.SearchDirection==SearchPeriodIncrease){
@@ -244,13 +245,14 @@ void vTimerSearcher(TimerHandle_t xTimer )
 		}
 
 		if (continueSearch==TRUE){
-			htim15.Instance->ARR=current;
-			htim15.Instance->CCR1=current/2;
+			htim16.Instance->ARR=current;
+			htim16.Instance->CCR1=current/2;
 			State.CurrentSearchPeriod=current;
 		}else{
-			HAL_TIM_PWM_Stop(&htim15, TIM_CHANNEL_1);
+			HAL_TIM_PWM_Stop(&htim16, TIM_CHANNEL_1);
+			HAL_TIMEx_PWMN_Stop(&htim16, TIM_CHANNEL_1);
 			State.SearcherState=SearchIdle;
-			stopSearchTimer();
+			stopSearchSoftTimer();
 		}
 	}
 }
@@ -258,47 +260,50 @@ void vTimerSearcher(TimerHandle_t xTimer )
 
 void packet_06_search(u8* body, u16 bodySize){
 	u8* p=body;
-	if (State.SearcherState!=Searching){
-		SearchState.SearchFrom=getU16(p);
-		p+=2;
-		SearchState.SearchTo=getU16(p);
-		p+=2;
-		u16 delay=getU16(p);
-		if (SearchState.SearchFrom<SearchState.SearchTo){
-			State.SearchDirection=SearchPeriodIncrease;
-		}else{
-			State.SearchDirection=SearchPeriodDecrease;
-		}
+	State.SearcherState=SearchIdle;
 
-
-
-		htim15.Instance->ARR=SearchState.SearchFrom;
-		htim15.Instance->CCR1=SearchState.SearchFrom/2;
-		HAL_TIM_PWM_Start(&htim15, TIM_CHANNEL_1);
-
-
-		State.SearcherState=Searching;
-		startSearchTimer(delay);
+	SearchState.SearchFrom=getU16(p);
+	p+=2;
+	SearchState.SearchTo=getU16(p);
+	p+=2;
+	u16 delay=getU16(p);
+	if (SearchState.SearchFrom<SearchState.SearchTo){
+		State.SearchDirection=SearchPeriodIncrease;
+	}else{
+		State.SearchDirection=SearchPeriodDecrease;
 	}
+
+
+
+	htim16.Instance->ARR=SearchState.SearchFrom;
+	htim16.Instance->CCR1=SearchState.SearchFrom/2;
+	HAL_TIM_PWM_Start(&htim16, TIM_CHANNEL_1);
+	HAL_TIMEx_PWMN_Start(&htim16, TIM_CHANNEL_1);
+
+	State.SearcherState=Searching;
+	startSearchSoftTimer(delay);
+
 }
 void packet_08_search_stop(u8* body, u16 bodySize){
-	HAL_TIM_PWM_Stop(&htim15, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Stop(&htim16, TIM_CHANNEL_1);
+	HAL_TIMEx_PWMN_Stop(&htim16, TIM_CHANNEL_1);
 	State.SearcherState=SearchIdle;
-	stopSearchTimer();
+	stopSearchSoftTimer();
 }
 
 void packet_0A_just_generate(u8* body, u16 bodySize){
 	u8* p=body;
 	if (State.SearcherState!=Generating){
-		stopSearchTimer();
-		HAL_TIM_PWM_Start(&htim15, TIM_CHANNEL_1);
+		stopSearchSoftTimer();
+		HAL_TIM_PWM_Start(&htim16, TIM_CHANNEL_1);
+		HAL_TIMEx_PWMN_Start(&htim16, TIM_CHANNEL_1);
 		State.SearcherState=Generating;
 	}
 
 	u16 value=getU16(p);
-	htim15.Instance->ARR=value;
+	htim16.Instance->ARR=value;
 	p+=2;
 	value=getU16(p);
-	htim15.Instance->CCR1=value;
+	htim16.Instance->CCR1=value;
 
 }
