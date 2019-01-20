@@ -15,6 +15,8 @@ volatile Env_t Env;
 void initMain(){
 	//100Ãö
 	Env.freq=10000;
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
+
 	__HAL_TIM_ENABLE_IT(&htim3, TIM_IT_UPDATE );
 	__HAL_TIM_ENABLE_IT(&htim3, TIM_IT_CC1 );
 	HAL_TIM_OC_Start(&htim3, TIM_CHANNEL_1);
@@ -66,13 +68,13 @@ void checkState(){
 	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_1)){
 		if (Env.Enabled==FALSE){
 			HAL_TIM_Base_Start_IT(&htim3);
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
 			Env.Enabled=TRUE;
 		}
 	}else{
 		if (Env.Enabled==TRUE){
 			HAL_TIM_Base_Stop_IT(&htim3);
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
 			Env.Enabled=FALSE;
 			resetSteps();
 		}
@@ -131,7 +133,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	if (Env.Enabled==TRUE){
 		//next step logic
 		if (Env.Direction==CW){
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
 
 			if (Env.CurrentStep==3){
 				Env.CurrentStep=0;
@@ -139,7 +141,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 				Env.CurrentStep++;
 			}
 		}else{
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);
 
 			if (Env.CurrentStep==0){
 				Env.CurrentStep=3;
