@@ -15,7 +15,9 @@ volatile Env_t Env;
 void initMain(){
 	//100Ãö
 	Env.freq=10000;
-
+	__HAL_TIM_ENABLE_IT(&htim3, TIM_IT_UPDATE );
+	__HAL_TIM_ENABLE_IT(&htim3, TIM_IT_CC1 );
+	HAL_TIM_OC_Start(&htim3, TIM_CHANNEL_1);
 }
 
 extern void adcMeasure();
@@ -52,6 +54,7 @@ void timerUpdate(){
 	  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
 	  HAL_TIM_Base_Init(&htim3);
 
+	  htim3.Instance->CCR1=period/2;
 }
 //get enable pin
 //direction pin
@@ -63,18 +66,20 @@ void checkState(){
 	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_1)){
 		if (Env.Enabled==FALSE){
 			HAL_TIM_Base_Start_IT(&htim3);
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
 			Env.Enabled=TRUE;
 		}
 	}else{
 		if (Env.Enabled==TRUE){
 			HAL_TIM_Base_Stop_IT(&htim3);
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
 			Env.Enabled=FALSE;
 			resetSteps();
 		}
 	}
 
 
-	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0)){
+	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0)){//GPIO_PIN_SET
 		Env.Direction=CW;
 	}else{
 		Env.Direction=CCW;
@@ -91,7 +96,8 @@ void checkSpeed(){
 	}
 }
 void resetSteps(){
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|
+			GPIO_PIN_13, GPIO_PIN_RESET);
 }
 
 
@@ -113,16 +119,28 @@ void HAL_GPIO_EXTI_Callback(u16 pin){
 #define increment 0.5F
 volatile float bank=0;
 
+
+void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim){
+	resetSteps();
+}
+
+
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+
 	if (Env.Enabled==TRUE){
 		//next step logic
 		if (Env.Direction==CW){
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);
+
 			if (Env.CurrentStep==3){
 				Env.CurrentStep=0;
 			}else{
 				Env.CurrentStep++;
 			}
 		}else{
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
+
 			if (Env.CurrentStep==0){
 				Env.CurrentStep=3;
 			}else{
@@ -144,13 +162,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 		}
 
 
-		HAL_Delay(5);
-		resetSteps();
-
 		bank+=increment;
-		if (bank>1.0F){
+		if (bank>=1.0F){
 			bank-=1.0F;
-
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET);
 		}
 	}
 	else{
