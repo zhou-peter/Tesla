@@ -50,12 +50,15 @@ void timerUpdate(){
     int clock=SystemCoreClock/prescaler;
     u16 period=clock/freq;
 
-
+/*
 	  htim3.Init.Prescaler = prescaler;
 	  htim3.Init.Period = period;
 	  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
 	  HAL_TIM_Base_Init(&htim3);
+*/
 
+	  htim3.Instance->PSC=prescaler;
+	  htim3.Instance->ARR= period;
 	  htim3.Instance->CCR1=period/2;
 }
 //get enable pin
@@ -89,7 +92,11 @@ void checkState(){
 }
 
 void checkSpeed(){
-	u32 freq=20000+(ADC_Buf[0]*5);
+	u16 max=0x3FF;
+	u16 current=ADC_Buf[0];
+	u16 delta=35000;//from 150Hz to 500Hz
+	u32 addValue=current*delta/max;
+	u32 freq=15000+addValue;
 	s32 differ=freq-Env.freq;
 	if (differ<0)differ*=(-1);
 	if (differ>200){
@@ -98,8 +105,7 @@ void checkSpeed(){
 	}
 }
 void resetSteps(){
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|
-			GPIO_PIN_13, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_13, GPIO_PIN_RESET);
 }
 
 
@@ -134,6 +140,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 		//next step logic
 		if (Env.Direction==CW){
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
 
 			if (Env.CurrentStep==3){
 				Env.CurrentStep=0;
@@ -142,6 +150,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 			}
 		}else{
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET);
 
 			if (Env.CurrentStep==0){
 				Env.CurrentStep=3;
@@ -150,18 +160,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 			}
 		}
 
-		resetSteps();
-
-		//set bits according step
-		if (Env.CurrentStep==0){
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
-		}else if (Env.CurrentStep==1){
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_SET);
-		}else if (Env.CurrentStep==2){
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_SET);
-		}else if (Env.CurrentStep==3){
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET);
-		}
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_SET);
 
 
 		bank+=increment;
