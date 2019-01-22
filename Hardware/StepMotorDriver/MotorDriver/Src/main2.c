@@ -79,7 +79,7 @@ void checkState(){
 			HAL_TIM_Base_Stop_IT(&htim3);
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
 			Env.Enabled=FALSE;
-			resetSteps();
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_13, GPIO_PIN_RESET);
 		}
 	}
 
@@ -99,15 +99,11 @@ void checkSpeed(){
 	u32 freq=15000+addValue;
 	s32 differ=freq-Env.freq;
 	if (differ<0)differ*=(-1);
-	if (differ>200){
+	if (differ>20000){//20Hz step
 		Env.freq=freq;
 		timerUpdate();
 	}
 }
-void resetSteps(){
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_13, GPIO_PIN_RESET);
-}
-
 
 void adcMeasure()
 {
@@ -124,22 +120,35 @@ void HAL_GPIO_EXTI_Callback(u16 pin){
 	checkState();
 }
 
-#define increment 0.5F
+#define increment 0.2F
 volatile float bank=0;
 
 
+
+
 void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim){
-	resetSteps();
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2|GPIO_PIN_3, GPIO_PIN_RESET);
+
+	if (Env.Enabled==TRUE){
+
+		bank+=increment;
+		if (bank>=1.0F){
+			bank-=1.0F;
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET);
+		}
+
+	}
 }
 
 
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
 
 	if (Env.Enabled==TRUE){
 		//next step logic
 		if (Env.Direction==CW){
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
 
@@ -149,7 +158,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 				Env.CurrentStep++;
 			}
 		}else{
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET);
 
@@ -164,15 +173,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_SET);
 
 
-		bank+=increment;
-		if (bank>=1.0F){
-			bank-=1.0F;
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET);
-		}
 	}
 	else{
 		//reset all bits
-		resetSteps();
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2|GPIO_PIN_3, GPIO_PIN_RESET);
 		bank=0;
 	}
 }
