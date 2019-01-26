@@ -35,7 +35,8 @@ typedef struct
 
 
 	u32 freq:32;
-
+	u32 freq2:32;
+	float k;
 } Env_t;
 
 
