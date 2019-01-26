@@ -13,6 +13,9 @@ volatile u16 ADC_Buf[2];
 volatile Env_t Env;
 
 extern void adcComplete(DMA_HandleTypeDef * hdma);
+extern void checkState();
+extern void checkSpeed();
+extern void stopTimers();
 
 void initMain() {
 	//100Ãö
@@ -21,15 +24,19 @@ void initMain() {
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
 	HAL_ADC_Start_DMA(&hadc1, &ADC_Buf, 2);
 	hdma_adc1.XferCpltCallback=adcComplete;
+	stopTimers();
+	checkState();
 	//__HAL_TIM_ENABLE_IT(&htim3, TIM_IT_UPDATE);
 	//__HAL_TIM_ENABLE_IT(&htim3, TIM_IT_CC1);
 	//HAL_TIM_OC_Start(&htim3, TIM_CHANNEL_1);
 }
 
-//extern void adcMeasure();
-extern void checkSpeed();
-extern void resetSteps();
+
+
+
 void loopMain() {
+	HAL_Delay(10);
+
 	checkState();
 	while (1) {
 		/*int shortCounter = 10;
@@ -79,6 +86,23 @@ void updateTImerValues() {
 	htim1.Instance->CCR1 = period / 2;
 
 }
+
+void startTimers(){
+	HAL_TIM_Base_Start(&htim1);
+	HAL_TIM_Base_Start(&htim3);
+
+	HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
+}
+
+void stopTimers(){
+	HAL_TIM_Base_Stop(&htim1);
+	HAL_TIM_Base_Stop(&htim3);
+
+	HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_4);
+}
+
 //get enable pin
 //direction pin
 //enable or disable timer
@@ -87,15 +111,13 @@ void checkState() {
 	//enable/disable
 	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_1)) {
 		if (Env.Enabled == FALSE) {
-			HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
-			HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
+			startTimers();
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
 			Env.Enabled = TRUE;
 		}
 	} else {
 		if (Env.Enabled == TRUE) {
-			HAL_TIM_Base_Stop(&htim1);
-			HAL_TIM_Base_Stop(&htim3);
+			stopTimers();
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
 			Env.Enabled = FALSE;
 		}
@@ -104,13 +126,19 @@ void checkState() {
 	//direction
 	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0)) { //GPIO_PIN_SET
 		Env.Direction = CW;
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);
 	} else {
 		Env.Direction = CCW;
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
 	}
 }
 
 void checkSpeed() {
-	u16 max = 0x3FF;
+	u16 max = 0x0FFF;
 	bool shouldUpdate = FALSE;
 
 	//proportion speed
@@ -136,7 +164,7 @@ void checkSpeed() {
 	if (differ < 0)
 		differ *= (-1);
 
-	if (differ > 20000) { //20Hz step
+	if (differ > 20) { //20Hz step
 		Env.freq = freq;
 		shouldUpdate = TRUE;
 	}
