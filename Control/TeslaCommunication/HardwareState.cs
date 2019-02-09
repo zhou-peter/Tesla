@@ -25,8 +25,12 @@ namespace TeslaCommunication
         public bool enabledF4;
         public bool enabledF5;
         public bool enabledF6;
+        public bool enabledF10;
         public bool ledLight;
-        public int currentPeriod;
+        public int periodF1;
+        public int periodF10;
+
+
         public SearchState currentState;
 
         bool byteToBool(byte b)
@@ -44,6 +48,7 @@ namespace TeslaCommunication
             this.enabledF4 = byteToBool(state.enabled_f4);
             this.enabledF5 = byteToBool(state.enabled_f5);
             this.enabledF6 = byteToBool(state.enabled_f6);
+            this.enabledF10 = byteToBool(state.enabled_f10);
             this.ledLight = byteToBool(state.led_light);
 
             int tmp = state.search_env & 0x0F;
@@ -62,7 +67,8 @@ namespace TeslaCommunication
                     throw new ArgumentException();
             }
 
-            this.currentPeriod = state.search_period;
+            this.periodF1 = state.period_f1;
+            this.periodF10 = state.period_f10;
         }
     }
 }

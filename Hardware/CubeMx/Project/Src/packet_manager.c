@@ -262,7 +262,7 @@ void createOutPacketAndSend(u8 command, u16 bodySize, u8* bodyData){
 u8 sentTimes=0;
 void vTimerStateSend(TimerHandle_t xTimer )
 {
-	createOutPacketAndSend(0x01, 10, &State);
+	createOutPacketAndSend(0x01, 14, &State);
 	sentTimes++;
 	if (sentTimes>5){
 		HAL_GPIO_WritePin(GPIOA,GPIO_PIN_12, GPIO_PIN_RESET);

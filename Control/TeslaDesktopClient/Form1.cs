@@ -17,22 +17,10 @@ namespace TeslaDesktopClient
         public Form1()
         {
             InitializeComponent();
-            trackBarDuty.MouseDown += TrackBarDuty_MouseDown;
-            textBoxStart.TextChanged += TextBoxStart_TextChanged;
-            textBoxStop.TextChanged += TextBoxStop_TextChanged;
-            updateTrackBarFreqRanges();
-            onFreqChange();
+            
         }
 
-        private void TextBoxStop_TextChanged(object sender, EventArgs e)
-        {
-            updateTrackBarFreqRanges();
-        }
 
-        private void TextBoxStart_TextChanged(object sender, EventArgs e)
-        {
-            updateTrackBarFreqRanges();
-        }
 
         protected override void OnClosed(EventArgs e)
         {
@@ -60,6 +48,8 @@ namespace TeslaDesktopClient
                 
             }        
         }
+
+
         Timer timerAlive;
         HardwareState currentState;
         CommunicationProtocolClient client;
@@ -75,11 +65,12 @@ namespace TeslaDesktopClient
             timerAlive.Start();
 
             button2.Enabled = false;
+
+            freqChanger1.setEnvoirnment("#1 Несущая", 1, client);
+            freqChanger10.setEnvoirnment("#10 Питающий трансформатор", 10, client);
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            
-
             if (client.IsConnected())
             {
                 client.Disconnect();
@@ -88,6 +79,8 @@ namespace TeslaDesktopClient
             {
                 client.Connect(textBoxCom.Text);
             }
+
+
             updateView();
         }
 
@@ -108,6 +101,7 @@ namespace TeslaDesktopClient
                 try
                 {
                     currentState = client.getHardwareState();
+                    /*
                     if (pwmGenerating)
                     {
                         int period = int.Parse(textBoxPWMGenerate.Text);
@@ -120,6 +114,7 @@ namespace TeslaDesktopClient
                             lastSentDuty = duty;
                         }
                     }
+                    */
                 }
                 catch (Exception)
                 {
@@ -148,11 +143,14 @@ namespace TeslaDesktopClient
                             checkBox4.SetChecked(currentState.enabledF4);
                             checkBox5.SetChecked(currentState.enabledF5);
                             checkBox6.SetChecked(currentState.enabledF6);
+                            checkBox10.SetChecked(currentState.enabledF10);
                         }
                         if (currentState.currentState == HardwareState.SearchState.Searching)
                         {
-                            textBoxCurrent.Text = currentState.currentPeriod.ToString();
+                            //textBoxCurrent.Text = currentState.currentPeriod.ToString();
                         }
+
+
                     }
                 });
             }
@@ -226,108 +224,9 @@ namespace TeslaDesktopClient
             }
         }
 
-
-
-        bool pwmGenerating = false;
-
-
-        private void button3_Click(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)
         {
-            int start = int.Parse(textBoxStart.Text);
-            int stop = int.Parse(textBoxStop.Text);
-            int delay = int.Parse(textBoxDelay.Text);
-            client.searchStart(start, stop, delay);
 
         }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            pwmGenerating = false;
-            client.searchStop();
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            pwmGenerating = true;
-            sendNewPwmPeriodAndDuty();
-        }
-        void sendNewPwmPeriodAndDuty()
-        {
-            int period = int.Parse(textBoxPWMGenerate.Text);            
-            int duty = int.Parse(textBoxDuty.Text);
-            client.searchGeneratePWM(period, duty);
-        }
-
-
-        void updateTrackBarFreqRanges()
-        {
-            int start = int.Parse(textBoxStart.Text);
-            int stop = int.Parse(textBoxStop.Text);
-            if (stop > start)
-            {
-                trackBarFreq.Minimum = start;
-                trackBarFreq.Maximum = stop;
-            }
-            else
-            {
-                trackBarFreq.Minimum = stop;
-                trackBarFreq.Maximum = start;
-            }
-
-            
-        }
-
-        private void buttonCopy_Click(object sender, EventArgs e)
-        {
-            if (!String.IsNullOrEmpty(textBoxCurrent.Text))
-            {
-                textBoxPWMGenerate.Text = textBoxCurrent.Text;
-                updateTrackBarFreqRanges();
-                trackBarFreq.Value = int.Parse(textBoxPWMGenerate.Text);
-                onFreqChange();
-            }
-        }
-
-
-        long freq = 20000000;
-        void onFreqChange()
-        {
-            if (trackBarFreq.Value > 0)
-            {
-                labelfreqValue.Text = (freq / trackBarFreq.Value).ToString();
-                textBoxPWMGenerate.Text = trackBarFreq.Value.ToString();
-                trackBarDuty.Maximum = trackBarFreq.Value;
-                if (halfDutyMode)
-                {
-                    trackBarDuty.Value = trackBarDuty.Maximum / 2;
-                }
-                textBoxDuty.Text = trackBarDuty.Value.ToString();
-            }
-        }
-
-
-        private void trackBarFreq_Scroll(object sender, EventArgs e)
-        {
-            onFreqChange();
-        }
-
-
-        bool halfDutyMode = true;
-        private void trackBarDuty_Scroll(object sender, EventArgs e)
-        {
-            halfDutyMode = false;
-            textBoxDuty.Text = trackBarDuty.Value.ToString();
-        }
-
-        private void TrackBarDuty_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button== MouseButtons.Right)
-            {
-                int half = trackBarDuty.Maximum / 2;
-                halfDutyMode = true;
-                trackBarDuty.Value = half;
-            }
-        }
-
     }
 }

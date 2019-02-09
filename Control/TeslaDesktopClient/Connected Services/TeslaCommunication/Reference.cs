@@ -22,11 +22,11 @@ namespace TeslaDesktopClient.TeslaCommunication {
         [System.NonSerializedAttribute()]
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
-        private int currentPeriodField;
-        
         private TeslaDesktopClient.TeslaCommunication.HardwareState.SearchState currentStateField;
         
         private bool enabledF1Field;
+        
+        private bool enabledF10Field;
         
         private bool enabledF2Field;
         
@@ -40,6 +40,10 @@ namespace TeslaDesktopClient.TeslaCommunication {
         
         private bool ledLightField;
         
+        private int periodF1Field;
+        
+        private int periodF10Field;
+        
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
             get {
@@ -47,19 +51,6 @@ namespace TeslaDesktopClient.TeslaCommunication {
             }
             set {
                 this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
-        public int currentPeriod {
-            get {
-                return this.currentPeriodField;
-            }
-            set {
-                if ((this.currentPeriodField.Equals(value) != true)) {
-                    this.currentPeriodField = value;
-                    this.RaisePropertyChanged("currentPeriod");
-                }
             }
         }
         
@@ -85,6 +76,19 @@ namespace TeslaDesktopClient.TeslaCommunication {
                 if ((this.enabledF1Field.Equals(value) != true)) {
                     this.enabledF1Field = value;
                     this.RaisePropertyChanged("enabledF1");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public bool enabledF10 {
+            get {
+                return this.enabledF10Field;
+            }
+            set {
+                if ((this.enabledF10Field.Equals(value) != true)) {
+                    this.enabledF10Field = value;
+                    this.RaisePropertyChanged("enabledF10");
                 }
             }
         }
@@ -163,6 +167,32 @@ namespace TeslaDesktopClient.TeslaCommunication {
                 if ((this.ledLightField.Equals(value) != true)) {
                     this.ledLightField = value;
                     this.RaisePropertyChanged("ledLight");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public int periodF1 {
+            get {
+                return this.periodF1Field;
+            }
+            set {
+                if ((this.periodF1Field.Equals(value) != true)) {
+                    this.periodF1Field = value;
+                    this.RaisePropertyChanged("periodF1");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public int periodF10 {
+            get {
+                return this.periodF10Field;
+            }
+            set {
+                if ((this.periodF10Field.Equals(value) != true)) {
+                    this.periodF10Field = value;
+                    this.RaisePropertyChanged("periodF10");
                 }
             }
         }

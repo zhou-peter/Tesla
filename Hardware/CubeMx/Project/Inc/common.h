@@ -56,13 +56,16 @@ bool F1:8;
 bool F2:8;
 bool F3:8;
 bool F4:8;
-bool LedLight:8;
 bool F5:8;
 bool F6:8;
+bool F10:8;
+bool LedLight:8;
 SearcherStates SearcherState:4;
 bool SearchTimerEnabled:1;
 SearchDirections SearchDirection:3;
-u16	CurrentSearchPeriod:16;
+u8 tmp1:8;
+u16	PeriodF1:16;
+u16	PeriodF10:16;
 } State_t;
 
 //структура должна быть выравнена по 32 бита по модулю
