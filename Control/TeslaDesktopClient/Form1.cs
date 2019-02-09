@@ -26,6 +26,8 @@ namespace TeslaDesktopClient
         {
             
             base.OnClosed(e);
+            TeslaDesktopClient.WindowState.Save();
+
             if (timerAlive != null)
             {
                 timerAlive.Stop();
@@ -150,7 +152,8 @@ namespace TeslaDesktopClient
                             //textBoxCurrent.Text = currentState.currentPeriod.ToString();
                         }
 
-
+                        freqChanger1.OnIncomingState(currentState);
+                        freqChanger10.OnIncomingState(currentState);
                     }
                 });
             }

@@ -71,12 +71,16 @@ namespace TeslaCommunication
 
         void sendOutPacket()
         {
-            if (sp.IsOpen && packetsToSend.Count > 0)
+            if (sp!=null && sp.IsOpen && packetsToSend.Count > 0)
             {
                 AbstractOutPacket packet = packetsToSend.Dequeue();
                 byte[] buf = packet.ToArray();
                 sp.BaseStream.Write(buf, 0, buf.Length);
                 sp.BaseStream.Flush();
+            }
+            else
+            {
+                packetsToSend.Clear();
             }
         }
 

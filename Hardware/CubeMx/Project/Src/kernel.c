@@ -46,6 +46,7 @@ void startTimers(){
 #define	FEATURE_GAP_INDENT		6
 #define	FEATURE_SKIP_HIGH		4
 #define	FEATURE_SKIP_LOW		5
+#define FEATURE_PWR				10
 
 volatile void setFeatureState(u8 feature, bool state){
 	stopTimers();
@@ -131,6 +132,15 @@ volatile void setFeatureState(u8 feature, bool state){
 		}else{
 			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
 			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
+		}
+	}else if (feature==FEATURE_PWR){
+		State.F10=state;
+		if (state==TRUE){
+			HAL_TIM_PWM_Start(&htim16, TIM_CHANNEL_1);
+			HAL_TIMEx_PWMN_Start(&htim16, TIM_CHANNEL_1);
+		}else{
+			HAL_TIM_PWM_Stop(&htim16, TIM_CHANNEL_1);
+			HAL_TIMEx_PWMN_Stop(&htim16, TIM_CHANNEL_1);
 		}
 	}
 
@@ -247,7 +257,6 @@ void vTimerSearcher(TimerHandle_t xTimer )
 		if (continueSearch==TRUE){
 			htim16.Instance->ARR=current;
 			htim16.Instance->CCR1=current/2;
-			State.CurrentSearchPeriod=current;
 		}else{
 			HAL_TIM_PWM_Stop(&htim16, TIM_CHANNEL_1);
 			HAL_TIMEx_PWMN_Stop(&htim16, TIM_CHANNEL_1);
@@ -293,17 +302,28 @@ void packet_08_search_stop(u8* body, u16 bodySize){
 
 void packet_0A_just_generate(u8* body, u16 bodySize){
 	u8* p=body;
+	u16 period=getU16(p);
+	p+=2;
+	u16 duty=getU16(p);
+	p++;
+	u8 feature = *p;
+
+
+/*
 	if (State.SearcherState!=Generating){
 		stopSearchSoftTimer();
 		HAL_TIM_PWM_Start(&htim16, TIM_CHANNEL_1);
 		HAL_TIMEx_PWMN_Start(&htim16, TIM_CHANNEL_1);
 		State.SearcherState=Generating;
 	}
+*/
 
-	u16 value=getU16(p);
-	htim16.Instance->ARR=value;
-	p+=2;
-	value=getU16(p);
-	htim16.Instance->CCR1=value;
 
+	if (feature==1){
+		htim1.Instance->ARR=period;
+		htim1.Instance->CCR1=period;
+	}else if (feature==10){
+		htim16.Instance->ARR=period;
+		htim16.Instance->CCR1=duty;
+	}
 }

@@ -42,7 +42,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.textBoxDuty = new System.Windows.Forms.TextBox();
             this.labelfreqValue = new System.Windows.Forms.Label();
-            this.textBoxPWMGenerate = new System.Windows.Forms.TextBox();
+            this.textBoxPeriod = new System.Windows.Forms.TextBox();
             this.trackBarFreq = new System.Windows.Forms.TrackBar();
             this.label4 = new System.Windows.Forms.Label();
             this.trackBarDuty = new System.Windows.Forms.TrackBar();
@@ -68,7 +68,7 @@
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Controls.Add(this.textBoxDuty);
             this.groupBox2.Controls.Add(this.labelfreqValue);
-            this.groupBox2.Controls.Add(this.textBoxPWMGenerate);
+            this.groupBox2.Controls.Add(this.textBoxPeriod);
             this.groupBox2.Controls.Add(this.trackBarFreq);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.trackBarDuty);
@@ -194,10 +194,10 @@
             // 
             // textBoxPWMGenerate
             // 
-            this.textBoxPWMGenerate.Location = new System.Drawing.Point(365, 210);
-            this.textBoxPWMGenerate.Name = "textBoxPWMGenerate";
-            this.textBoxPWMGenerate.Size = new System.Drawing.Size(112, 20);
-            this.textBoxPWMGenerate.TabIndex = 21;
+            this.textBoxPeriod.Location = new System.Drawing.Point(365, 210);
+            this.textBoxPeriod.Name = "textBoxPWMGenerate";
+            this.textBoxPeriod.Size = new System.Drawing.Size(112, 20);
+            this.textBoxPeriod.TabIndex = 21;
             // 
             // trackBarFreq
             // 
@@ -256,7 +256,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox textBoxDuty;
         private System.Windows.Forms.Label labelfreqValue;
-        private System.Windows.Forms.TextBox textBoxPWMGenerate;
+        private System.Windows.Forms.TextBox textBoxPeriod;
         private System.Windows.Forms.TrackBar trackBarFreq;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TrackBar trackBarDuty;

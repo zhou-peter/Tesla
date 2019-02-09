@@ -491,10 +491,10 @@ namespace TeslaDesktopClient.TeslaCommunication {
         System.Threading.Tasks.Task searchStopAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/searchGeneratePWM", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/searchGeneratePWMResponse")]
-        void searchGeneratePWM(int period, int duty);
+        void searchGeneratePWM(int period, int duty, byte num);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://STM32TeslaCommunication/ICommunicationProtocol/searchGeneratePWM", ReplyAction="http://STM32TeslaCommunication/ICommunicationProtocol/searchGeneratePWMResponse")]
-        System.Threading.Tasks.Task searchGeneratePWMAsync(int period, int duty);
+        System.Threading.Tasks.Task searchGeneratePWMAsync(int period, int duty, byte num);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -596,12 +596,12 @@ namespace TeslaDesktopClient.TeslaCommunication {
             return base.Channel.searchStopAsync();
         }
         
-        public void searchGeneratePWM(int period, int duty) {
-            base.Channel.searchGeneratePWM(period, duty);
+        public void searchGeneratePWM(int period, int duty, byte num) {
+            base.Channel.searchGeneratePWM(period, duty, num);
         }
         
-        public System.Threading.Tasks.Task searchGeneratePWMAsync(int period, int duty) {
-            return base.Channel.searchGeneratePWMAsync(period, duty);
+        public System.Threading.Tasks.Task searchGeneratePWMAsync(int period, int duty, byte num) {
+            return base.Channel.searchGeneratePWMAsync(period, duty, num);
         }
     }
 }

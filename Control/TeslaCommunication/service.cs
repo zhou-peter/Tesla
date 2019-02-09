@@ -272,9 +272,9 @@ namespace TeslaCommunication
             mgr.packetsToSend.Enqueue(p);
         }
 
-        public void searchGeneratePWM(int period, int duty)
+        public void searchGeneratePWM(int period, int duty, byte num)
         {
-            Packet_0A p = new Packet_0A(period, duty);
+            Packet_0A p = new Packet_0A(period, duty, num);
             mgr.packetsToSend.Enqueue(p);
         }
     }

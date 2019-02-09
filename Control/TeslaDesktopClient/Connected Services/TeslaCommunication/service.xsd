@@ -113,6 +113,7 @@
       <xs:sequence>
         <xs:element minOccurs="0" name="period" type="xs:int" />
         <xs:element minOccurs="0" name="duty" type="xs:int" />
+        <xs:element minOccurs="0" name="num" type="xs:unsignedByte" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
