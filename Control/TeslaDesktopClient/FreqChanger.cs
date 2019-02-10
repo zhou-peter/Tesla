@@ -161,7 +161,8 @@ namespace TeslaDesktopClient
         private void trackBarDuty_Scroll(object sender, EventArgs e)
         {
             halfDutyMode = false;
-            textBoxDuty.Text = trackBarDuty.Value.ToString();
+            onFreqChange();
+            //textBoxDuty.Text = trackBarDuty.Value.ToString();
         }
 
         private void TrackBarDuty_MouseDown(object sender, MouseEventArgs e)
