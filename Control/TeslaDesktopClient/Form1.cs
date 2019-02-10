@@ -19,7 +19,10 @@ namespace TeslaDesktopClient
             InitializeComponent();
             
         }
+        private void Form1_Load(object sender, EventArgs e)
+        {
 
+        }
 
 
         protected override void OnClosed(EventArgs e)
@@ -227,9 +230,16 @@ namespace TeslaDesktopClient
             }
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void checkBox10_CheckedChanged(object sender, EventArgs e)
         {
-
+            lock (checkBoxLock)
+            {
+                client.setEnabled(10, checkBox10.Checked);
+            }
         }
+
+
+
+
     }
 }

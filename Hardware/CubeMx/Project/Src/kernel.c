@@ -305,7 +305,7 @@ void packet_0A_just_generate(u8* body, u16 bodySize){
 	u16 period=getU16(p);
 	p+=2;
 	u16 duty=getU16(p);
-	p++;
+	p+=2;
 	u8 feature = *p;
 
 
@@ -319,10 +319,10 @@ void packet_0A_just_generate(u8* body, u16 bodySize){
 */
 
 
-	if (feature==1){
+	if (feature==FEATURE_CARRIER){
 		htim1.Instance->ARR=period;
-		htim1.Instance->CCR1=period;
-	}else if (feature==10){
+		htim1.Instance->CCR1=duty;
+	}else if (feature==FEATURE_PWR){
 		htim16.Instance->ARR=period;
 		htim16.Instance->CCR1=duty;
 	}

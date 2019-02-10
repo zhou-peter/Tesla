@@ -162,6 +162,7 @@
             this.checkBox10.TabIndex = 12;
             this.checkBox10.Text = "#10 Питающий Тр";
             this.checkBox10.UseVisualStyleBackColor = true;
+            this.checkBox10.CheckedChanged += new System.EventHandler(this.checkBox10_CheckedChanged);
             // 
             // freqChanger1
             // 
