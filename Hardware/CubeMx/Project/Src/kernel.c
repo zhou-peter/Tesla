@@ -24,12 +24,14 @@ void resetTimerCounters(){
 	htim1.Instance->CNT=0;
 	htim3.Instance->CNT=0;
 	htim15.Instance->CNT=0;
+	htim16.Instance->CNT=0;
 }
 void stopTimers(){
   HAL_TIM_Base_Stop(&htim2);
   HAL_TIM_Base_Stop(&htim3);
   HAL_TIM_Base_Stop(&htim4);
   HAL_TIM_Base_Stop(&htim15);
+  HAL_TIM_Base_Stop(&htim16);
   HAL_TIM_Base_Stop(&htim1);
 }
 void startTimers(){
@@ -37,6 +39,7 @@ void startTimers(){
   //HAL_TIM_Base_Start(&htim3);
   //HAL_TIM_Base_Start(&htim4);
   HAL_TIM_Base_Start(&htim1);
+  HAL_TIM_Base_Start(&htim16);
 }
 
 
@@ -56,7 +59,13 @@ volatile void setFeatureState(u8 feature, bool state){
 		if (state==TRUE){
 			HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
 			HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
+
 			//Восстанавливаем другие таймеры
+			if (State.F10==TRUE){
+				HAL_TIM_PWM_Start(&htim16, TIM_CHANNEL_1);
+				HAL_TIMEx_PWMN_Start(&htim16, TIM_CHANNEL_1);
+			}
+
 			if (State.F2==TRUE){
 				HAL_TIM_PWM_Start(&htim15, TIM_CHANNEL_1);
 			}
@@ -76,6 +85,7 @@ volatile void setFeatureState(u8 feature, bool state){
 				HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
 				HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
 			}
+
 		}else{
 			HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
 			HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_1);
@@ -89,6 +99,9 @@ volatile void setFeatureState(u8 feature, bool state){
 			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_4);
 			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
 			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
+
+			HAL_TIM_PWM_Stop(&htim16, TIM_CHANNEL_1);
+			HAL_TIMEx_PWMN_Stop(&htim16, TIM_CHANNEL_1);
 		}
 	}else if (feature==FEATURE_BUNCH){
 		State.F2=state;
@@ -136,8 +149,9 @@ volatile void setFeatureState(u8 feature, bool state){
 	}else if (feature==FEATURE_PWR){
 		State.F10=state;
 		if (state==TRUE){
-			HAL_TIM_PWM_Start(&htim16, TIM_CHANNEL_1);
-			HAL_TIMEx_PWMN_Start(&htim16, TIM_CHANNEL_1);
+			//start with timer 1
+			//HAL_TIM_PWM_Start(&htim16, TIM_CHANNEL_1);
+			//HAL_TIMEx_PWMN_Start(&htim16, TIM_CHANNEL_1);
 		}else{
 			HAL_TIM_PWM_Stop(&htim16, TIM_CHANNEL_1);
 			HAL_TIMEx_PWMN_Stop(&htim16, TIM_CHANNEL_1);
@@ -321,9 +335,12 @@ void packet_0A_just_generate(u8* body, u16 bodySize){
 
 	if (feature==FEATURE_CARRIER){
 		htim1.Instance->ARR=period;
-		htim1.Instance->CCR1=duty;
+		htim1.Instance->CCR1=period/2;//duty;
+		htim16.Instance->ARR=(period*2)+1;
+		htim16.Instance->CCR1=period;//duty;
+		resetTimerCounters();
 	}else if (feature==FEATURE_PWR){
-		htim16.Instance->ARR=period;
-		htim16.Instance->CCR1=duty;
+		//htim16.Instance->ARR=period;
+		//htim16.Instance->CCR1=duty;
 	}
 }
