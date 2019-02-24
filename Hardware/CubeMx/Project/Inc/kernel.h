@@ -11,6 +11,10 @@ extern void packet_06_search(u8* body, u16 bodySize);
 extern void packet_08_search_stop(u8* body, u16 bodySize);
 extern void packet_0A_just_generate(u8* body, u16 bodySize);
 
+extern void KERNEL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
+extern void KERNEL_Init();
+extern void KERNEL_Task();
+
 
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim2;
