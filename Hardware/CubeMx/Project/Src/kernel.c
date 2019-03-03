@@ -349,8 +349,8 @@ void packet_0A_just_generate(u8* body, u16 bodySize){
 }
 
 volatile u32 t1Counter=0;
-volatile u32 t1Overflow=4860;//4860;//243000/50;
-volatile u32 t1Switch=4850;//4850;
+volatile u32 t1Overflow=1010;//4860;//243000/50;
+volatile u32 t1Switch=1000;//4850;
 volatile u16 t1PeriodHalfWave=42;
 
 void KERNEL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
