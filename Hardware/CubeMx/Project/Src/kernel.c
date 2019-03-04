@@ -57,8 +57,7 @@ volatile void setFeatureState(u8 feature, bool state){
 	if (feature==FEATURE_CARRIER){
 		State.F1=state;
 		if (state==TRUE){
-			HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-			HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
+
 
 			//Восстанавливаем другие таймеры
 			if (State.F10==TRUE){
@@ -85,6 +84,10 @@ volatile void setFeatureState(u8 feature, bool state){
 				HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
 				HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
 			}
+
+			HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+			HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
+			HAL_TIM_Base_Start_IT(&htim1);
 
 		}else{
 			HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
@@ -342,5 +345,39 @@ void packet_0A_just_generate(u8* body, u16 bodySize){
 	}else if (feature==FEATURE_PWR){
 		//htim16.Instance->ARR=period;
 		//htim16.Instance->CCR1=duty;
+	}
+}
+
+volatile u32 t1Counter=0;
+volatile u32 t1Overflow=1010;//4860;//243000/50;
+volatile u32 t1Switch=1000;//4850;
+volatile u16 t1PeriodHalfWave=42;
+
+void KERNEL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+	if (htim->Instance == TIM1){
+		t1Counter++;
+		if (t1Counter==t1Switch){
+			htim1.Instance->ARR=t1PeriodHalfWave*2;
+			htim1.Instance->CCR1=t1PeriodHalfWave;
+		}
+		if (t1Counter>=t1Overflow){
+			htim1.Instance->ARR=t1PeriodHalfWave;
+			htim1.Instance->CCR1=t1PeriodHalfWave/2;
+			t1Counter=0;
+		}
+	}
+}
+
+void KERNEL_Init(){
+	htim1.Instance->ARR=t1PeriodHalfWave;
+	htim1.Instance->CCR1=t1PeriodHalfWave/2;
+	//HAL_TIM_Base_Start_IT(&htim1);
+}
+extern void KERNEL_Task(){
+	osDelay(100);
+	stopTimers();
+	setFeatureState(FEATURE_CARRIER,TRUE);
+	while(1){
+		osDelay(10000);
 	}
 }

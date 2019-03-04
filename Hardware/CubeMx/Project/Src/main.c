@@ -62,7 +62,7 @@ void StartDefaultTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-static void Init_GPIO_OpenDrain(void);
+void StartKernelTask(void const * argument);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -136,7 +136,8 @@ int main(void)
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
+  osThreadDef(kernelTask, StartKernelTask, osPriorityNormal, 0, 128);
+  osThreadCreate(osThread(kernelTask), NULL);
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
@@ -743,14 +744,10 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-void Init_GPIO_OpenDrain(){
-  GPIO_InitTypeDef GPIO_InitStruct;
-
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-  GPIO_InitStruct.Pin = GPIO_PIN_1;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+void StartKernelTask(void const * argument)
+{
+	KERNEL_Init();
+	KERNEL_Task();
 }
 /* USER CODE END 4 */
 
@@ -794,7 +791,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */
-
+  else{
+	  KERNEL_TIM_PeriodElapsedCallback(htim);
+  }
   /* USER CODE END Callback 1 */
 }
 
