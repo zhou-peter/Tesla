@@ -48,6 +48,13 @@ typedef enum
 	SearchPeriodIncrease=0,
 	SearchPeriodDecrease
 } SearchDirections;
+typedef enum
+{
+	ModeIdle,
+	ModeHalfWave,
+	ModeQuarterWave,
+	ModeSmoking
+} ModeStates;
 
 
 typedef struct
@@ -63,7 +70,7 @@ bool LedLight:8;
 SearcherStates SearcherState:4;
 bool SearchTimerEnabled:1;
 SearchDirections SearchDirection:3;
-u8 tmp1:8;
+ModeStates ModeState:8;
 u16	PeriodF1:16;
 u16	PeriodF10:16;
 } State_t;

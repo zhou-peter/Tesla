@@ -38,8 +38,9 @@ void startTimers(){
   //HAL_TIM_Base_Start(&htim2);
   //HAL_TIM_Base_Start(&htim3);
   //HAL_TIM_Base_Start(&htim4);
+
   HAL_TIM_Base_Start(&htim1);
-  HAL_TIM_Base_Start(&htim16);
+//HAL_TIM_Base_Start(&htim16);
 }
 
 
@@ -66,7 +67,7 @@ volatile void setFeatureState(u8 feature, bool state){
 			}
 
 			if (State.F2==TRUE){
-				HAL_TIM_PWM_Start(&htim15, TIM_CHANNEL_1);
+				//HAL_TIM_PWM_Start(&htim15, TIM_CHANNEL_1);
 			}
 			if (State.F3==TRUE){
 				HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
@@ -96,7 +97,7 @@ volatile void setFeatureState(u8 feature, bool state){
 			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_2);
 			HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_3);
 			HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_4);
-			HAL_TIM_PWM_Stop(&htim15, TIM_CHANNEL_1);
+			//HAL_TIM_PWM_Stop(&htim15, TIM_CHANNEL_1);
 			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_4);
 			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_3);
 			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_4);
@@ -106,13 +107,13 @@ volatile void setFeatureState(u8 feature, bool state){
 			HAL_TIM_PWM_Stop(&htim16, TIM_CHANNEL_1);
 			HAL_TIMEx_PWMN_Stop(&htim16, TIM_CHANNEL_1);
 		}
-	}else if (feature==FEATURE_BUNCH){
+	/*}else if (feature==FEATURE_BUNCH){
 		State.F2=state;
 		if (state==TRUE){
 			HAL_TIM_PWM_Start(&htim15, TIM_CHANNEL_1);
 		}else{
 			HAL_TIM_PWM_Stop(&htim15, TIM_CHANNEL_1);
-		}
+		}*/
 	}else if (feature==FEATURE_GAP){
 		State.F3=state;
 		if (state==TRUE){
@@ -348,36 +349,81 @@ void packet_0A_just_generate(u8* body, u16 bodySize){
 	}
 }
 
-volatile u32 t1Counter=0;
-volatile u32 t1Overflow=1010;//4860;//243000/50;
-volatile u32 t1Switch=1000;//4850;
+volatile u32 t1SmokeTo=20;//1030;
+volatile u32 t1Overflow=16;//1010;
+volatile u32 t1Switch=10;//1000;
 volatile u16 t1PeriodHalfWave=42;
 
 void KERNEL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-	if (htim->Instance == TIM1){
-		t1Counter++;
-		if (t1Counter==t1Switch){
-			htim1.Instance->ARR=t1PeriodHalfWave*2;
-			htim1.Instance->CCR1=t1PeriodHalfWave;
-		}
-		if (t1Counter>=t1Overflow){
-			htim1.Instance->ARR=t1PeriodHalfWave;
-			htim1.Instance->CCR1=t1PeriodHalfWave/2;
-			t1Counter=0;
+	if (htim->Instance == TIM15){
+		htim1.Instance->ARR=t1PeriodHalfWave;
+		htim1.Instance->CCR1=t1PeriodHalfWave/2;
+		if (State.ModeState!=ModeIdle){
+			State.ModeState=ModeHalfWave;
+			HAL_TIM_Base_Start_IT(&htim1);
 		}
 	}
 }
 
-void KERNEL_Init(){
+
+void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim){
+	if (htim->Instance == TIM15){
+        if (__HAL_TIM_GET_FLAG(&htim15, TIM_FLAG_CC1) == SET)
+        {
+            __HAL_TIM_CLEAR_IT(&htim15, TIM_IT_CC1);
+			State.ModeState=ModeQuarterWave;
+			htim1.Instance->ARR=t1PeriodHalfWave*2;
+			htim1.Instance->CCR1=t1PeriodHalfWave;
+        }
+        if (__HAL_TIM_GET_FLAG(&htim15, TIM_FLAG_CC2) == SET)
+        {
+            __HAL_TIM_CLEAR_IT(&htim15, TIM_IT_CC2);
+			State.ModeState=ModeSmoking;
+			HAL_TIM_Base_Stop(&htim1);
+        }
+	}
+}
+
+
+void startGeneration(){
+	HAL_TIM_Base_Start_IT(&htim15);
+	HAL_TIM_Base_Start_IT(&htim1);
+
 	htim1.Instance->ARR=t1PeriodHalfWave;
 	htim1.Instance->CCR1=t1PeriodHalfWave/2;
-	//HAL_TIM_Base_Start_IT(&htim1);
+
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+	HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
+}
+
+void KERNEL_Init(){
+	State.ModeState=ModeIdle;
+
+
+
+	htim1.Instance->ARR=t1PeriodHalfWave;
+	htim1.Instance->CCR1=t1PeriodHalfWave/2;
+
+	htim15.Instance->PSC=t1PeriodHalfWave;
+	htim15.Instance->ARR=t1SmokeTo;
+	htim15.Instance->CCR1=t1Switch;
+	htim15.Instance->CCR2=t1Overflow;
+
+
+	//__HAL_TIM_ENABLE_IT(&htim15, TIM_IT_UPDATE );
+	__HAL_TIM_ENABLE_IT(&htim15, TIM_IT_CC1 );
+	__HAL_TIM_ENABLE_IT(&htim15, TIM_IT_CC2 );
+	//HAL_TIM_OC_Start(&htim15, TIM_CHANNEL_1);
+	//HAL_TIM_OC_Start(&htim15, TIM_CHANNEL_2);
+	State.ModeState=ModeHalfWave;
 }
 extern void KERNEL_Task(){
 	osDelay(100);
-	stopTimers();
-	setFeatureState(FEATURE_CARRIER,TRUE);
+	resetTimerCounters();
+	startGeneration();
 	while(1){
 		osDelay(10000);
 	}
 }
+
+
