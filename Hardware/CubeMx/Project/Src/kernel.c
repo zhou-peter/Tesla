@@ -190,6 +190,7 @@ void packet_0A_just_generate(u8* body, u16 bodySize){
 #define t1SmokeTo 12 		//1030;
 #define t1Overflow 8		//1010;
 #define t1Switch 4			//1000;
+volatile u32 t1Counter=0;
 #define t1PeriodHalfWave 42
 #define htimc htim3
 #define TIMC TIM3
@@ -198,28 +199,34 @@ void KERNEL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	if (htim->Instance == TIM1){
 		if (State.ModeState==ModeHalfWave ||
 				State.ModeState==ModeSmoking){
-			htim1.Instance->ARR=t1PeriodHalfWave;
 			htim1.Instance->CCR1=t1PeriodHalfWave/2;
+			htim1.Instance->ARR=t1PeriodHalfWave;
 		}else if (State.ModeState==ModeQuarterWave){
 			htim1.Instance->ARR=t1PeriodHalfWave*2;
 			htim1.Instance->CCR1=t1PeriodHalfWave;
+
 		}
 	}
-	if (htim->Instance == TIMC){
-        if (htimc.Instance->CNT==t1Switch)
+	if (htim->Instance == TIMC &&
+			State.ModeState!=ModeIdle){
+		t1Counter++;
+        if (t1Counter==t1Switch)
         {
 			State.ModeState=ModeQuarterWave;
         }
-        else if (htimc.Instance->CNT==t1Overflow)
+        else if (t1Counter==t1Overflow)
         {
 			State.ModeState=ModeSmoking;
-			//HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
-			//HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_1);
+			HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
+			HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_1);
         }
-        else if (State.ModeState!=ModeIdle){
-			State.ModeState=ModeHalfWave;
-			HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-			HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
+        else if (t1Counter==t1SmokeTo) {
+        	t1Counter=0;
+        	if (State.ModeState!=ModeIdle){
+				State.ModeState=ModeHalfWave;
+				HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+				HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
+        	}
 		}
 	}
 }
