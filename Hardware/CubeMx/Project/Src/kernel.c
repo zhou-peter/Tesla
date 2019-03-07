@@ -18,178 +18,16 @@ u16 getU16(u8* ptr){
 	return result;
 }
 
-void resetTimerCounters(){
-	htim4.Instance->CNT=0;
-	htim2.Instance->CNT=0;
-	htim1.Instance->CNT=0;
-	htim3.Instance->CNT=0;
-	htim15.Instance->CNT=0;
-	htim16.Instance->CNT=0;
-}
-void stopTimers(){
-  HAL_TIM_Base_Stop(&htim2);
-  HAL_TIM_Base_Stop(&htim3);
-  HAL_TIM_Base_Stop(&htim4);
-  HAL_TIM_Base_Stop(&htim15);
-  HAL_TIM_Base_Stop(&htim16);
-  HAL_TIM_Base_Stop(&htim1);
-}
-void startTimers(){
-  //HAL_TIM_Base_Start(&htim2);
-  //HAL_TIM_Base_Start(&htim3);
-  //HAL_TIM_Base_Start(&htim4);
-
-  HAL_TIM_Base_Start(&htim1);
-//HAL_TIM_Base_Start(&htim16);
-}
-
-
-#define	FEATURE_CARRIER 		1
-#define	FEATURE_BUNCH 			2
-#define	FEATURE_GAP				3
-#define	FEATURE_GAP_INDENT		6
-#define	FEATURE_SKIP_HIGH		4
-#define	FEATURE_SKIP_LOW		5
-#define FEATURE_PWR				10
-
-volatile void setFeatureState(u8 feature, bool state){
-	stopTimers();
-
-	if (feature==FEATURE_CARRIER){
-		State.F1=state;
-		if (state==TRUE){
-
-
-			//Восстанавливаем другие таймеры
-			if (State.F10==TRUE){
-				HAL_TIM_PWM_Start(&htim16, TIM_CHANNEL_1);
-				HAL_TIMEx_PWMN_Start(&htim16, TIM_CHANNEL_1);
-			}
-
-			if (State.F2==TRUE){
-				//HAL_TIM_PWM_Start(&htim15, TIM_CHANNEL_1);
-			}
-			if (State.F3==TRUE){
-				//HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
-				//HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
-			}
-			if (State.F4==TRUE){
-				HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
-				HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
-			}
-			if (State.F5==TRUE){
-				HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
-				HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-			}
-			if (State.F6==TRUE){
-				HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
-				HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
-			}
-
-			HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-			HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
-			HAL_TIM_Base_Start_IT(&htim1);
-
-		}else{
-			HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
-			HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_1);
-			//При отключение основного, отключем всё
-			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_2);
-			HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_3);
-			HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_4);
-			//HAL_TIM_PWM_Stop(&htim15, TIM_CHANNEL_1);
-			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_4);
-			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_3);
-			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_4);
-			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
-			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
-
-			HAL_TIM_PWM_Stop(&htim16, TIM_CHANNEL_1);
-			HAL_TIMEx_PWMN_Stop(&htim16, TIM_CHANNEL_1);
-		}
-	/*}else if (feature==FEATURE_BUNCH){
-		State.F2=state;
-		if (state==TRUE){
-			HAL_TIM_PWM_Start(&htim15, TIM_CHANNEL_1);
-		}else{
-			HAL_TIM_PWM_Stop(&htim15, TIM_CHANNEL_1);
-		}*/
-	}else if (feature==FEATURE_GAP){
-		State.F3=state;
-		if (state==TRUE){
-			HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
-			HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
-		}else{
-			HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_3);
-			HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_4);
-		}
-	}else if (feature==FEATURE_GAP_INDENT){
-		State.F6=state;
-		if (state==TRUE){
-			HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
-			HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
-		}else{
-			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_2);
-			HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_4);
-		}
-	}else if (feature==FEATURE_SKIP_HIGH){
-		State.F4=state;
-		if (state==TRUE){
-			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
-			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
-		}else{
-			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_3);
-			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_4);
-		}
-	}else if (feature==FEATURE_SKIP_LOW){
-		State.F5=state;
-		if (state==TRUE){
-			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
-			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-		}else{
-			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
-			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
-		}
-	}else if (feature==FEATURE_PWR){
-		State.F10=state;
-		if (state==TRUE){
-			//start with timer 1
-			//HAL_TIM_PWM_Start(&htim16, TIM_CHANNEL_1);
-			//HAL_TIMEx_PWMN_Start(&htim16, TIM_CHANNEL_1);
-		}else{
-			HAL_TIM_PWM_Stop(&htim16, TIM_CHANNEL_1);
-			HAL_TIMEx_PWMN_Stop(&htim16, TIM_CHANNEL_1);
-		}
-	}
-
-	if (State.F1==TRUE){
-		startTimers();
-	}
-
-/*
-	u16 cntT1=htim1.Instance->CNT;
-	u16 cntT2=htim2.Instance->CNT;
-	u16 cntT3=htim3.Instance->CNT;
-	u16 cntT4=htim4.Instance->CNT;
-	ITM_SendChar('A');
-*/
-	stopTimers();
-	resetTimerCounters();
-	startTimers();
-}
-
-
-
 
 void packet_02_feature_change(u8* body, u16 bodySize){
-	u8 num = *(body);
+	/*u8 num = *(body);
 	bool enable = getBool(*(body+1));
-	setFeatureState(num, enable);
+	setFeatureState(num, enable);*/
 }
 void packet_04_timer_config(u8* body, u16 bodySize){
-	stopTimers();
+	/*stopTimers();
 	resetTimerCounters();
-	/*
+
 Период несущей
 Период проломов
 Старт пролома
@@ -202,7 +40,7 @@ void packet_04_timer_config(u8* body, u16 bodySize){
 Стоп пропуска верхнего плеча
 Отступ пропуск нижнее плечо
 Стоп пропуска нижнее плеча
-	*/
+
 	u8* p=body;
 	htim1.Instance->ARR=getU16(p);
 	p+=2;
@@ -231,7 +69,7 @@ void packet_04_timer_config(u8* body, u16 bodySize){
 	p+=2;
 	htim2.Instance->CCR2=getU16(p);
 
-	startTimers();
+	startTimers();*/
 }
 
 
@@ -286,7 +124,7 @@ void vTimerSearcher(TimerHandle_t xTimer )
 
 
 void packet_06_search(u8* body, u16 bodySize){
-	u8* p=body;
+/*	u8* p=body;
 	State.SearcherState=SearchIdle;
 
 	SearchState.SearchFrom=getU16(p);
@@ -309,17 +147,17 @@ void packet_06_search(u8* body, u16 bodySize){
 
 	State.SearcherState=Searching;
 	startSearchSoftTimer(delay);
-
+*/
 }
 void packet_08_search_stop(u8* body, u16 bodySize){
-	HAL_TIM_PWM_Stop(&htim16, TIM_CHANNEL_1);
+	/*HAL_TIM_PWM_Stop(&htim16, TIM_CHANNEL_1);
 	HAL_TIMEx_PWMN_Stop(&htim16, TIM_CHANNEL_1);
 	State.SearcherState=SearchIdle;
-	stopSearchSoftTimer();
+	stopSearchSoftTimer();*/
 }
 
 void packet_0A_just_generate(u8* body, u16 bodySize){
-	u8* p=body;
+/*	u8* p=body;
 	u16 period=getU16(p);
 	p+=2;
 	u16 duty=getU16(p);
@@ -327,14 +165,14 @@ void packet_0A_just_generate(u8* body, u16 bodySize){
 	u8 feature = *p;
 
 
-/*
+
 	if (State.SearcherState!=Generating){
 		stopSearchSoftTimer();
 		HAL_TIM_PWM_Start(&htim16, TIM_CHANNEL_1);
 		HAL_TIMEx_PWMN_Start(&htim16, TIM_CHANNEL_1);
 		State.SearcherState=Generating;
 	}
-*/
+
 
 
 	if (feature==FEATURE_CARRIER){
@@ -346,7 +184,7 @@ void packet_0A_just_generate(u8* body, u16 bodySize){
 	}else if (feature==FEATURE_PWR){
 		//htim16.Instance->ARR=period;
 		//htim16.Instance->CCR1=duty;
-	}
+	}*/
 }
 
 #define t1SmokeTo 12 		//1030;
@@ -368,17 +206,25 @@ void KERNEL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 		}
 	}
 	if (htim->Instance == TIMC){
-
-		if (State.ModeState!=ModeIdle){
+        if (htimc.Instance->CNT==t1Switch)
+        {
+			State.ModeState=ModeQuarterWave;
+        }
+        else if (htimc.Instance->CNT==t1Overflow)
+        {
+			State.ModeState=ModeSmoking;
+			//HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
+			//HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_1);
+        }
+        else if (State.ModeState!=ModeIdle){
 			State.ModeState=ModeHalfWave;
-
 			HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
 			HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
 		}
 	}
 }
 
-
+/*
 void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim){
 
 	if (htim->Instance == TIMC){
@@ -391,22 +237,33 @@ void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim){
         {
             __HAL_TIM_CLEAR_FLAG(&htimc, TIM_FLAG_CC2);
 			State.ModeState=ModeSmoking;
-			HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
-			HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_1);
+			//HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
+			//HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_1);
         }
 	}
 }
-
+*/
 
 void startGeneration(){
-	HAL_TIM_Base_Start_IT(&htimc);
-	HAL_TIM_Base_Start_IT(&htim1);
+	HAL_TIM_OC_Start_IT(&htimc, TIM_CHANNEL_1);
+	HAL_TIM_OC_Start_IT(&htimc, TIM_CHANNEL_2);
 
 	htim1.Instance->ARR=t1PeriodHalfWave;
 	htim1.Instance->CCR1=t1PeriodHalfWave/2;
 
+	//HAL_TIM_OC_Start(&htimc, TIM_CHANNEL_1);
+	//HAL_TIM_OC_Start(&htimc, TIM_CHANNEL_2);
+
+
 	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
 	HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
+
+	HAL_TIM_Base_Start_IT(&htim1);
+	HAL_TIM_Base_Start_IT(&htimc);
+
+	HAL_TIM_Base_Start(&htim1);
+	HAL_TIM_Base_Start(&htimc);
+	State.ModeState=ModeHalfWave;
 }
 
 void KERNEL_Init(){
@@ -417,21 +274,24 @@ void KERNEL_Init(){
 	htim1.Instance->ARR=t1PeriodHalfWave;
 	htim1.Instance->CCR1=t1PeriodHalfWave/2;
 
+
+
 	htimc.Instance->PSC=t1PeriodHalfWave;
 	htimc.Instance->ARR=t1SmokeTo;
-	htimc.Instance->CCR1=t1Switch;
-	htimc.Instance->CCR2=t1Overflow;
+	//htimc.Instance->CCR1=t1Switch;
+	//htimc.Instance->CCR2=t1Overflow;
+
+	
+	__HAL_TIM_ENABLE_IT(&htim1, TIM_IT_UPDATE);
+	__HAL_TIM_ENABLE_IT(&htimc, TIM_IT_UPDATE);
+	//__HAL_TIM_ENABLE_IT(&htimc, TIM_IT_CC1 );
+	//__HAL_TIM_ENABLE_IT(&htimc, TIM_IT_CC2 );
 
 
-	__HAL_TIM_ENABLE_IT(&htimc, TIM_IT_CC1 );
-	__HAL_TIM_ENABLE_IT(&htimc, TIM_IT_CC2 );
-	HAL_TIM_OC_Start(&htimc, TIM_CHANNEL_1);
-	HAL_TIM_OC_Start(&htimc, TIM_CHANNEL_2);
-	State.ModeState=ModeHalfWave;
 }
 extern void KERNEL_Task(){
 	osDelay(100);
-	resetTimerCounters();
+
 	startGeneration();
 	while(1){
 		osDelay(10000);
