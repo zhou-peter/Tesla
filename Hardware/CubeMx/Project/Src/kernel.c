@@ -70,8 +70,8 @@ volatile void setFeatureState(u8 feature, bool state){
 				//HAL_TIM_PWM_Start(&htim15, TIM_CHANNEL_1);
 			}
 			if (State.F3==TRUE){
-				HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
-				HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
+				//HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
+				//HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
 			}
 			if (State.F4==TRUE){
 				HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
@@ -349,44 +349,57 @@ void packet_0A_just_generate(u8* body, u16 bodySize){
 	}
 }
 
-volatile u32 t1SmokeTo=20;//1030;
-volatile u32 t1Overflow=16;//1010;
-volatile u32 t1Switch=10;//1000;
-volatile u16 t1PeriodHalfWave=42;
+#define t1SmokeTo 12 		//1030;
+#define t1Overflow 8		//1010;
+#define t1Switch 4			//1000;
+#define t1PeriodHalfWave 42
+#define htimc htim3
+#define TIMC TIM3
 
 void KERNEL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-	if (htim->Instance == TIM15){
-		htim1.Instance->ARR=t1PeriodHalfWave;
-		htim1.Instance->CCR1=t1PeriodHalfWave/2;
+	if (htim->Instance == TIM1){
+		if (State.ModeState==ModeHalfWave ||
+				State.ModeState==ModeSmoking){
+			htim1.Instance->ARR=t1PeriodHalfWave;
+			htim1.Instance->CCR1=t1PeriodHalfWave/2;
+		}else if (State.ModeState==ModeQuarterWave){
+			htim1.Instance->ARR=t1PeriodHalfWave*2;
+			htim1.Instance->CCR1=t1PeriodHalfWave;
+		}
+	}
+	if (htim->Instance == TIMC){
+
 		if (State.ModeState!=ModeIdle){
 			State.ModeState=ModeHalfWave;
-			HAL_TIM_Base_Start_IT(&htim1);
+
+			HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+			HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
 		}
 	}
 }
 
 
 void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim){
-	if (htim->Instance == TIM15){
-        if (__HAL_TIM_GET_FLAG(&htim15, TIM_FLAG_CC1) == SET)
+
+	if (htim->Instance == TIMC){
+        if (__HAL_TIM_GET_FLAG(&htimc, TIM_FLAG_CC1) == SET)
         {
-            __HAL_TIM_CLEAR_IT(&htim15, TIM_IT_CC1);
+            __HAL_TIM_CLEAR_FLAG(&htimc, TIM_FLAG_CC1);
 			State.ModeState=ModeQuarterWave;
-			htim1.Instance->ARR=t1PeriodHalfWave*2;
-			htim1.Instance->CCR1=t1PeriodHalfWave;
         }
-        if (__HAL_TIM_GET_FLAG(&htim15, TIM_FLAG_CC2) == SET)
+        if (__HAL_TIM_GET_FLAG(&htimc, TIM_FLAG_CC2) == SET)
         {
-            __HAL_TIM_CLEAR_IT(&htim15, TIM_IT_CC2);
+            __HAL_TIM_CLEAR_FLAG(&htimc, TIM_FLAG_CC2);
 			State.ModeState=ModeSmoking;
-			HAL_TIM_Base_Stop(&htim1);
+			HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
+			HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_1);
         }
 	}
 }
 
 
 void startGeneration(){
-	HAL_TIM_Base_Start_IT(&htim15);
+	HAL_TIM_Base_Start_IT(&htimc);
 	HAL_TIM_Base_Start_IT(&htim1);
 
 	htim1.Instance->ARR=t1PeriodHalfWave;
@@ -404,17 +417,16 @@ void KERNEL_Init(){
 	htim1.Instance->ARR=t1PeriodHalfWave;
 	htim1.Instance->CCR1=t1PeriodHalfWave/2;
 
-	htim15.Instance->PSC=t1PeriodHalfWave;
-	htim15.Instance->ARR=t1SmokeTo;
-	htim15.Instance->CCR1=t1Switch;
-	htim15.Instance->CCR2=t1Overflow;
+	htimc.Instance->PSC=t1PeriodHalfWave;
+	htimc.Instance->ARR=t1SmokeTo;
+	htimc.Instance->CCR1=t1Switch;
+	htimc.Instance->CCR2=t1Overflow;
 
 
-	//__HAL_TIM_ENABLE_IT(&htim15, TIM_IT_UPDATE );
-	__HAL_TIM_ENABLE_IT(&htim15, TIM_IT_CC1 );
-	__HAL_TIM_ENABLE_IT(&htim15, TIM_IT_CC2 );
-	//HAL_TIM_OC_Start(&htim15, TIM_CHANNEL_1);
-	//HAL_TIM_OC_Start(&htim15, TIM_CHANNEL_2);
+	__HAL_TIM_ENABLE_IT(&htimc, TIM_IT_CC1 );
+	__HAL_TIM_ENABLE_IT(&htimc, TIM_IT_CC2 );
+	HAL_TIM_OC_Start(&htimc, TIM_CHANNEL_1);
+	HAL_TIM_OC_Start(&htimc, TIM_CHANNEL_2);
 	State.ModeState=ModeHalfWave;
 }
 extern void KERNEL_Task(){
