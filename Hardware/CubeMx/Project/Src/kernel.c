@@ -187,13 +187,21 @@ void packet_0A_just_generate(u8* body, u16 bodySize){
 	}*/
 }
 
-#define t1SmokeTo 1200		//1030;
-#define t1Overflow 1020		//1010;
-#define t1Switch 1000			//1000;
+#define t1SmokeTo 8000		//1030;
+#define t1Overflow 5004		//1010;
+#define t1Switch 5000			//1000;
 volatile u32 t1Counter=0;
 #define t1PeriodHalfWave 42
 #define htimc htim3
 #define TIMC TIM3
+
+void prepareCycle(){
+	t1Counter=0;
+	State.ModeState=ModeHalfWave;
+	HAL_TIM_Base_Start(&htim1);
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+	HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
+}
 
 void KERNEL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	if (htim->Instance == TIMC &&
@@ -215,12 +223,10 @@ void KERNEL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 			HAL_TIM_Base_Stop(&htim1);
         }
         else if (t1Counter==t1SmokeTo) {
-        	t1Counter=0;
         	if (State.ModeState!=ModeIdle){
-				State.ModeState=ModeHalfWave;
-				HAL_TIM_Base_Start(&htim1);
-				HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-				HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
+        		prepareCycle();
+        	}else{
+        		t1Counter=0;
         	}
 		}
 	}
@@ -281,7 +287,11 @@ extern void KERNEL_Task(){
 
 	startGeneration();
 	while(1){
-		osDelay(10000);
+		osDelay(100);
+		if (t1Counter>t1SmokeTo)
+		{
+			prepareCycle();
+		}
 	}
 }
 
