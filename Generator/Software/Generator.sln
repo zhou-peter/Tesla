@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.271
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneratorCommunicationService", "TeslaCommunication\GeneratorCommunicationService.csproj", "{66C5F965-7C66-479A-9960-A3CA6080A71B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneratorClient", "TeslaDesktopClient\GeneratorClient.csproj", "{5B2AAEC9-2ABE-420A-ABF1-4219BAB38602}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{66C5F965-7C66-479A-9960-A3CA6080A71B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66C5F965-7C66-479A-9960-A3CA6080A71B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66C5F965-7C66-479A-9960-A3CA6080A71B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66C5F965-7C66-479A-9960-A3CA6080A71B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B2AAEC9-2ABE-420A-ABF1-4219BAB38602}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B2AAEC9-2ABE-420A-ABF1-4219BAB38602}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B2AAEC9-2ABE-420A-ABF1-4219BAB38602}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B2AAEC9-2ABE-420A-ABF1-4219BAB38602}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {87A616E5-941D-442B-94DC-E8508BEDB3B1}
+	EndGlobalSection
+EndGlobal

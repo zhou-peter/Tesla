@@ -1,0 +1,7 @@
+C:\Tesla\Generator\Software\TeslaCommunication\bin\TeslaCommunication.exe.config
+C:\Tesla\Generator\Software\TeslaCommunication\bin\TeslaCommunication.exe
+C:\Tesla\Generator\Software\TeslaCommunication\bin\TeslaCommunication.pdb
+C:\Tesla\Generator\Software\TeslaCommunication\obj\Debug\GeneratorCommunicationService.csprojAssemblyReference.cache
+C:\Tesla\Generator\Software\TeslaCommunication\obj\Debug\GeneratorCommunicationService.csproj.CoreCompileInputs.cache
+C:\Tesla\Generator\Software\TeslaCommunication\obj\Debug\TeslaCommunication.exe
+C:\Tesla\Generator\Software\TeslaCommunication\obj\Debug\TeslaCommunication.pdb

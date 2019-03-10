@@ -1,0 +1,11 @@
+C:\Tesla\Generator\Software\TeslaDesktopClient\bin\Debug\TeslaDesktopClient.exe.config
+C:\Tesla\Generator\Software\TeslaDesktopClient\bin\Debug\TeslaDesktopClient.exe
+C:\Tesla\Generator\Software\TeslaDesktopClient\bin\Debug\TeslaDesktopClient.pdb
+C:\Tesla\Generator\Software\TeslaDesktopClient\obj\Debug\GeneratorClient.csprojAssemblyReference.cache
+C:\Tesla\Generator\Software\TeslaDesktopClient\obj\Debug\TeslaDesktopClient.Form1.resources
+C:\Tesla\Generator\Software\TeslaDesktopClient\obj\Debug\TeslaDesktopClient.FreqChanger.resources
+C:\Tesla\Generator\Software\TeslaDesktopClient\obj\Debug\TeslaDesktopClient.Properties.Resources.resources
+C:\Tesla\Generator\Software\TeslaDesktopClient\obj\Debug\GeneratorClient.csproj.GenerateResource.cache
+C:\Tesla\Generator\Software\TeslaDesktopClient\obj\Debug\GeneratorClient.csproj.CoreCompileInputs.cache
+C:\Tesla\Generator\Software\TeslaDesktopClient\obj\Debug\TeslaDesktopClient.exe
+C:\Tesla\Generator\Software\TeslaDesktopClient\obj\Debug\TeslaDesktopClient.pdb

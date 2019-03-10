@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/TeslaCommunication" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/TeslaCommunication" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="HardwareState">
+    <xs:sequence>
+      <xs:element name="currentState" type="tns:HardwareState.SearchState" />
+      <xs:element name="enabledF1" type="xs:boolean" />
+      <xs:element name="enabledF10" type="xs:boolean" />
+      <xs:element name="enabledF2" type="xs:boolean" />
+      <xs:element name="enabledF3" type="xs:boolean" />
+      <xs:element name="enabledF4" type="xs:boolean" />
+      <xs:element name="enabledF5" type="xs:boolean" />
+      <xs:element name="enabledF6" type="xs:boolean" />
+      <xs:element name="ledLight" type="xs:boolean" />
+      <xs:element name="periodF1" type="xs:int" />
+      <xs:element name="periodF10" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="HardwareState" nillable="true" type="tns:HardwareState" />
+  <xs:simpleType name="HardwareState.SearchState">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Idle" />
+      <xs:enumeration value="Searching" />
+      <xs:enumeration value="Generating" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="HardwareState.SearchState" nillable="true" type="tns:HardwareState.SearchState" />
+  <xs:complexType name="TimersConfiguration">
+    <xs:sequence>
+      <xs:element name="dutyBunch" type="xs:int" />
+      <xs:element name="offGap" type="xs:int" />
+      <xs:element name="onGap" type="xs:int" />
+      <xs:element name="periodBunch" type="xs:int" />
+      <xs:element name="periodCarrier" type="xs:int" />
+      <xs:element name="periodGap" type="xs:int" />
+      <xs:element name="startGap" type="xs:int" />
+      <xs:element name="startHigh" type="xs:int" />
+      <xs:element name="startLow" type="xs:int" />
+      <xs:element name="stopGap" type="xs:int" />
+      <xs:element name="stopHigh" type="xs:int" />
+      <xs:element name="stopLow" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TimersConfiguration" nillable="true" type="tns:TimersConfiguration" />
+</xs:schema>
