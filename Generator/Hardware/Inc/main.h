@@ -11,7 +11,7 @@
   * inserted by the user or by software development tools
   * are owned by their respective copyright owners.
   *
-  * Copyright (c) 2018 STMicroelectronics International N.V. 
+  * Copyright (c) 2019 STMicroelectronics International N.V. 
   * All rights reserved.
   *
   * Redistribution and use in source and binary forms, with or without 
@@ -90,12 +90,6 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define TIMER_PERIOD 201
-#define BUNCH 6059
-#define BUNCH_DUTY 3015
-#define GAP_PERIOD 100
-#define GAP_START 75
-#define GAP_STOP 85
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
