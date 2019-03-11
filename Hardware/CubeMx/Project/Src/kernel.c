@@ -187,9 +187,9 @@ void packet_0A_just_generate(u8* body, u16 bodySize){
 	}*/
 }
 
-#define t1SmokeTo 8000		//1030;
-#define t1Overflow 5004		//1010;
-#define t1Switch 5000			//1000;
+#define t1SmokeTo 27		//1030;
+#define t1Overflow 24		//1010;
+#define t1Switch 20			//1000;
 volatile u32 t1Counter=0;
 #define t1PeriodHalfWave 42
 #define htimc htim3

@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <WindowState xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Delta>48</Delta>
-  <FromF1>130</FromF1>
-  <ToF1>30</ToF1>
+  <FromF1>150</FromF1>
+  <ToF1>5</ToF1>
   <CurrentF1>99</CurrentF1>
   <DutyF1>49</DutyF1>
   <FromF10>1000</FromF10>
