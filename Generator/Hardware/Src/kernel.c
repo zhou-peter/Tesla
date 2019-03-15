@@ -38,6 +38,10 @@ volatile void setFeatureState(u8 feature, bool state){
 	stopTimers();
 
 	if (feature==FEATURE_CARRIER){
+		u16 period = htim1.Instance->ARR;
+		if (period<2){
+			return;
+		}
 		State.F1=state;
 		if (state==TRUE){
 			HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);

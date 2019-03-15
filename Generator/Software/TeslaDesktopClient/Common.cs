@@ -8,6 +8,6 @@ namespace TeslaDesktopClient
 {
     public class Common
     {
-        public const long CPU_FREQ = 20000000;
+        public const long CPU_FREQ = 24000000;
     }
 }
