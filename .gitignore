@@ -24,3 +24,7 @@ Hardware/StepMotorDriver/Altium/__Previews/Main.SchDocPreview
 Hardware/StepMotorDriver/Altium/__Previews/Main.SchDocPreview
 SSTC_RomanCorp/Altium/History/*
 SSTC_RomanCorp/Altium/__Previews/*
+Generator/Software/.vs/*
+Generator/Software/.vs/Generator/v15/.suo
+Generator/Software/TeslaDesktopClient/bin/*
+Generator/Software/TeslaDesktopClient/obj/*
