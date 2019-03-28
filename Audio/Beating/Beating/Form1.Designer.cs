@@ -36,7 +36,7 @@
             // 
             this.channel1.Location = new System.Drawing.Point(-23, -46);
             this.channel1.Name = "channel1";
-            this.channel1.Size = new System.Drawing.Size(500, 181);
+            this.channel1.Size = new System.Drawing.Size(500, 102);
             this.channel1.TabIndex = 0;
             // 
             // channel2
