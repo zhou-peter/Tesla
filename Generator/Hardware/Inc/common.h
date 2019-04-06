@@ -1,6 +1,6 @@
 #ifndef __COMMON_H
 #define __COMMON_H
-
+#define USE_FULL_ASSERT
 
 #include <stdio.h>
 

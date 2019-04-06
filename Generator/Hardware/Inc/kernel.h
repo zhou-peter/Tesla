@@ -9,6 +9,7 @@ extern void packet_02_feature_change(u8* body, u16 bodySize);
 extern void packet_04_timer_config(u8* body, u16 bodySize);
 extern void packet_0A_just_generate(u8* body, u16 bodySize);
 
-
+extern void KERNEL_Init();
 extern TIM_HandleTypeDef htim1;
+extern TIM_HandleTypeDef htim3;
 #endif
