@@ -79,7 +79,7 @@ void packet_02_feature_change(u8* body, u16 bodySize) {
 	setFeatureState(num, enable);
 }
 
-volatile u16 steps = 4;
+volatile u16 steps = 12;
 
 void packet_0A_just_generate(u8* body, u16 bodySize) {
 	u8* p = body;
@@ -124,7 +124,7 @@ void KERNEL_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		HAL_TIM_Base_Start(&htim1);*/
 		htim1.Instance->CNT = 0;
 		//resetTimerCounters();
-		counter++;
+		//counter++;
 	}
 
 }

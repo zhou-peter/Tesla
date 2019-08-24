@@ -112,3 +112,5 @@ StyleCopReport.xml
 *.svclog
 *.scc
 
+Limansky/Altium/History/*
+SSTC_RomanCorp/Altium/__Previews/*
