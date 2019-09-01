@@ -113,4 +113,5 @@ StyleCopReport.xml
 *.scc
 
 Limansky/Altium/History/*
+Limansky/History/*
 SSTC_RomanCorp/Altium/__Previews/*
