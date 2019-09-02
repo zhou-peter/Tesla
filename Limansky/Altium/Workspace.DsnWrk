@@ -4,3 +4,5 @@ Version=1.0
 ProjectPath=..\..\Hardware\Altium\IR Discrete MOSFET - Power.LibPkg
 [Project2]
 ProjectPath=Project.PrjPCB
+[Project3]
+ProjectPath=..\..\Hardware\Altium\Miscellaneous Devices.LibPkg
