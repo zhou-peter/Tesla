@@ -9,6 +9,7 @@
 #include "main.h"
 #include "main2.h"
 
+#define htimMain htim7
 volatile u16 ADC_Buf[2];
 volatile Env_t Env;
 
@@ -19,13 +20,14 @@ extern void stopTimers();
 
 void initMain() {
 	//100Ãö
-	Env.freq = 100;
+	/*Env.freq = 100;
 	Env.freq2=100;
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
 	HAL_ADC_Start_DMA(&hadc1, &ADC_Buf, 2);
 	hdma_adc1.XferCpltCallback=adcComplete;
+	*/
 	stopTimers();
-	checkState();
+	//checkState();
 	//__HAL_TIM_ENABLE_IT(&htim3, TIM_IT_UPDATE);
 	//__HAL_TIM_ENABLE_IT(&htim3, TIM_IT_CC1);
 	//HAL_TIM_OC_Start(&htim3, TIM_CHANNEL_1);
@@ -73,34 +75,26 @@ void updateTImerValues() {
 	u16 period=result&0xFFFF;
 	u8 prescaler=result>>16;
 
-	htim3.Instance->PSC = prescaler;
-	htim3.Instance->ARR = period;
-	htim3.Instance->CCR4 = period / 2;
+	htimMain.Instance->PSC = prescaler;
+	htimMain.Instance->ARR = period;
+	htimMain.Instance->CCR4 = period / 2;
 
 	result=calculatePeriodAndPrescaler(Env.freq2);
 	period=result&0xFFFF;
 	prescaler=result>>16;
 
-	htim1.Instance->PSC = prescaler;
-	htim1.Instance->ARR = period;
-	htim1.Instance->CCR1 = period / 2;
+
 
 }
 
 void startTimers(){
-	HAL_TIM_Base_Start(&htim1);
-	HAL_TIM_Base_Start(&htim3);
+	HAL_TIM_Base_Start(&htimMain);
 
-	HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
+
 }
 
 void stopTimers(){
-	HAL_TIM_Base_Stop(&htim1);
-	HAL_TIM_Base_Stop(&htim3);
-
-	HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_4);
+	HAL_TIM_Base_Stop(&htimMain);
 }
 
 //get enable pin
@@ -137,7 +131,7 @@ void checkState() {
 	}
 }
 
-void checkSpeed() {
+void checkSpeed() {/*
 	u16 max = 0x0FFF;
 	bool shouldUpdate = FALSE;
 
@@ -172,7 +166,7 @@ void checkSpeed() {
 	if (shouldUpdate == TRUE) {
 		Env.freq2 = Env.freq * Env.k;
 		updateTImerValues();
-	}
+	}*/
 }
 
  void HAL_GPIO_EXTI_Callback(u16 pin){

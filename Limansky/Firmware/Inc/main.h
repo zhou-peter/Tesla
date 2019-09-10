@@ -70,8 +70,6 @@ extern "C" {
 
 /* USER CODE END EM */
 
-void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
-
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
@@ -82,6 +80,32 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define TIMER_PERIOD 1000
 #define TIMER_PRESCALER 100
+#define SD_Pin GPIO_PIN_0
+#define SD_GPIO_Port GPIOB
+#define A1_LO_Pin GPIO_PIN_1
+#define A1_LO_GPIO_Port GPIOB
+#define A1_HI_Pin GPIO_PIN_2
+#define A1_HI_GPIO_Port GPIOB
+#define C1_HI_Pin GPIO_PIN_10
+#define C1_HI_GPIO_Port GPIOB
+#define C2_LO_Pin GPIO_PIN_11
+#define C2_LO_GPIO_Port GPIOB
+#define C2_HI_Pin GPIO_PIN_12
+#define C2_HI_GPIO_Port GPIOB
+#define A2_LO_Pin GPIO_PIN_3
+#define A2_LO_GPIO_Port GPIOB
+#define A2_HI_Pin GPIO_PIN_4
+#define A2_HI_GPIO_Port GPIOB
+#define B1_LO_Pin GPIO_PIN_5
+#define B1_LO_GPIO_Port GPIOB
+#define B1_HI_Pin GPIO_PIN_6
+#define B1_HI_GPIO_Port GPIOB
+#define B2_LO_Pin GPIO_PIN_7
+#define B2_LO_GPIO_Port GPIOB
+#define B2_HI_Pin GPIO_PIN_8
+#define B2_HI_GPIO_Port GPIOB
+#define C1_LO_Pin GPIO_PIN_9
+#define C1_LO_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 
