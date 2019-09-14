@@ -11,7 +11,9 @@
 #include "main.h"
 
 #define MAX_PERIOD 0xFFFF
-extern TIM_HandleTypeDef htim7;
+
+
+extern TIM_HandleTypeDef htim15;
 extern ADC_HandleTypeDef hadc1;
 extern DMA_HandleTypeDef hdma_adc1;
 

@@ -241,7 +241,10 @@
 #ifdef HAL_GPIO_MODULE_ENABLED
 #include "stm32f1xx_hal_gpio.h"
 #endif /* HAL_GPIO_MODULE_ENABLED */
-
+/*
+#ifdef HAL_EXTI_MODULE_ENABLED
+#include "stm32f1xx_hal_exti.h"
+#endif  HAL_EXTI_MODULE_ENABLED */
 
 #ifdef HAL_DMA_MODULE_ENABLED
 #include "stm32f1xx_hal_dma.h"

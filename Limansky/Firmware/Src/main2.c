@@ -9,7 +9,7 @@
 #include "main.h"
 #include "main2.h"
 
-#define htimMain htim7
+#define htimMain htim15
 volatile u16 ADC_Buf[2];
 volatile Env_t Env;
 
@@ -19,18 +19,16 @@ extern void checkSpeed();
 extern void stopTimers();
 
 void initMain() {
-	//100Ãö
-	/*Env.freq = 100;
-	Env.freq2=100;
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
-	HAL_ADC_Start_DMA(&hadc1, &ADC_Buf, 2);
-	hdma_adc1.XferCpltCallback=adcComplete;
-	*/
+	//5Ãö 60/12
+	Env.freq = 60;
+
 	stopTimers();
+	updateTImerValues();
+
+	__HAL_TIM_ENABLE_IT(&htimMain, TIM_IT_UPDATE);
+	__HAL_TIM_ENABLE_IT(&htimMain, TIM_IT_CC1);
+	HAL_TIM_OC_Start(&htimMain, TIM_CHANNEL_1);
 	//checkState();
-	//__HAL_TIM_ENABLE_IT(&htim3, TIM_IT_UPDATE);
-	//__HAL_TIM_ENABLE_IT(&htim3, TIM_IT_CC1);
-	//HAL_TIM_OC_Start(&htim3, TIM_CHANNEL_1);
 }
 
 
@@ -40,6 +38,7 @@ void loopMain() {
 	HAL_Delay(10);
 
 	checkState();
+	startTimers();
 	while (1) {
 		/*int shortCounter = 10;
 		while (shortCounter--) {
@@ -70,6 +69,7 @@ u32 calculatePeriodAndPrescaler(u32 freq){
 }
 
 void updateTImerValues() {
+
 	u32 tmp=Env.freq;
 	u32 result=calculatePeriodAndPrescaler(tmp);
 	u16 period=result&0xFFFF;
@@ -77,17 +77,12 @@ void updateTImerValues() {
 
 	htimMain.Instance->PSC = prescaler;
 	htimMain.Instance->ARR = period;
-	htimMain.Instance->CCR4 = period / 2;
-
-	result=calculatePeriodAndPrescaler(Env.freq2);
-	period=result&0xFFFF;
-	prescaler=result>>16;
-
-
+	htimMain.Instance->CCR1 = period - 10;
 
 }
 
 void startTimers(){
+	HAL_TIM_OC_Start(&htimMain,TIM_CHANNEL_1);
 	HAL_TIM_Base_Start(&htimMain);
 
 
@@ -101,7 +96,7 @@ void stopTimers(){
 //direction pin
 //enable or disable timer
 void checkState() {
-
+/*
 	//enable/disable
 	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_1)) {
 		if (Env.Enabled == FALSE) {
@@ -128,6 +123,57 @@ void checkState() {
 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
+	}
+	*/
+}
+
+
+void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim)
+{
+
+
+		switch(Env.CurrentStep){
+		case StepA:
+			Env.CurrentStep=StepA_B;
+			break;
+		case StepB:
+			Env.CurrentStep=StepB_C;
+			break;
+		case StepC:
+			Env.CurrentStep=StepC_MA;
+			break;
+		case StepMA:
+			Env.CurrentStep=StepMA_MB;
+			break;
+		case StepMB:
+			Env.CurrentStep=StepMB_MC;
+			break;
+		case StepMC:
+			Env.CurrentStep=StepMC_A;
+			break;
+	}
+}
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	switch(Env.CurrentStep){
+		case StepA_B:
+			Env.CurrentStep=StepB;
+			break;
+		case StepB_C:
+			Env.CurrentStep=StepC;
+			break;
+		case StepC_MA:
+			Env.CurrentStep=StepMA;
+			break;
+		case StepMA_MB:
+			Env.CurrentStep=StepMB;
+			break;
+		case StepMB_MC:
+			Env.CurrentStep=StepMC;
+			break;
+		case StepMC_A:
+			Env.CurrentStep=StepA;
+			break;
 	}
 }
 
