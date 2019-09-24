@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html dir="ltr" class="" lang="en-US"><head prefix="og: http://ogp.me/ns#">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <script type="text/javascript" id="www-widgetapi-script" src="intercept%20requests_files/www-widgetapi.js" async=""></script><script async="" src="intercept%20requests_files/analytics.js"></script><script>(function(d) { d.className = d.className.replace(/\bno-js/, ''); })(document.documentElement);</script>
+  <title>Intercept HTTP requests - Mozilla | MDN</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="index, follow">
+
+  
+<link rel="preload" href="https://cdn.mdn.mozilla.net/static/fonts/locales/ZillaSlab-Bold.8d7f01331d2b.woff2" as="font" type="font/woff2" crossorigin="">
+<link rel="preload" href="https://cdn.mdn.mozilla.net/static/fonts/locales/ZillaSlab-Regular.f9de6143fdfa.woff2" as="font" type="font/woff2" crossorigin="">
+    <link rel="home" href="https://developer.mozilla.org/en-US/">
+    <link rel="license" href="#license">
+  
+
+  
+    
+    
+
+    <link href="intercept%20requests_files/mdn.css" rel="stylesheet" type="text/css">
+
+    
+  
+
+    <link href="intercept%20requests_files/wiki.css" rel="stylesheet" type="text/css">
+
+
+    
+      
+        <link href="intercept%20requests_files/zone-addons.css" rel="stylesheet" type="text/css">
+      
+    
+
+  <link href="intercept%20requests_files/locale-en-US.css" rel="stylesheet" type="text/css">
+
+  
+    <script type="text/javascript" src="intercept%20requests_files/mozilla-dnthelper.js" charset="utf-8"></script>
+    
+
+<script type="text/javascript">
+    // only load GA if DNT is not enabled
+    if (Mozilla && !Mozilla.dntEnabled()) {
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-36116321-5', 'mozilla.org');
+        ga('set', 'anonymizeIp', true);
+
+        
+
+        // dimension9 == "Section editing"
+        
+            // dimension12 == 'Page Revision'
+            ga('set', 'dimension12', '1365203');
+            // dimension17 == 'English Slug'
+            ga('set', 'dimension17', 'Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests');
+
+        (function() {
+            // http://cfsimplicity.com/61/removing-analytics-clutter-from-campaign-urls
+            var win = window;
+            var removeUtms = function(){
+                var location = win.location;
+                if (location.href.indexOf('utm') != -1 && win.history.replaceState) {
+                    win.history.replaceState({}, '', location.pathname);
+                }
+            };
+
+            ga('send', 'pageview', {'hitCallback': removeUtms});
+        })();
+    }
+</script>
+
+  
+    <!-- common social tags -->
+    
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://cdn.mdn.mozilla.net/static/img/opengraph-logo.72382e605ce3.png">
+    <meta property="og:site_name" content="MDN Web Docs">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:image" content="https://cdn.mdn.mozilla.net/static/img/opengraph-logo.72382e605ce3.png">
+    <meta name="twitter:site" content="@MozDevNet">
+    <meta name="twitter:creator" content="@MozDevNet">
+    <link rel="search" type="application/opensearchdescription+xml" href="https://developer.mozilla.org/en-US/search/xml" title="MDN Web Docs">
+  
+
+  <!-- third-generation iPad with high-resolution Retina display: -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://cdn.mdn.mozilla.net/static/img/favicon144.e7e21ca263ca.png">
+  <!-- iPhone with high-resolution Retina display: -->
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="https://cdn.mdn.mozilla.net/static/img/favicon114.d526f38b09c5.png">
+  <!-- first- and second-generation iPad: -->
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="https://cdn.mdn.mozilla.net/static/img/favicon72.cc65d1d762a0.png">
+  <!-- non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+  <link rel="apple-touch-icon-precomposed" href="https://cdn.mdn.mozilla.net/static/img/favicon57.de33179910ae.png">
+  <!-- basic favicon -->
+     <!-- basic favicon -->
+  
+    
+  
+  <link rel="shortcut icon" href="https://cdn.mdn.mozilla.net/static/img/favicon32.7f3da72dcea1.png">
+  <!--[if IE]>
+  <meta http-equiv="imagetoolbar" content="no">
+  <script type="text/javascript" src="https://cdn.mdn.mozilla.net/static/build/js/html5shiv.3948ccddab6f.js" charset="utf-8"></script>
+  <![endif]-->
+
+  
+  <link rel="dns-prefetch" href="https://interactive-examples.mdn.mozilla.net/" pr="0.75">
+  <link rel="preconnect" href="https://interactive-examples.mdn.mozilla.net/" pr="0.75">
+
+  <link rel="preload" href="https://interactive-examples.mdn.mozilla.net/js/codemirror-5-31-0.js" as="script">
+  <link rel="preload" href="https://interactive-examples.mdn.mozilla.net/js/editor-js.js" as="script">
+
+  <link rel="alternate" type="application/json" href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests$json">
+  <link rel="canonical" href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests">
+
+  
+    
+      <link rel="alternate" hreflang="es" href="https://developer.mozilla.org/es/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests" title="Interceptar peticiones HTTP">
+    
+      <link rel="alternate" hreflang="fr" href="https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/Intercepter_requ%C3%AAtes_HTTP" title="Intercepter les requêtes HTTP">
+    
+      <link rel="alternate" hreflang="ja" href="https://developer.mozilla.org/ja/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests" title="HTTP リクエストへの介入">
+    
+      <link rel="alternate" hreflang="pt-PT" href="https://developer.mozilla.org/pt-PT/docs/Mozilla/Add-ons/WebExtensions/Interceptar_Pedidos_HTTP" title="Interceptar Pedidos HTTP">
+    
+      <link rel="alternate" hreflang="ru" href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests" title="Intercept HTTP requests">
+    
+      <link rel="alternate" hreflang="zh-CN" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests" title="拦截HTTP请求">
+    
+  
+
+  <!-- document-specific social tags -->
+  <meta property="og:title" content="Intercept HTTP requests">
+  <meta property="og:url" content="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests">
+  <meta name="twitter:url" content="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests">
+  <meta name="twitter:title" content="Intercept HTTP requests">
+  
+  <meta property="og:description" content="To intercept HTTP requests, use the webRequest API. This API enables you to add listeners for various stages of making an HTTP request. In the listeners, you can:">
+  <meta name="description" content="To intercept HTTP requests, use the webRequest API. This API enables you to add listeners for various stages of making an HTTP request. In the listeners, you can:">
+  <meta name="twitter:description" content="To intercept HTTP requests, use the webRequest API. This API enables you to add listeners for various stages of making an HTTP request. In the listeners, you can:">
+  
+
+<script async="" data-manual="true" src="intercept%20requests_files/syntax-prism.js"></script></head>
+<body data-slug="Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests" contextmenu="" data-search-url="" class="document zone ">
+
+  <script type="text/javascript">
+    // make sure global mdn object exists
+    var mdn = window.mdn || {};
+
+    (function(win) {
+        'use strict';
+
+        (function(){
+  var FLAGS = {
+    'compat_data': true,'kumaediting': false,'line_length': true,'page_move': false,'registration_disabled': false,'search_suggestions': false,'section_edit': false,'sg_task_completion': false,'spam_admin_override': false,'spam_checks_enabled': true,'spam_spammer_override': false,'spam_submissions_enabled': false,'spam_testing_mode': false,'wiki_samples': true,'wiki_spam_exempted': false,'wiki_spam_training': false
+    },
+    SWITCHES = {
+    'wiki_error_on_delete': false,'wiki_force_immediate_rendering': false,'enable_optimizely': false,'welcome_email': true,'application_ACAO': true,'store_revision_ips': true,'dumb_doc_urls': true,'newsletter': true,'newsletter_article': true,'foundation_callout': false,'helpful-survey-2': true,'wiki_spam_training': true
+    },
+    SAMPLES = {
+    
+    };
+  window.waffle = {
+    "flag_is_active": function waffle_flag(flag_name) {
+      
+      return !!FLAGS[flag_name];
+    },
+    "switch_is_active": function waffle_switch(switch_name) {
+      
+      return !!SWITCHES[switch_name];
+    },
+    "sample_is_active": function waffle_sample(sample_name) {
+      
+      return !!SAMPLES[sample_name];
+    },
+    "FLAGS": FLAGS,
+    "SWITCHES": SWITCHES,
+    "SAMPLES": SAMPLES
+  };
+})();
+
+
+        // This needs to be set before ckeditor.js loads
+        window.CKEDITOR_BASEPATH = '/static/js/libs/ckeditor/build/ckeditor/';
+
+        // Site configuration
+        win.mdn.ckeditor = {};
+        win.mdn.features = {};
+        win.mdn.staticPath = 'https://cdn.mdn.mozilla.net/static/';
+        win.mdn.wiki = {
+            autosuggestTitleUrl: '/en-US/docs/get-documents'
+        };
+        win.mdn.assets = {
+            css: {
+                'editor-content': ['https://cdn.mdn.mozilla.net/static/build/styles/editor-content.fc2e2a3d4883.css','https://cdn.mdn.mozilla.net/static/build/styles/editor-locale-en-US.a0d0521e251c.css',
+                ],
+
+                'wiki-compat-tables': ['https://cdn.mdn.mozilla.net/static/build/styles/wiki-compat-tables.aed4662ba49c.css',]
+            },
+            js: {
+                'syntax-prism': ['https://cdn.mdn.mozilla.net/static/build/js/syntax-prism.05dc5663d445.js',],
+                'wiki-compat-tables': ['https://cdn.mdn.mozilla.net/static/build/js/wiki-compat-tables.003f4acf76ea.js',]
+            }
+        };
+
+        win.mdn.notifications = [];
+
+        
+
+        // interactive editor config
+        win.mdn.interactiveEditor = {
+            siteUrl: "https://developer.mozilla.org",
+            editorUrl: "https://interactive-examples.mdn.mozilla.net"
+        };
+
+    })(this);
+</script>
+    
+    <ul id="nav-access">
+  <li><a href="#content" id="skip-main">Skip to main content</a></li>
+  <li><a id="skip-language" href="#language">Select language</a></li>
+  <li><a href="#q" id="skip-search">Skip to search</a></li>
+</ul>
+
+    <!-- Header -->
+    <header id="main-header" class="header-main">
+      <a href="https://developer.mozilla.org/en-US/" class="logo">MDN Web Docs</a>
+      <div class="nav-toolbox-wrapper">
+        <nav id="main-nav" class="nav-main" role="navigation">
+    <ul>
+        <li class="nav-main-item">
+            <a href="https://developer.mozilla.org/en-US/docs/Web">Technologies
+                <i aria-hidden="true" class="icon-caret-down"></i>
+            </a>
+            <div class="submenu js-submenu" id="nav-tech-submenu">
+                <div class="submenu-column">
+                  <ul>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML">HTML</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS">CSS</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">JavaScript</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/Guide/Graphics">Graphics</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP">HTTP</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/API">APIs / DOM</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions">Browser Extensions</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/MathML">MathML</a></li>
+                  </ul>
+                </div>
+            </div>
+        </li>
+        <li class="nav-main-item">
+            <a href="https://developer.mozilla.org/en-US/docs/Learn">References &amp; Guides
+                <i aria-hidden="true" class="icon-caret-down"></i>
+            </a>
+            <div class="submenu js-submenu" id="nav-learn-submenu">
+                <div class="submenu-column">
+                  <ul>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Learn">Learn web development</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/Tutorials">Tutorials</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/Reference">References</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/Guide">Developer Guides</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility">Accessibility</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Games">Game development</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web">...more docs</a></li>
+                  </ul>
+                </div>
+            </div>
+        </li>
+        <li class="nav-main-item">
+            <a href="https://developer.mozilla.org/en-US/docs/MDN/Feedback">Feedback
+                <i aria-hidden="true" class="icon-caret-down"></i>
+            </a>
+            <div class="submenu js-submenu" id="nav-contact-submenu">
+              <div class="submenu-column">
+                <ul>
+                  <li>
+                      <a href="https://support.mozilla.org/">Get Firefox help
+                          <i aria-hidden="true" class="icon-external-link"></i>
+                      </a>
+                  </li>
+                  <li>
+                      <a href="https://stackoverflow.com/">Get web development help
+                          <i aria-hidden="true" class="icon-external-link"></i>
+                      </a>
+                  </li>
+                </ul>
+                <ul>
+                  <li>
+                      <a href="https://developer.mozilla.org/en-US/docs/MDN/Community">Join the MDN community</a>
+                  </li>
+                  <li>
+                      <a target="_blank" href="https://bugzilla.mozilla.org/form.doc?bug_file_loc=https%3A//developer.mozilla.org/en-US/Add-ons/WebExtensions/Intercept_HTTP_requests">Report a content problem
+                          <i aria-hidden="true" class="icon-external-link"></i>
+                      </a>
+                  </li>
+                  <li>
+                      <a target="_blank" href="https://bugzilla.mozilla.org/form.mdn">Report a bug
+                          <i aria-hidden="true" class="icon-external-link"></i>
+                      </a>
+                  </li>
+                </ul>
+              </div>
+          </div>
+      </li>
+  </ul>
+</nav>
+        <div id="toolbox" class="toolbox">
+  <ul>
+  <li class="nav-login"><div class="login">
+    
+        
+        <a href="https://developer.mozilla.org/users/github/login/?next=%2Fen-US%2FAdd-ons%2FWebExtensions%2FIntercept_HTTP_requests" class="login-link js-login-link" data-service="GitHub" rel="nofollow">
+            Sign in
+            <i class="icon-github" aria-hidden="true"></i>
+        </a>
+    
+</div></li>
+  </ul>
+</div>
+      </div>
+      <form id="nav-main-search" action="/en-US/search" method="get" role="search" class="nav-main-search">
+  <div class="search-wrap">
+    <label for="main-q" class="offscreen">Search</label>
+    <input id="main-q" name="q" placeholder="Search" data-value="" aria-hidden="true" type="search">
+    <span class="search-trigger"><i aria-hidden="true" class="icon-search"></i></span>
+    <button type="submit" class="offscreen">Search</button>
+    <button type="button" id="close-header-search" class="close-header-search transparent">
+        <span class="offscreen">Close search</span>
+        <i aria-hidden="true" class="icon-times"></i>
+    </button>
+  </div>
+</form>
+    </header> 
+
+  <!-- Content will go here -->
+  <main id="content" role="main">
+      
+  <!-- heading -->
+  <div id="wiki-document-head" class="document-head">
+    <div class="center">
+      <!-- action buttons -->
+      <div class="document-actions">
+        
+
+  
+    
+  
+
+  
+    
+  
+
+  
+
+  <ul class="page-buttons">
+      <li><button id="languages-menu" class="transparent" aria-haspopup="true" aria-owns="languages-menu-submenu" aria-expanded="false"><span>Languages</span><i aria-hidden="true" class="icon-language"></i></button>
+
+        <div class="submenu js-submenu" id="languages-menu-submenu">
+          <div class="submenu-column">
+            <ul id="translations">
+              
+                
+                
+                
+                  <li><bdi><a rel="internal" href="https://developer.mozilla.org/es/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests" data-locale="es" title="Spanish">Español (es)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/Intercepter_requ%C3%AAtes_HTTP" data-locale="fr" title="French">Français (fr)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="https://developer.mozilla.org/ja/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests" data-locale="ja" title="Japanese">日本語 (ja)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="https://developer.mozilla.org/pt-PT/docs/Mozilla/Add-ons/WebExtensions/Interceptar_Pedidos_HTTP" data-locale="pt-PT" title="Portuguese (Portugal)">Português (Europeu) (pt-PT)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests" data-locale="ru" title="Russian">Русский (ru)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests" data-locale="zh-CN" title="Chinese (Simplified)">中文 (简体) (zh-CN)</a></bdi></li>
+                
+              
+
+              
+                <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests$locales" rel="nofollow" id="translations-add">Add a translation</a></li>
+              
+            </ul>
+          </div>
+        </div>
+      </li>
+      
+      <li class="page-buttons-edit"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests$edit" class="button neutral" id="edit-button" rel="nofollow">Edit<i aria-hidden="true" class="icon-pencil"></i></a></li>
+      
+
+        
+
+        <li class="page-buttons-advanced"><button id="advanced-menu" class="only-icon" aria-haspopup="true" aria-owns="advanced-menu-submenu" aria-expanded="false"><span>Advanced</span><i aria-hidden="true" class="icon-cog"></i></button>
+        <div class="submenu js-submenu" id="advanced-menu-submenu">
+          <!-- this page -->
+          <div class="submenu-column">
+            <div class="title">Advanced</div>
+            <ul>
+                <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests$history" rel="nofollow">History</a></li>
+                
+                
+                
+
+
+                
+
+                
+                
+                
+                <li class="page-print"><a href="#" onclick="return window.print();">Print this article</a></li>
+            </ul>
+          </div>
+        </div>
+  </li></ul>
+      </div>
+
+      <div class="document-title">
+        
+          <!-- zone image, link to zone root -->
+          <a class="zone-parent" href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons">Add-ons</a>
+        
+
+        <h1>Intercept HTTP requests</h1>
+      </div>
+    </div>
+  </div>
+  
+  <div id="toc" class="toc">
+    <div class="center">
+      <div class="toc-head">Jump to:</div>
+        <ol class="toc-links">
+          <li><a href="#Logging_request_URLs" rel="internal" class="toc-current">Logging request URLs</a></li><li><a href="#Redirecting_requests" rel="internal" class="">Redirecting requests</a></li><li><a href="#Modifying_request_headers" rel="internal" class="">Modifying request headers</a></li><li><a href="#Learn_more" rel="internal" class="">Learn more</a>
+        </li></ol>
+    </div>
+  </div>
+  
+
+      <div class="center clear">
+      
+
+    <div class="wiki-main-content"><div class="center">
+      <!-- start the main content container -->
+        <div id="wiki-column-container" class="wiki-left-present">
+
+          <!-- content row with three strips -->
+          <div class="column-container column-container-reverse">
+
+            <!-- center: main article content -->
+            <div id="wiki-content" class="column-main wiki-column text-content">
+
+              
+
+              
+              
+
+              
+
+              
+              
+
+              <!-- just the article content -->
+              <article id="wikiArticle">
+                
+                  
+                    <div></div>
+
+<p>To intercept HTTP requests, use the <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest" title="Add event listeners for the various stages of making an HTTP request. The event listener receives detailed information about the request, and can modify or cancel the request."><code>webRequest</code></a> API. This API enables you to add listeners for various stages of making an HTTP request. In the listeners, you can:</p>
+
+<ul>
+ <li>get access to request headers and bodies, and response headers</li>
+ <li>cancel and redirect requests</li>
+ <li>modify request and response headers</li>
+</ul>
+
+<p>In this article we'll look at three different uses for the <code>webRequest</code> module:</p>
+
+<ul>
+ <li>Logging request URLs as they are made.</li>
+ <li>Redirecting requests.</li>
+ <li>Modifying request headers.</li>
+</ul>
+
+<h2 id="Logging_request_URLs">Logging request URLs</h2>
+
+<p>Create a new directory called "requests". In that directory, create a
+ file called "manifest.json" which has the following contents:</p>
+
+<pre class="brush: json line-numbers  language-json"><code class=" language-json"><span class="token punctuation">{</span>
+  <span class="token key">"description":</span> <span class="token string">"Demonstrating webRequests"</span><span class="token punctuation">,</span>
+  <span class="token key">"manifest_version":</span> <span class="token number">2</span><span class="token punctuation">,</span>
+  <span class="token key">"name":</span> <span class="token string">"webRequest-demo"</span><span class="token punctuation">,</span>
+  <span class="token key">"version":</span> <span class="token string">"1.0"</span><span class="token punctuation">,</span>
+
+  <span class="token key">"permissions":</span> <span class="token punctuation">[</span>
+    <span class="token string">"webRequest"</span><span class="token punctuation">,</span>
+    <span class="token string">"&lt;all_urls&gt;"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+
+  <span class="token key">"background":</span> <span class="token punctuation">{</span>
+    <span class="token key">"scripts":</span> <span class="token punctuation">[</span><span class="token string">"background.js"</span><span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Next, create a file called "background.js" with the following contents:</p>
+
+<pre class="brush: js line-numbers  language-js"><code class=" language-js"><span class="token keyword">function</span> <span class="token function">logURL</span><span class="token punctuation">(</span>requestDetails<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"Loading: "</span> <span class="token operator">+</span> requestDetails<span class="token punctuation">.</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+browser<span class="token punctuation">.</span>webRequest<span class="token punctuation">.</span>onBeforeRequest<span class="token punctuation">.</span><span class="token function">addListener</span><span class="token punctuation">(</span>
+  logURL<span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>urls<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"&lt;all_urls&gt;"</span><span class="token punctuation">]</span><span class="token punctuation">}</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Here we use <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onBeforeRequest" title="This event is triggered when a request is about to be made, and before headers are available. This is a good place to listen if you want to cancel or redirect the request."><code>onBeforeRequest</code></a> to call the <code>logURL()</code> function just before starting the request. The <code>logURL()</code> function grabs the URL of the request from the event object and logs it to the browser console. The <code>{urls: ["&lt;all_urls&gt;"]}</code> <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Match_patterns">pattern</a> means we will intercept HTTP requests to all URLs.</p>
+
+<p>To test it out, <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Temporary_Installation_in_Firefox">install the extension</a>, <a href="https://developer.mozilla.org/en-US/docs/Tools/Browser_Console">open the Browser Console</a>, and open some Web pages. In the Browser Console, you should see the URLs for any resources that the browser requests:</p>
+
+<p></p><div class="intrinsic-wrapper"><div class="intrinsic-container "><iframe src="intercept%20requests_files/X3rMgkRkB1Q.html" id="widget2"></iframe></div></div><p></p>
+
+<h2 id="Redirecting_requests">Redirecting requests</h2>
+
+<p>Now let's use <code>webRequest</code> to redirect HTTP requests. First, replace manifest.json with this:</p>
+
+<pre class="brush: json line-numbers  language-json"><code class=" language-json"><span class="token punctuation">{</span>
+
+  <span class="token key">"description":</span> <span class="token string">"Demonstrating webRequests"</span><span class="token punctuation">,</span>
+  <span class="token key">"manifest_version":</span> <span class="token number">2</span><span class="token punctuation">,</span>
+  <span class="token key">"name":</span> <span class="token string">"webRequest-demo"</span><span class="token punctuation">,</span>
+  <span class="token key">"version":</span> <span class="token string">"1.0"</span><span class="token punctuation">,</span>
+
+  <span class="token key">"permissions":</span> <span class="token punctuation">[</span>
+    <span class="token string">"webRequest"</span><span class="token punctuation">,</span>
+    <span class="token string">"webRequestBlocking"</span><span class="token punctuation">,</span>
+    <span class="token string">"https://developer.mozilla.org/"</span><span class="token punctuation">,</span>
+    <span class="token string">"https://mdn.mozillademos.org/"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+ 
+  <span class="token key">"background":</span> <span class="token punctuation">{</span>
+    <span class="token key">"scripts":</span> <span class="token punctuation">[</span><span class="token string">"background.js"</span><span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span><span class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>The only change here is to add the <code>"webRequestBlocking"</code> <code><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/permissions">permission</a></code>. We need to ask for this extra permission whenever we are actively modifying a request.</p>
+
+<p>Next, replace "background.js" with this:</p>
+
+<pre class="brush: js line-numbers  language-js"><code class=" language-js"><span class="token keyword">var</span> pattern <span class="token operator">=</span> <span class="token string">"https://mdn.mozillademos.org/*"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">redirect</span><span class="token punctuation">(</span>requestDetails<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"Redirecting: "</span> <span class="token operator">+</span> requestDetails<span class="token punctuation">.</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> <span class="token punctuation">{</span>
+    redirectUrl<span class="token punctuation">:</span> <span class="token string">"https://38.media.tumblr.com/tumblr_ldbj01lZiP1qe0eclo1_500.gif"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+browser<span class="token punctuation">.</span>webRequest<span class="token punctuation">.</span>onBeforeRequest<span class="token punctuation">.</span><span class="token function">addListener</span><span class="token punctuation">(</span>
+  redirect<span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>urls<span class="token punctuation">:</span><span class="token punctuation">[</span>pattern<span class="token punctuation">]</span><span class="token punctuation">,</span> types<span class="token punctuation">:</span><span class="token punctuation">[</span><span class="token string">"image"</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span><span class="token string">"blocking"</span><span class="token punctuation">]</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Again, we use the&nbsp;<a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onBeforeRequest" title="This event is triggered when a request is about to be made, and before headers are available. This is a good place to listen if you want to cancel or redirect the request."><code>onBeforeRequest</code></a> event listener to run a function just before each request is made. This function will replace the target URL with the <code>redirectUrl</code> specified in the function.</p>
+
+<p>This time we are not intercepting every request: the <code>{urls:[pattern], types:["image"]}</code>
+ option specifies that we should only intercept requests (1) to URLs 
+residing under "https://mdn.mozillademos.org/" (2) for image resources. 
+See <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/RequestFilter" title="An object describing filters to apply to webRequest events."><code>webRequest.RequestFilter</code></a> for more on this.</p>
+
+<p>Also note that we're passing an option called <code>"blocking"</code>:
+ we need to pass this whenever we want to modify the request. It makes 
+the listener function block the network request, so the browser waits 
+for the listener to return before continuing. See the <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onBeforeRequest" title="This event is triggered when a request is about to be made, and before headers are available. This is a good place to listen if you want to cancel or redirect the request."><code>webRequest.onBeforeRequest</code></a> documentation for more on <code>"blocking"</code>.</p>
+
+<p>To test it out, open a page on MDN that contains a lot of images (for example <a href="https://developer.mozilla.org/en-US/docs/Tools/Network_Monitor">https://developer.mozilla.org/en-US/docs/Tools/Network_Monitor</a>), <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Temporary_Installation_in_Firefox#Reloading_a_temporary_add-on">reload the extension</a>, and then reload the MDN page:</p>
+
+<p></p><div class="intrinsic-wrapper"><div class="intrinsic-container "><iframe src="intercept%20requests_files/ix5RrXGr0wA.html" id="widget4"></iframe></div></div><p></p>
+
+<h2 id="Modifying_request_headers">Modifying request headers</h2>
+
+<p>Finally we'll use <code>webRequest</code> to modify request headers. 
+In this example we'll modify the "User-Agent" header so the browser 
+identifies itself as Opera 12.16, but only when visiting pages under 
+http://useragentstring.com/".</p>
+
+<p>The "manifest.json" can stay the same as in the previous example.</p>
+
+<p>Replace "background.js" with code like this:</p>
+
+<pre class="brush: js line-numbers  language-js"><code class=" language-js"><span class="token keyword">var</span> targetPage <span class="token operator">=</span> <span class="token string">"http://useragentstring.com/*"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">var</span> ua <span class="token operator">=</span> <span class="token string">"Opera/9.80 (X11; Linux i686; Ubuntu/14.10) Presto/2.12.388 Version/12.16"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">rewriteUserAgentHeader</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  e<span class="token punctuation">.</span>requestHeaders<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>header<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>header<span class="token punctuation">.</span>name<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token string">"user-agent"</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      header<span class="token punctuation">.</span>value <span class="token operator">=</span> ua<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> <span class="token punctuation">{</span>requestHeaders<span class="token punctuation">:</span> e<span class="token punctuation">.</span>requestHeaders<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+browser<span class="token punctuation">.</span>webRequest<span class="token punctuation">.</span>onBeforeSendHeaders<span class="token punctuation">.</span><span class="token function">addListener</span><span class="token punctuation">(</span>
+  rewriteUserAgentHeader<span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>urls<span class="token punctuation">:</span> <span class="token punctuation">[</span>targetPage<span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span><span class="token string">"blocking"</span><span class="token punctuation">,</span> <span class="token string">"requestHeaders"</span><span class="token punctuation">]</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Here we use the&nbsp;<a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onBeforeSendHeaders" title="This event is triggered before sending any HTTP data, but after all HTTP headers are available. This is a good place to listen if you want to modify HTTP request headers."><code>onBeforeSendHeaders</code></a> event listener to run a function just before the request headers are sent.</p>
+
+<p>The listener function will be called only for requests to URLs matching the <code>targetPage</code> <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Match_patterns">pattern</a>. Also note that we've again passed <code>"blocking"</code> as an option. We've also passed <code>"requestHeaders"</code>, which means that the listener will be passed an array containing the request headers that we expect to send. See <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onBeforeSendHeaders" title="This event is triggered before sending any HTTP data, but after all HTTP headers are available. This is a good place to listen if you want to modify HTTP request headers."><code>webRequest.onBeforeSendHeaders</code></a> for more information on these options.</p>
+
+<p>The&nbsp;listener function looks for the "User-Agent" header in the 
+array of request headers, replaces its value with the value of the <code>ua</code> variable, and returns the modified array. This modified array will now be sent to the server.</p>
+
+<p>To test it out, open <a href="http://useragentstring.com/" class="external external-icon" rel="noopener">useragentstring.com</a> and check that it identifies the browser as Firefox. Then reload the extension, reload <a href="http://useragentstring.com/" class="external external-icon" rel="noopener">useragentstring.com</a>, and check that Firefox is now identified as Opera:</p>
+
+<p></p><div class="intrinsic-wrapper"><div class="intrinsic-container "><iframe src="intercept%20requests_files/SrSNS1-FIx0.html" id="widget6"></iframe></div></div><p></p>
+
+<h2 id="Learn_more">Learn more</h2>
+
+<p>To learn about all the things you can do with the <code>webRequest</code> API, see its <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/WebRequest">reference documentation</a>.</p>
+                  
+                
+              </article>
+
+              <!-- contributors -->
+              <div class="wiki-block contributors">
+                <h2 class="offscreen">Document Tags and Contributors</h2>
+                
+                
+  <div class="tag-attach-list contributors-sub">
+    <i aria-hidden="true" class="icon-tags icon-fw"></i>
+    <strong>Tags:</strong>&nbsp;
+    <ul class="tags tags-small">
+      
+        <li><a href="https://developer.mozilla.org/en-US/docs/tag/Add-ons" rel="nofollow">Add-ons</a></li>
+      
+        <li><a href="https://developer.mozilla.org/en-US/docs/tag/Extensions" rel="nofollow">Extensions</a></li>
+      
+        <li><a href="https://developer.mozilla.org/en-US/docs/tag/How-to" rel="nofollow">How-to</a></li>
+      
+        <li><a href="https://developer.mozilla.org/en-US/docs/tag/WebExtensions" rel="nofollow">WebExtensions</a></li>
+      
+    </ul>
+  </div>
+
+
+                
+                  <div class="contributors-sub">
+                    <i aria-hidden="true" class="icon-group icon-fw"></i>&nbsp;<strong>Contributors to this page:</strong> 
+        <a href="https://developer.mozilla.org/en-US/profiles/justinwzig">justinwzig</a>, 
+    
+        <a href="https://developer.mozilla.org/en-US/profiles/aswan">aswan</a>, 
+    
+        <a href="https://developer.mozilla.org/en-US/profiles/prbroadfoot">prbroadfoot</a>, 
+    
+        <a href="https://developer.mozilla.org/en-US/profiles/andrewtruongmoz">andrewtruongmoz</a>, 
+    
+        <a href="https://developer.mozilla.org/en-US/profiles/spotter">spotter</a>, 
+    
+        <a href="https://developer.mozilla.org/en-US/profiles/freaktechnik">freaktechnik</a>, 
+    
+        <a href="https://developer.mozilla.org/en-US/profiles/MinusWall">MinusWall</a>, 
+    
+        <a href="https://developer.mozilla.org/en-US/profiles/wbamberg">wbamberg</a>, 
+    
+        <a href="https://developer.mozilla.org/en-US/profiles/chrisdavidmills">chrisdavidmills</a>
+    
+                  </div>
+                
+
+                
+                  <div class="contributors-sub">
+                    <i aria-hidden="true" class="icon-clock-o icon-fw"></i>&nbsp;<strong>Last updated by:</strong>
+                    <a href="https://developer.mozilla.org/en-US/profiles/justinwzig">justinwzig</a>,
+                    <time datetime="2018-03-07T11:58:14.463079-08:00">Mar 7, 2018, 11:58:14 AM</time>
+                  </div>
+                
+              </div>
+            </div>
+
+            
+              <!-- quick links and zone subnav strip -->
+              <div id="wiki-left" class="column-strip wiki-column">
+
+                
+                  <!-- crumbs -->
+                  
+  
+    <nav class="crumbs" role="navigation">
+      <ol typeof="BreadcrumbList" vocab="https://schema.org/" aria-label="breadcrumbs">
+        
+          <li property="itemListElement" typeof="ListItem" class="crumb">
+            <a href="https://developer.mozilla.org/en-US/docs/Mozilla" property="item" typeof="WebPage">
+              <span property="name">Mozilla</span>
+            </a>
+            <meta property="position" content="1">
+          </li>
+        
+          <li property="itemListElement" typeof="ListItem" class="crumb">
+            <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons" property="item" typeof="WebPage">
+              <span property="name">Add-ons</span>
+            </a>
+            <meta property="position" content="2">
+          </li>
+        
+          <li property="itemListElement" typeof="ListItem" class="crumb">
+            <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions" property="item" typeof="WebPage">
+              <span property="name">Browser Extensions</span>
+            </a>
+            <meta property="position" content="3">
+          </li>
+        
+        <li property="itemListElement" typeof="ListItem" class="crumb">
+          <span property="name">Intercept HTTP requests</span>
+        </li>
+      </ol>
+    </nav>
+  
+                
+
+                
+
+                
+                  <!-- quick links -->
+                  
+  <div class="quick-links" id="quick-links">
+    <div class="quick-links-head">Related Topics</div>
+    
+  <ol>
+    <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions"><strong>Browser extensions</strong></a></li>
+
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions#Getting_started" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Getting started</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/What_are_WebExtensions">What are extensions?</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Your_first_WebExtension">Your first extension</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Your_second_WebExtension">Your second extension</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Anatomy_of_a_WebExtension">Anatomy of an extension</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Examples">Example extensions</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/What_next_">What next?</a></li>
+      </ol>
+    </li>
+    
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions#Concepts" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Concepts</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Using_the_JavaScript_APIs">Using the JavaScript APIs</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts">Content scripts</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns">Match patterns</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Working_with_files">Working with files</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Internationalization">Internationalization</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Security_best_practices">Security best practices</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_Security_Policy">Content Security Policy</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Native_messaging">Native messaging</a></li>
+      </ol>
+    </li>  
+
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions#How_to" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>User interface</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/user_interface">Introduction</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/user_interface/Browser_action">Toolbar button</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/user_interface/Page_actions">Address bar button</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/user_interface/Sidebars">Sidebar</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/user_interface/Context_menu_items">Context menu items</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/user_interface/Options_pages">Options page</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/user_interface/Bundled_web_pages">Bundled web pages</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/user_interface/Notifications">Notifications</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/user_interface/Omnibox">Address bar suggestions</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/user_interface/devtools_panels">Developer tools panels</a></li>
+      </ol>
+    </li>
+
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions#How_to" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>How to</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests">Intercept HTTP requests</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Modify_a_web_page">Modify a web page</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Safely_inserting_external_content_into_a_page">Insert external content</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Add_a_button_to_the_toolbar">Add a button to the toolbar</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Implement_a_settings_page">Implement a settings page</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Working_with_the_Tabs_API">Work with the Tabs API</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Work_with_the_Bookmarks_API">Work with the Bookmarks API</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Work_with_the_Cookies_API">Work with the Cookies API</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Work_with_contextual_identities">Work with contextual identities</a></li>
+	  </ol>
+    </li>
+
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions#Porting" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Porting</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Porting_a_Google_Chrome_extension">Porting a Google Chrome extension</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Porting_a_legacy_Firefox_add-on">Porting a legacy Firefox extension</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Embedded_WebExtensions">Embedded WebExtensions</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Comparison_with_the_Add-on_SDK">Comparison with the Add-on SDK</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Comparison_with_XUL_XPCOM_extensions">Comparison with XUL/XPCOM extensions</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Chrome_incompatibilities">Chrome incompatibilities</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Differences_between_desktop_and_Android">Differences between desktop and Android</a></li>
+      </ol>
+    </li>  
+
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions#Firefox_workflow" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Firefox workflow</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_experience_best_practices">User Experience</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Temporary_Installation_in_Firefox">Temporary Installation in Firefox</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Debugging">Debugging</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Testing_persistent_and_restart_features">Testing persistent and restart features</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Developing_WebExtensions_for_Firefox_for_Android">Developing for Firefox for Android</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext">Getting started with web-ext</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/web-ext_command_reference">web-ext command reference</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/WebExtensions_and_the_Add-on_ID">Extensions and the Add-on ID</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Request_the_right_permissions">Request the right permissions</a></li>
+		  
+      </ol>
+    </li>  
+    
+    <li data-default-state="closed" class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>JavaScript APIs</a>
+     <ol class="toggle-container" style="display: none;"><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Browser_support_for_JavaScript_APIs">Browser support for JavaScript APIs</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/alarms">alarms</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/bookmarks">bookmarks</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserAction">browserAction</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserSettings">browserSettings</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browsingData">browsingData</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/clipboard">clipboard</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/commands">commands</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/contentScripts">contentScripts</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/contextualIdentities">contextualIdentities</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/cookies">cookies</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/devtools.inspectedWindow">devtools.inspectedWindow</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/devtools.network">devtools.network</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/devtools.panels">devtools.panels</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/downloads">downloads</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/events">events</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/extension">extension</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/extensionTypes">extensionTypes</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/find">find</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/history">history</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/i18n">i18n</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/identity">identity</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/idle">idle</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/management">management</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/menus">menus</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/notifications">notifications</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/omnibox">omnibox</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/pageAction">pageAction</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/permissions">permissions</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/pkcs11">pkcs11</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/privacy">privacy</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/proxy">proxy</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime">runtime</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/sessions">sessions</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/sidebarAction">sidebarAction</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage">storage</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs">tabs</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/theme">theme</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/topSites">topSites</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/types">types</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webNavigation">webNavigation</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest">webRequest</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/windows">windows</a></li></ol>
+    </li>
+    
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Manifest keys</a>
+    <ol class="toggle-container" style="display: none;"><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/applications">applications</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/author">author</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/background">background</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/browser_action">browser_action</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/chrome_settings_overrides">chrome_settings_overrides</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/chrome_url_overrides">chrome_url_overrides</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/commands">commands</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/content_scripts">content_scripts</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/content_security_policy">content_security_policy</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/default_locale">default_locale</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/description">description</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/developer">developer</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/devtools_page">devtools_page</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/homepage_url">homepage_url</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/icons">icons</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/incognito">incognito</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/manifest_version">manifest_version</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/name">name</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/omnibox">omnibox</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/optional_permissions">optional_permissions</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/options_ui">options_ui</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/page_action">page_action</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/permissions">permissions</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/protocol_handlers">protocol_handlers</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/short_name">short_name</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/sidebar_action">sidebar_action</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/theme">theme</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/version">version</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/web_accessible_resources">web_accessible_resources</a></li></ol>
+    </li>
+
+    <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Themes"><strong>Themes</strong></a></li>
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Themes/Theme_concepts" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Browser themes</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Themes/Theme_concepts">Browser theme concepts</a></li>
+      </ol>
+    </li>
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Themes/Lightweight_themes" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Lightweight themes</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Themes/Lightweight_themes">Lightweight themes</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Themes/Lightweight_Themes/FAQ">Lightweight themes FAQ</a></li>
+      </ol>
+    </li>
+
+    <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Distribution"><strong>Publishing and Distribution</strong></a></li>
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Distribution" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Publishing add-ons</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Distribution">Signing and distribution overview</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Package_your_extension_">Package your extension</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Distribution/Submitting_an_add-on">Submit an add-on</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Source_Code_Submission">Source code submission</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Distribution/Resources_for_publishers">Resources for publishers</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Listing">Creating an appealing listing</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/AMO/Policy/Reviews">Review policies</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/AMO/Policy/Agreement">Developer agreement</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/AMO/Policy/Featured">Featured add-ons</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Distribution/Retiring_your_extension">Retiring your extension</a></li>
+      </ol>
+    </li>
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Alternative_distribution_options" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Distributing add-ons</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Alternative_distribution_options/Sideloading_add-ons">For sideloading</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Alternative_distribution_options/Add-ons_for_desktop_apps">For desktop apps</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Alternative_distribution_options/Add-ons_in_the_enterprise">For an enterprise</a></li>
+      </ol>
+    </li>
+
+    <li><a href="https://discourse.mozilla.org/c/add-ons" class="external external-icon" rel="noopener"><strong>Community and support</strong></a></li>
+    <li class="toggleable" data-closed="true"><a href="#" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Channels</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://blog.mozilla.org/addons" class="external external-icon" rel="noopener">Add-ons blog</a></li>
+        <li><a href="https://discourse.mozilla.org/c/add-ons" class="external external-icon" rel="noopener">Add-on forums</a></li>
+        <li><a href="http://stackoverflow.com/questions/tagged/firefox-addon" class="external external-icon" rel="noopener">Stack Overflow</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/#Contact_us" class="new" rel="nofollow">Contact us</a></li>
+      </ol>
+    </li>
+
+  </ol>
+
+  </div>
+                
+
+                <!-- approvals -->
+                
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div> <!-- ends "main-content" -->
+
+    
+      <div class="newsletter-box">
+        <div class="newsletter">
+    <form id="newsletterForm" class="newsletter-form nodisable" name="newsletter-form" action="https://www.mozilla.org/en-US/newsletter/" method="post">
+        <div class="newsletter-head">
+            <h2 class="newsletter-teaser">Learn the best of web development</h2>
+            <p class="newsletter-description">Get the latest and greatest from MDN delivered straight to your inbox.</p>
+            
+        </div>
+
+        <div class="newsletter-fields">
+            <input id="fmt" name="fmt" value="H" type="hidden">
+            <input id="newsletterNewslettersInput" name="newsletters" value="app-dev" type="hidden">
+            <div id="newsletterErrors" class="newsletter-errors"></div>
+
+            <div id="newsletterEmail" class="form-group newsletter-group-email">
+                <label for="newsletterEmailInput" class="form-label offscreen">E-mail</label>
+                <input id="newsletterEmailInput" name="email" class="form-input newsletter-input-email" required="" placeholder="you@example.com" size="30" type="email">
+            </div>
+
+            <div id="newsletterPrivacy" class="form-group form-group-agree newsletter-group-privacy hidden">
+                <input id="newsletterPrivacyInput" name="privacy" required="" type="checkbox">
+                <label for="newsletterPrivacyInput">
+                I'm okay with Mozilla handling my info as explained in this <a href="https://www.mozilla.org/privacy/">Privacy Policy</a>.
+                </label>
+            </div>
+            <div id="newsletterSubmit" class="newsletter-group-submit">
+                <button id="newsletter-submit" type="submit" class="button neutral newsletter-submit">Sign up now</button>
+            </div>
+        </div>
+    </form>
+    <div id="newsletterThanks" class="newsletter-thanks hidden">
+        <h2>Thanks! Please check your inbox to confirm your subscription.</h2>
+        <p>If you haven’t previously confirmed a subscription to a 
+Mozilla-related newsletter you may have to do so. Please check your 
+inbox or your spam filter for an email from us.
+        </p>
+    </div>
+    <button id="newsletterHide" type="button" class="only-icon newsletter-hide"><span>Hide Newsletter Sign-up</span><i aria-hidden="true" class="icon-times"></i></button>
+</div>
+      </div>
+    
+
+  <menu type="context" id="edit-history-menu">
+    <menuitem data-action="/en-US/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests$edit" label="Edit page"></menuitem>
+    <menuitem data-action="/en-US/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests$history" label="View page history"></menuitem>
+  </menu>
+
+      </div>
+  </main>
+  <!-- Footer -->
+    <footer id="nav-footer" class="nav-footer">
+      <div class="center">
+          <a href="https://developer.mozilla.org/en-US/" class="nav-footer-logo">MDN Web Docs</a>
+          <div class="footer-group footer-group-mdn">
+            <h2 class="footer-title">MDN</h2>
+            <ul class="footer-list">
+              <li><a href="https://developer.mozilla.org/en-US/docs/Web">Web Technologies</a></li>
+              <li><a href="https://developer.mozilla.org/en-US/docs/Learn">Learn Web Development</a></li>
+              <li><a href="https://developer.mozilla.org/docs/MDN/About">About MDN</a></li>
+              <li><a href="https://developer.mozilla.org/en-US/docs/MDN/Feedback">Feedback</a></li>
+              <li class="footer-social"><a href="https://twitter.com/mozdevnet" class="only-icon"><i aria-hidden="true" class="icon-twitter"></i> <span>Twitter</span></a></li>
+              <li class="footer-social"><a href="https://github.com/mdn/" class="only-icon"><i aria-hidden="true" class="icon-github"></i> <span>GitHub</span></a></li>
+            </ul>
+          </div>
+
+          <a href="https://mozilla.org/" class="nav-footer-mozilla">Mozilla</a>
+          <div class="footer-group footer-group-mozilla">
+            <h2 class="footer-title">Mozilla</h2>
+            <ul class="footer-list">
+              <li><a href="https://www.mozilla.org/about/">About</a></li>
+              <li><a href="https://www.mozilla.org/contact/">Contact Us</a></li>
+              <li><a href="https://donate.mozilla.org/?utm_source=developer.mozilla.org&amp;utm_medium=referral&amp;utm_content=footer">Donate</a></li>
+              <li><a href="https://www.mozilla.org/firefox/?utm_source=developer.mozilla.org&amp;utm_campaign=footer&amp;utm_medium=referral">Firefox</a></li>
+              <li class="footer-social"><a href="https://twitter.com/mozilla" class="only-icon"><i aria-hidden="true" class="icon-twitter"></i> <span>Twitter</span></a></li>
+              <li class="footer-social"><a href="https://www.facebook.com/mozilla" class="only-icon"><i aria-hidden="true" class="icon-facebook"></i> <span>Facebook</span></a></li>
+              <li class="footer-social"><a href="https://www.instagram.com/mozillagram/" class="only-icon"><i aria-hidden="true" class="icon-instagram"></i> <span>Instagram</span></a></li>
+            </ul>
+          </div>
+
+          
+  
+    <form class="languages go" method="get" action="/en-US/docs/Web">
+      <label for="language">Other languages:</label>
+      <select id="language" class="wiki-l10n" name="next" dir="ltr">
+        <option title="English (US)" data-locale="en-US" value="/en-US/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests" selected="selected">
+          English (US) (en-US)
+        </option>
+        
+          <option title="Spanish" data-locale="en-US" value="/es/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests">
+            Español (es)
+          </option>
+          <option title="French" data-locale="en-US" value="/fr/docs/Mozilla/Add-ons/WebExtensions/Intercepter_requ%C3%AAtes_HTTP">
+            Français (fr)
+          </option>
+          <option title="Japanese" data-locale="en-US" value="/ja/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests">
+            日本語 (ja)
+          </option>
+          <option title="Portuguese (Portugal)" data-locale="en-US" value="/pt-PT/docs/Mozilla/Add-ons/WebExtensions/Interceptar_Pedidos_HTTP">
+            Português (Europeu) (pt-PT)
+          </option>
+          <option title="Russian" data-locale="en-US" value="/ru/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests">
+            Русский (ru)
+          </option>
+          <option title="Chinese (Simplified)" data-locale="en-US" value="/zh-CN/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests">
+            中文 (简体) (zh-CN)
+          </option>
+      </select>
+      <noscript><button type="submit">Go</button></noscript>
+    </form>
+  
+
+
+          
+            <ul class="footer-tos">
+              <li><a href="https://www.mozilla.org/about/legal/terms/mozilla">Terms</a></li>
+              <li><a href="https://www.mozilla.org/privacy/websites/">Privacy</a></li>
+              <li><a href="https://www.mozilla.org/privacy/websites/#cookies">Cookies</a></li>
+            </ul>
+
+            <div id="license" class="contentinfo">
+              <p>© 2005-2018 Mozilla and individual contributors.</p> <p>Content is available under <a href="https://developer.mozilla.org/en-US/docs/MDN/About#Copyrights_and_licenses">these licenses</a>.</p>
+            </div>
+          
+      </div>
+    </footer> 
+
+  <!-- site js -->
+  
+    
+    <!--[if lte IE 8]><script type="text/javascript" src="https://cdn.mdn.mozilla.net/static/build/js/selectivizr.091e18cf669b.js" charset="utf-8"></script><![endif]-->
+
+    
+    <script type="text/javascript" src="intercept%20requests_files/javascript.js"></script>
+    <script type="text/javascript" src="intercept%20requests_files/main.js" charset="utf-8"></script>
+    <script>
+    if (window.mdn && mdn.analytics) mdn.analytics.trackOutboundLinks();
+</script>
+    
+
+  
+
+    <script async="" type="text/javascript" src="intercept%20requests_files/wiki.js" charset="utf-8"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+    <script async="" type="text/javascript" src="intercept%20requests_files/newsletter.js" charset="utf-8"></script>
+  
+
+
+
+<script async="" src="intercept%20requests_files/iframe_api"></script></body></html>

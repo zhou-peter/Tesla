@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html dir="ltr" class="" lang="en-US"><head prefix="og: http://ogp.me/ns#">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <script type="text/javascript" id="www-widgetapi-script" src="Match%20patterns%20-%20Mozilla%20%20%20MDN_files/www-widgetapi.js" async=""></script><script async="" src="Match%20patterns%20-%20Mozilla%20%20%20MDN_files/analytics.js"></script><script>(function(d) { d.className = d.className.replace(/\bno-js/, ''); })(document.documentElement);</script>
+  <title>Match patterns - Mozilla | MDN</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="index, follow">
+
+  
+<link rel="preload" href="https://cdn.mdn.mozilla.net/static/fonts/locales/ZillaSlab-Bold.8d7f01331d2b.woff2" as="font" type="font/woff2" crossorigin="">
+<link rel="preload" href="https://cdn.mdn.mozilla.net/static/fonts/locales/ZillaSlab-Regular.f9de6143fdfa.woff2" as="font" type="font/woff2" crossorigin="">
+    <link rel="home" href="https://developer.mozilla.org/en-US/">
+    <link rel="license" href="#license">
+  
+
+  
+    
+    
+
+    <link href="Match%20patterns%20-%20Mozilla%20%20%20MDN_files/mdn.css" rel="stylesheet" type="text/css">
+
+    
+  
+
+    <link href="Match%20patterns%20-%20Mozilla%20%20%20MDN_files/wiki.css" rel="stylesheet" type="text/css">
+
+
+    
+      
+        <link href="Match%20patterns%20-%20Mozilla%20%20%20MDN_files/zone-addons.css" rel="stylesheet" type="text/css">
+      
+    
+
+  <link href="Match%20patterns%20-%20Mozilla%20%20%20MDN_files/locale-en-US.css" rel="stylesheet" type="text/css">
+
+  
+    <script type="text/javascript" src="Match%20patterns%20-%20Mozilla%20%20%20MDN_files/mozilla-dnthelper.js" charset="utf-8"></script>
+    
+
+<script type="text/javascript">
+    // only load GA if DNT is not enabled
+    if (Mozilla && !Mozilla.dntEnabled()) {
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-36116321-5', 'mozilla.org');
+        ga('set', 'anonymizeIp', true);
+
+        
+
+        // dimension9 == "Section editing"
+        
+            // dimension12 == 'Page Revision'
+            ga('set', 'dimension12', '1346787');
+            // dimension17 == 'English Slug'
+            ga('set', 'dimension17', 'Mozilla/Add-ons/WebExtensions/Match_patterns');
+
+        (function() {
+            // http://cfsimplicity.com/61/removing-analytics-clutter-from-campaign-urls
+            var win = window;
+            var removeUtms = function(){
+                var location = win.location;
+                if (location.href.indexOf('utm') != -1 && win.history.replaceState) {
+                    win.history.replaceState({}, '', location.pathname);
+                }
+            };
+
+            ga('send', 'pageview', {'hitCallback': removeUtms});
+        })();
+    }
+</script>
+
+  
+    <!-- common social tags -->
+    
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://cdn.mdn.mozilla.net/static/img/opengraph-logo.72382e605ce3.png">
+    <meta property="og:site_name" content="MDN Web Docs">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:image" content="https://cdn.mdn.mozilla.net/static/img/opengraph-logo.72382e605ce3.png">
+    <meta name="twitter:site" content="@MozDevNet">
+    <meta name="twitter:creator" content="@MozDevNet">
+    <link rel="search" type="application/opensearchdescription+xml" href="https://developer.mozilla.org/en-US/search/xml" title="MDN Web Docs">
+  
+
+  <!-- third-generation iPad with high-resolution Retina display: -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://cdn.mdn.mozilla.net/static/img/favicon144.e7e21ca263ca.png">
+  <!-- iPhone with high-resolution Retina display: -->
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="https://cdn.mdn.mozilla.net/static/img/favicon114.d526f38b09c5.png">
+  <!-- first- and second-generation iPad: -->
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="https://cdn.mdn.mozilla.net/static/img/favicon72.cc65d1d762a0.png">
+  <!-- non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+  <link rel="apple-touch-icon-precomposed" href="https://cdn.mdn.mozilla.net/static/img/favicon57.de33179910ae.png">
+  <!-- basic favicon -->
+     <!-- basic favicon -->
+  
+    
+  
+  <link rel="shortcut icon" href="https://cdn.mdn.mozilla.net/static/img/favicon32.7f3da72dcea1.png">
+  <!--[if IE]>
+  <meta http-equiv="imagetoolbar" content="no">
+  <script type="text/javascript" src="https://cdn.mdn.mozilla.net/static/build/js/html5shiv.3948ccddab6f.js" charset="utf-8"></script>
+  <![endif]-->
+
+  
+  <link rel="dns-prefetch" href="https://interactive-examples.mdn.mozilla.net/" pr="0.75">
+  <link rel="preconnect" href="https://interactive-examples.mdn.mozilla.net/" pr="0.75">
+
+  <link rel="preload" href="https://interactive-examples.mdn.mozilla.net/js/codemirror-5-31-0.js" as="script">
+  <link rel="preload" href="https://interactive-examples.mdn.mozilla.net/js/editor-js.js" as="script">
+
+  <link rel="alternate" type="application/json" href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns$json">
+  <link rel="canonical" href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns">
+
+  
+    
+      <link rel="alternate" hreflang="ar" href="https://developer.mozilla.org/ar/docs/Mozilla/Add-ons/WebExtensions/Match_patterns" title="Match patterns">
+    
+      <link rel="alternate" hreflang="fr" href="https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/Match_patterns" title="Motifs (Match patterns)">
+    
+      <link rel="alternate" hreflang="ja" href="https://developer.mozilla.org/ja/docs/Mozilla/Add-ons/WebExtensions/Match_patterns" title="マッチパターン">
+    
+      <link rel="alternate" hreflang="zh-CN" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Add-ons/WebExtensions/Match_patterns" title="匹配模式">
+    
+  
+
+  <!-- document-specific social tags -->
+  <meta property="og:title" content="Match patterns">
+  <meta property="og:url" content="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns">
+  <meta name="twitter:url" content="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns">
+  <meta name="twitter:title" content="Match patterns">
+  
+  <meta property="og:description" content="Match patterns are a way to specify groups of URLs: a match pattern matches a specific set of URLs. They are for extensions using WebExtensions APIs in a few places, most notably to specify which documents to load content scripts into, and to specify which URLs to add webRequest listeners to.">
+  <meta name="description" content="Match patterns are a way to specify groups of URLs: a match pattern matches a specific set of URLs. They are for extensions using WebExtensions APIs in a few places, most notably to specify which documents to load content scripts into, and to specify which URLs to add webRequest listeners to.">
+  <meta name="twitter:description" content="Match patterns are a way to specify groups of URLs: a match pattern matches a specific set of URLs. They are for extensions using WebExtensions APIs in a few places, most notably to specify which documents to load content scripts into, and to specify which URLs to add webRequest listeners to.">
+  
+
+<script async="" data-manual="true" src="Match%20patterns%20-%20Mozilla%20%20%20MDN_files/syntax-prism.js"></script></head>
+<body data-slug="Mozilla/Add-ons/WebExtensions/Match_patterns" contextmenu="edit-history-menu" data-search-url="" class="document zone ">
+
+  <script type="text/javascript">
+    // make sure global mdn object exists
+    var mdn = window.mdn || {};
+
+    (function(win) {
+        'use strict';
+
+        (function(){
+  var FLAGS = {
+    'compat_data': true,'kumaediting': false,'line_length': true,'page_move': false,'registration_disabled': false,'search_suggestions': false,'section_edit': false,'sg_task_completion': false,'spam_admin_override': false,'spam_checks_enabled': true,'spam_spammer_override': false,'spam_submissions_enabled': false,'spam_testing_mode': false,'wiki_samples': true,'wiki_spam_exempted': false,'wiki_spam_training': false
+    },
+    SWITCHES = {
+    'wiki_error_on_delete': false,'wiki_force_immediate_rendering': false,'enable_optimizely': false,'welcome_email': true,'application_ACAO': true,'store_revision_ips': true,'dumb_doc_urls': true,'newsletter': true,'newsletter_article': true,'foundation_callout': false,'helpful-survey-2': true,'wiki_spam_training': true
+    },
+    SAMPLES = {
+    
+    };
+  window.waffle = {
+    "flag_is_active": function waffle_flag(flag_name) {
+      
+      return !!FLAGS[flag_name];
+    },
+    "switch_is_active": function waffle_switch(switch_name) {
+      
+      return !!SWITCHES[switch_name];
+    },
+    "sample_is_active": function waffle_sample(sample_name) {
+      
+      return !!SAMPLES[sample_name];
+    },
+    "FLAGS": FLAGS,
+    "SWITCHES": SWITCHES,
+    "SAMPLES": SAMPLES
+  };
+})();
+
+
+        // This needs to be set before ckeditor.js loads
+        window.CKEDITOR_BASEPATH = '/static/js/libs/ckeditor/build/ckeditor/';
+
+        // Site configuration
+        win.mdn.ckeditor = {};
+        win.mdn.features = {};
+        win.mdn.staticPath = 'https://cdn.mdn.mozilla.net/static/';
+        win.mdn.wiki = {
+            autosuggestTitleUrl: '/en-US/docs/get-documents'
+        };
+        win.mdn.assets = {
+            css: {
+                'editor-content': ['https://cdn.mdn.mozilla.net/static/build/styles/editor-content.fc2e2a3d4883.css','https://cdn.mdn.mozilla.net/static/build/styles/editor-locale-en-US.a0d0521e251c.css',
+                ],
+
+                'wiki-compat-tables': ['https://cdn.mdn.mozilla.net/static/build/styles/wiki-compat-tables.aed4662ba49c.css',]
+            },
+            js: {
+                'syntax-prism': ['https://cdn.mdn.mozilla.net/static/build/js/syntax-prism.05dc5663d445.js',],
+                'wiki-compat-tables': ['https://cdn.mdn.mozilla.net/static/build/js/wiki-compat-tables.003f4acf76ea.js',]
+            }
+        };
+
+        win.mdn.notifications = [];
+
+        
+
+        // interactive editor config
+        win.mdn.interactiveEditor = {
+            siteUrl: "https://developer.mozilla.org",
+            editorUrl: "https://interactive-examples.mdn.mozilla.net"
+        };
+
+    })(this);
+</script>
+    
+    <ul id="nav-access">
+  <li><a href="#content" id="skip-main">Skip to main content</a></li>
+  <li><a id="skip-language" href="#language">Select language</a></li>
+  <li><a href="#q" id="skip-search">Skip to search</a></li>
+</ul>
+
+    <!-- Header -->
+    <header id="main-header" class="header-main">
+      <a href="https://developer.mozilla.org/en-US/" class="logo">MDN Web Docs</a>
+      <div class="nav-toolbox-wrapper">
+        <nav id="main-nav" class="nav-main" role="navigation">
+    <ul>
+        <li class="nav-main-item">
+            <a href="https://developer.mozilla.org/en-US/docs/Web">Technologies
+                <i aria-hidden="true" class="icon-caret-down"></i>
+            </a>
+            <div class="submenu js-submenu" id="nav-tech-submenu">
+                <div class="submenu-column">
+                  <ul>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML">HTML</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS">CSS</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">JavaScript</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/Guide/Graphics">Graphics</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP">HTTP</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/API">APIs / DOM</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions">Browser Extensions</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/MathML">MathML</a></li>
+                  </ul>
+                </div>
+            </div>
+        </li>
+        <li class="nav-main-item">
+            <a href="https://developer.mozilla.org/en-US/docs/Learn">References &amp; Guides
+                <i aria-hidden="true" class="icon-caret-down"></i>
+            </a>
+            <div class="submenu js-submenu" id="nav-learn-submenu">
+                <div class="submenu-column">
+                  <ul>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Learn">Learn web development</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/Tutorials">Tutorials</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/Reference">References</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/Guide">Developer Guides</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility">Accessibility</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Games">Game development</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web">...more docs</a></li>
+                  </ul>
+                </div>
+            </div>
+        </li>
+        <li class="nav-main-item">
+            <a href="https://developer.mozilla.org/en-US/docs/MDN/Feedback">Feedback
+                <i aria-hidden="true" class="icon-caret-down"></i>
+            </a>
+            <div class="submenu js-submenu" id="nav-contact-submenu">
+              <div class="submenu-column">
+                <ul>
+                  <li>
+                      <a href="https://support.mozilla.org/">Get Firefox help
+                          <i aria-hidden="true" class="icon-external-link"></i>
+                      </a>
+                  </li>
+                  <li>
+                      <a href="https://stackoverflow.com/">Get web development help
+                          <i aria-hidden="true" class="icon-external-link"></i>
+                      </a>
+                  </li>
+                </ul>
+                <ul>
+                  <li>
+                      <a href="https://developer.mozilla.org/en-US/docs/MDN/Community">Join the MDN community</a>
+                  </li>
+                  <li>
+                      <a target="_blank" href="https://bugzilla.mozilla.org/form.doc?bug_file_loc=https%3A//developer.mozilla.org/en-US/Add-ons/WebExtensions/Match_patterns">Report a content problem
+                          <i aria-hidden="true" class="icon-external-link"></i>
+                      </a>
+                  </li>
+                  <li>
+                      <a target="_blank" href="https://bugzilla.mozilla.org/form.mdn">Report a bug
+                          <i aria-hidden="true" class="icon-external-link"></i>
+                      </a>
+                  </li>
+                </ul>
+              </div>
+          </div>
+      </li>
+  </ul>
+</nav>
+        <div id="toolbox" class="toolbox">
+  <ul>
+  <li class="nav-login"><div class="login">
+    
+        
+        <a href="https://developer.mozilla.org/users/github/login/?next=%2Fen-US%2FAdd-ons%2FWebExtensions%2FMatch_patterns" class="login-link js-login-link" data-service="GitHub" rel="nofollow">
+            Sign in
+            <i class="icon-github" aria-hidden="true"></i>
+        </a>
+    
+</div></li>
+  </ul>
+</div>
+      </div>
+      <form id="nav-main-search" action="/en-US/search" method="get" role="search" class="nav-main-search">
+  <div class="search-wrap">
+    <label for="main-q" class="offscreen">Search</label>
+    <input id="main-q" name="q" placeholder="Search" data-value="" aria-hidden="true" type="search">
+    <span class="search-trigger"><i aria-hidden="true" class="icon-search"></i></span>
+    <button type="submit" class="offscreen">Search</button>
+    <button type="button" id="close-header-search" class="close-header-search transparent">
+        <span class="offscreen">Close search</span>
+        <i aria-hidden="true" class="icon-times"></i>
+    </button>
+  </div>
+</form>
+    </header> 
+
+  <!-- Content will go here -->
+  <main id="content" role="main">
+      
+  <!-- heading -->
+  <div id="wiki-document-head" class="document-head">
+    <div class="center">
+      <!-- action buttons -->
+      <div class="document-actions">
+        
+
+  
+    
+  
+
+  
+    
+  
+
+  
+
+  <ul class="page-buttons">
+      <li><button id="languages-menu" class="transparent" aria-haspopup="true" aria-owns="languages-menu-submenu" aria-expanded="false"><span>Languages</span><i aria-hidden="true" class="icon-language"></i></button>
+
+        <div class="submenu js-submenu" id="languages-menu-submenu">
+          <div class="submenu-column">
+            <ul id="translations">
+              
+                
+                
+                
+                  <li><bdi><a rel="internal" href="https://developer.mozilla.org/ar/docs/Mozilla/Add-ons/WebExtensions/Match_patterns" data-locale="ar" title="Arabic">عربي (ar)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/Match_patterns" data-locale="fr" title="French">Français (fr)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="https://developer.mozilla.org/ja/docs/Mozilla/Add-ons/WebExtensions/Match_patterns" data-locale="ja" title="Japanese">日本語 (ja)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Add-ons/WebExtensions/Match_patterns" data-locale="zh-CN" title="Chinese (Simplified)">中文 (简体) (zh-CN)</a></bdi></li>
+                
+              
+
+              
+                <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns$locales" rel="nofollow" id="translations-add">Add a translation</a></li>
+              
+            </ul>
+          </div>
+        </div>
+      </li>
+      
+      <li class="page-buttons-edit"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns$edit" class="button neutral" id="edit-button" rel="nofollow">Edit<i aria-hidden="true" class="icon-pencil"></i></a></li>
+      
+
+        
+
+        <li class="page-buttons-advanced"><button id="advanced-menu" class="only-icon" aria-haspopup="true" aria-owns="advanced-menu-submenu" aria-expanded="false"><span>Advanced</span><i aria-hidden="true" class="icon-cog"></i></button>
+        <div class="submenu js-submenu" id="advanced-menu-submenu">
+          <!-- this page -->
+          <div class="submenu-column">
+            <div class="title">Advanced</div>
+            <ul>
+                <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns$history" rel="nofollow">History</a></li>
+                
+                
+                
+
+
+                
+
+                
+                
+                
+                <li class="page-print"><a href="#" onclick="return window.print();">Print this article</a></li>
+            </ul>
+          </div>
+        </div>
+  </li></ul>
+      </div>
+
+      <div class="document-title">
+        
+          <!-- zone image, link to zone root -->
+          <a class="zone-parent" href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons">Add-ons</a>
+        
+
+        <h1>Match patterns</h1>
+      </div>
+    </div>
+  </div>
+  
+  <div id="toc" class="toc">
+    <div class="center">
+      <div class="toc-head">Jump to:</div>
+        <ol class="toc-links">
+          <li><a href="#Match_pattern_structure" rel="internal" class="toc-current">Match pattern structure</a></li><li><a href="#Examples" rel="internal" class="toc-current">Examples</a></li><li><a href="#Testing_match_patterns" rel="internal">Testing match patterns</a></li><li><a href="#Converting_Match_Patterns_to_Regular_Expressions" rel="internal">Converting Match Patterns to Regular Expressions</a>
+        </li></ol>
+    </div>
+  </div>
+  
+
+      <div class="center clear">
+      
+
+    <div class="wiki-main-content"><div class="center">
+      <!-- start the main content container -->
+        <div id="wiki-column-container" class="wiki-left-present">
+
+          <!-- content row with three strips -->
+          <div class="column-container column-container-reverse">
+
+            <!-- center: main article content -->
+            <div id="wiki-content" class="column-main wiki-column text-content">
+
+              
+
+              
+              
+
+              
+
+              
+              
+
+              <!-- just the article content -->
+              <article id="wikiArticle">
+                
+                  
+                    <div></div>
+
+<p>Match patterns are a way to specify groups of URLs: a match pattern 
+matches a specific set of URLs. They are for extensions using 
+WebExtensions APIs in a few places, most notably to specify which 
+documents to load <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts">content scripts</a> into, and to specify which URLs to add <code><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest">webRequest</a></code> listeners to.</p>
+
+<p>APIs that use match patterns usually accept a list of match patterns,
+ and will perform the appropriate action if the URL matches any of the 
+patterns. See, for example, the <code><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/content_scripts">content_scripts</a></code> key in manifest.json.</p>
+
+<h2 id="Match_pattern_structure">Match pattern structure</h2>
+
+<p>All match patterns are specified as strings. Apart from the special <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Match_patterns#%3Call_urls%3E">"&lt;all_urls&gt;"</a> pattern, match patterns consist of three parts: <em>scheme</em>, <em>host</em>, and <em>path</em>. The scheme and host are separated by "://".</p>
+
+<pre class="line-numbers  language-html"><code class=" language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>scheme</span><span class="token punctuation">&gt;</span></span>://<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>host</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>path</span><span class="token punctuation">&gt;</span></span><span class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="scheme" class="highlight-spanned"><span class="highlight-span">scheme</span></h3>
+
+<p>The <em>scheme</em> component may take one of two forms:</p>
+
+<table class="fullwidth-table standard-table">
+	<thead>
+		<tr>
+			<th scope="col" style="width: 50%;">Form</th>
+			<th scope="col">Matches</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>"*"</td>
+			<td>Only "http" and "https".</td>
+		</tr>
+		<tr>
+			<td>One of "http", "https", "file", "ftp", "app".</td>
+			<td>Only the given scheme.</td>
+		</tr>
+	</tbody>
+</table>
+
+<h3 id="host" class="highlight-spanned"><span class="highlight-span">host</span></h3>
+
+<p>The <em>host</em> component may take one of three forms:</p>
+
+<table class="fullwidth-table standard-table">
+	<thead>
+		<tr>
+			<th scope="col" style="width: 50%;">Form</th>
+			<th scope="col">Matches</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>"*"</td>
+			<td>Any host.</td>
+		</tr>
+		<tr>
+			<td>"*." followed by part of the hostname.</td>
+			<td>The given host and any of its subdomains.</td>
+		</tr>
+		<tr>
+			<td>A complete hostname, without wildcards.</td>
+			<td>Only the given host.</td>
+		</tr>
+	</tbody>
+</table>
+
+<p><em>host</em> is optional only if the <em>scheme</em> is "file".</p>
+
+<p>Note that the wildcard may only appear at the start.</p>
+
+<h3 id="path" class="highlight-spanned"><span class="highlight-span">path</span></h3>
+
+<p>The path component must begin with a "/".</p>
+
+<p>After that, it may subsequently contain any combination of the "*" 
+wildcard and any of the characters that are allowed in URL paths. Unlike
+ <em>host</em>, the <em>path</em> component may contain the "*" wildcard in the middle or at the end, and the "*" wildcard may appear more than once.</p>
+
+<h3 id="&lt;all_urls&gt;" class="highlight-spanned"><span class="highlight-span">&lt;all_urls&gt;</span></h3>
+
+<p>The special value "&lt;all_urls&gt;" matches all URLs under any of 
+the supported schemes: that is, "http", "https", "file", "ftp", "app".</p>
+
+<h2 id="Examples">Examples</h2>
+
+<table class="fullwidth-table standard-table">
+	<thead>
+		<tr>
+			<th scope="col" style="width: 33%;">Pattern</th>
+			<th scope="col" style="width: 33%;">Example matches</th>
+			<th scope="col" style="width: 33%;">Example non-matches</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+			<p><code>&lt;all_urls&gt;</code></p>
+
+			<p>Match all URLs.</p>
+			</td>
+			<td>
+			<p><code>http://example.org/</code></p>
+
+			<p><code>ftp://files.somewhere.org/</code></p>
+
+			<p><code>https://a.org/some/path/</code></p>
+			</td>
+			<td>
+			<p><code>resource://a/b/c/</code><br>
+			(unsupported scheme)</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			<p><code>*://*.mozilla.org/*</code></p>
+
+			<p>Match all HTTP and HTTPS URLs that are hosted at "mozilla.org" or one of its subdomains.</p>
+			</td>
+			<td>
+			<p><code>http://mozilla.org/</code></p>
+
+			<p><code>https://mozilla.org/</code></p>
+
+			<p><code>http://a.mozilla.org/</code></p>
+
+			<p><code>http://a.b.mozilla.org/</code></p>
+
+			<p><code>https://b.mozilla.org/path/</code></p>
+			</td>
+			<td>
+			<p><code>ftp://mozilla.org/</code><br>
+			(unmatched scheme)</p>
+
+			<p><code>http://mozilla.com/</code><br>
+			(unmatched host)</p>
+
+			<p><code>http://firefox.org/</code><br>
+			(unmatched host)</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			<p><code>*://mozilla.org/</code></p>
+
+			<p>Match all HTTP and HTTPS URLs that are hosted at exactly "mozilla.org/".</p>
+			</td>
+			<td>
+			<p><code>http://mozilla.org/</code></p>
+
+			<p><code>https://mozilla.org/</code></p>
+			</td>
+			<td>
+			<p><code>ftp://mozilla.org/</code><br>
+			(unmatched scheme)</p>
+
+			<p><code>http://a.mozilla.org/</code><br>
+			(unmatched host)</p>
+
+			<p><code>http://mozilla.org/a</code><br>
+			(unmatched path)</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			<p><code>ftp://mozilla.org/</code></p>
+
+			<p>Match only "ftp://mozilla.org/".</p>
+			</td>
+			<td><code>ftp://mozilla.org</code></td>
+			<td>
+			<p><code>http://mozilla.org/</code><br>
+			(unmatched scheme)</p>
+
+			<p><code>ftp://sub.mozilla.org/</code><br>
+			(unmatched host)</p>
+
+			<p><code>ftp://mozilla.org/path</code><br>
+			(unmatched path)</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			<p><code>https://*/path</code></p>
+
+			<p>Match HTTPS URLs on any host, whose path is "path".</p>
+			</td>
+			<td>
+			<p><code>https://mozilla.org/path</code></p>
+
+			<p><code>https://a.mozilla.org/path</code></p>
+
+			<p><code>https://something.com/path</code></p>
+			</td>
+			<td>
+			<p><code>http://mozilla.org/path</code><br>
+			(unmatched scheme)</p>
+
+			<p><code>https://mozilla.org/path/</code><br>
+			(unmatched path)</p>
+
+			<p><code>https://mozilla.org/a</code><br>
+			(unmatched path)</p>
+
+			<p><code>https://mozilla.org/</code><br>
+			(unmatched path)</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			<p><code>https://*/path/</code></p>
+
+			<p>Match HTTPS URLs on any host, whose path is "path/".</p>
+			</td>
+			<td>
+			<p><code>https://mozilla.org/path/</code></p>
+
+			<p><code>https://a.mozilla.org/path/</code></p>
+
+			<p><code>https://something.com/path</code>/</p>
+			</td>
+			<td>
+			<p><code>http://mozilla.org/path/</code><br>
+			(unmatched scheme)</p>
+
+			<p><code>https://mozilla.org/path</code><br>
+			(unmatched path)</p>
+
+			<p><code>https://mozilla.org/a</code><br>
+			(unmatched path)</p>
+
+			<p><code>https://mozilla.org/</code><br>
+			(unmatched path)</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			<p><code>https://mozilla.org/*</code></p>
+
+			<p>Match HTTPS URLs only at "mozilla.org", with any path.</p>
+			</td>
+			<td>
+			<p><code>https://mozilla.org/</code></p>
+
+			<p><code>https://mozilla.org/path</code></p>
+
+			<p><code>https://mozilla.org/another</code></p>
+
+			<p><code>https://mozilla.org/path/to/doc</code></p>
+			</td>
+			<td>
+			<p><code>http://mozilla.org/path</code><br>
+			(unmatched scheme)</p>
+
+			<p><code>https://mozilla.com/path</code><br>
+			(unmatched host)</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			<p><code>https://mozilla.org/a/b/c/</code></p>
+
+			<p>Match only this URL.</p>
+			</td>
+			<td><code>https://mozilla.org/a/b/c/</code></td>
+			<td>Anything else.</td>
+		</tr>
+		<tr>
+			<td>
+			<p><code>https://mozilla.org/*/b/*/</code></p>
+
+			<p>Match HTTPS URLs hosted on "mozilla.org", whose path contains a component "b" somewhere in the middle.</p>
+			</td>
+			<td>
+			<p><code>https://mozilla.org/a/b/c/</code></p>
+
+			<p><code>https://mozilla.org/d/b/f/</code></p>
+
+			<p><code>https://mozilla.org/a/b/c/d/</code></p>
+			</td>
+			<td>
+			<p><code>https://mozilla.org/b/*/</code><br>
+			(unmatched path)</p>
+
+			<p><code>https://mozilla.org/a/b/</code><br>
+			(unmatched path)</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			<p><code>file:///blah/*</code></p>
+
+			<p>Match any FILE URL whose path begins with "blah".</p>
+			</td>
+			<td>
+			<p><code>file:///blah/</code></p>
+
+			<p><code>file:///blah/bleh</code></p>
+			</td>
+			<td><code>file:///bleh/</code><br>
+			(unmatched path)</td>
+		</tr>
+	</tbody>
+</table>
+
+<h3 id="Invalid_match_patterns" class="highlight-spanned"><span class="highlight-span">Invalid match patterns</span></h3>
+
+<table class="fullwidth-table standard-table">
+	<thead>
+		<tr>
+			<th scope="col">Invalid pattern</th>
+			<th scope="col">Reason</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><code>resource://path/</code></td>
+			<td>Unsupported scheme.</td>
+		</tr>
+		<tr>
+			<td><code>https://mozilla.org</code></td>
+			<td>No path.</td>
+		</tr>
+		<tr>
+			<td><code>https://mozilla.*.org/</code></td>
+			<td>"*" in host must be at the start.</td>
+		</tr>
+		<tr>
+			<td><code>https://*zilla.org/</code></td>
+			<td>"*" in host must be the only character or be followed by ".".</td>
+		</tr>
+		<tr>
+			<td><code>http*://mozilla.org/</code></td>
+			<td>"*" in scheme must be the only character.</td>
+		</tr>
+		<tr>
+			<td><code>file://*</code></td>
+			<td>Empty path: this should be "<code>file:///*</code>".</td>
+		</tr>
+	</tbody>
+</table>
+
+<h2 id="Testing_match_patterns">Testing match patterns</h2>
+
+<p>When writing extensions, you don't generally work with match patterns
+ directly: usually you pass a match pattern string into an API, and the 
+API constructs a match pattern and uses it to test URLs. However, if 
+you're trying to work out which match pattern to use, or debugging a 
+problem with one, it can be useful to be able to create and test match 
+patterns directly. This section explains how to do this.</p>
+
+<p>Note that the code here <strong>will not work</strong> in an extension, and is only provided to help manually test match patterns using the console.</p>
+
+<p>First, open the developer tool settings and check the setting marked "Enable browser chrome and add-on debugging toolboxes":</p>
+
+<p></p><div class="intrinsic-wrapper"><div class="intrinsic-container "><iframe src="Match%20patterns%20-%20Mozilla%20%20%20MDN_files/JDEe2fyFpHE.html" id="widget2"></iframe></div></div><p></p>
+
+<p>Next, open the "Browser Console":</p>
+
+<p></p><div class="intrinsic-wrapper"><div class="intrinsic-container "><iframe src="Match%20patterns%20-%20Mozilla%20%20%20MDN_files/mfuBMje6dA4.html" id="widget4"></iframe></div></div><p></p>
+
+<p>This gives you a command line that you can use to execute privileged JavaScript in Firefox.</p>
+
+<div class="warning">
+<p>Because code running in the Browser Console has system privileges, 
+any time you use it to run code, you need to understand exactly what the
+ code is doing. That includes the code samples in this article.</p>
+</div>
+
+<p>Now paste this code into the command line and press <kbd>enter</kbd>:</p>
+
+<pre class="brush: js line-numbers  language-js"><code class=" language-js">Cu<span class="token punctuation">.</span><span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">"resource://gre/modules/MatchPattern.jsm"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+Cu<span class="token punctuation">.</span><span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">"resource://gre/modules/BrowserUtils.jsm"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>This does two things:</p>
+
+<ul>
+	<li>imports "MatchPattern.jsm": this is the system module that 
+implements match patterns. Specifically, the module contains a 
+constructor for <code>MatchPattern</code> objects.&nbsp;<code>MatchPattern</code> objects define a function called <code>matches()</code>, that takes a URI and returns <code>true</code> or <code>false</code>.</li>
+	<li>imports "BrowserUtils.jsm": this includes a function <code>makeURI()</code>, that converts a string into an <code><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIURI">nsIURI</a></code> object. <code>nsIURI</code> is the type that <code>matches()</code> expects to receive.</li>
+</ul>
+
+<p>Now you can construct <code>MatchPattern</code> objects, construct URIs, and check whether the URIs match:</p>
+
+<pre class="brush: js line-numbers  language-js"><code class=" language-js"><span class="token keyword">var</span> match <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MatchPattern</span><span class="token punctuation">(</span><span class="token string">"*://mozilla.org/"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">var</span> uri <span class="token operator">=</span> BrowserUtils<span class="token punctuation">.</span><span class="token function">makeURI</span><span class="token punctuation">(</span><span class="token string">"https://mozilla.org/"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+match<span class="token punctuation">.</span><span class="token function">matches</span><span class="token punctuation">(</span>uri<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//        &lt; true</span>
+
+uri <span class="token operator">=</span> BrowserUtils<span class="token punctuation">.</span><span class="token function">makeURI</span><span class="token punctuation">(</span><span class="token string">"https://mozilla.org/path"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+match<span class="token punctuation">.</span><span class="token function">matches</span><span class="token punctuation">(</span>uri<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//        &lt; false</span><span class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Converting_Match_Patterns_to_Regular_Expressions">Converting Match Patterns to Regular Expressions</h2>
+
+<p>All match patterns can be represented by regular expressions. This code converts a match pattern to a regular expression:</p>
+
+<pre class="brush: js line-numbers  language-js"><code class=" language-js"><span class="token comment" spellcheck="true">/**
+ * Transforms a valid match pattern into a regular expression
+ * which matches all URLs included by that pattern.
+ *
+ * @param  {string}  pattern  The pattern to transform.
+ * @return {RegExp}           The pattern's equivalent as a RegExp.
+ * @throws {TypeError}        If the pattern is not a valid MatchPattern
+ */</span>
+<span class="token keyword">function</span> <span class="token function">matchPatternToRegExp</span><span class="token punctuation">(</span>pattern<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>pattern <span class="token operator">===</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token regex">/^(?:http|https|file|ftp|app):\/\//</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">const</span> schemeSegment <span class="token operator">=</span> <span class="token string">'(\\*|http|https|file|ftp)'</span><span class="token punctuation">;</span>
+    <span class="token keyword">const</span> hostSegment <span class="token operator">=</span> '<span class="token punctuation">(</span>\\<span class="token operator">*</span><span class="token operator">|</span><span class="token punctuation">(</span><span class="token operator">?</span><span class="token punctuation">:</span>\\<span class="token operator">*</span>\\<span class="token punctuation">.</span><span class="token punctuation">)</span><span class="token operator">?</span><span class="token punctuation">(</span><span class="token operator">?</span><span class="token punctuation">:</span><span class="token punctuation">[</span><span class="token operator">^</span><span class="token comment" spellcheck="true">/*]+))?';
+    const pathSegment = '(.*)';
+    const matchPatternRegExp = new RegExp(
+        `^${schemeSegment}://${hostSegment}/${pathSegment}$`
+    );
+
+    let match = matchPatternRegExp.exec(pattern);
+    if (!match) {
+         throw new TypeError(`"${pattern}" is not a valid MatchPattern`);
+    }
+
+    let [, scheme, host, path] = match;
+    if (!host) {
+        throw new TypeError(`"${pattern}" does not have a valid host`);
+    }
+
+    let regex = '^';
+
+    if (scheme === '*') {
+        regex += '(http|https)';
+    } else {
+        regex += scheme;
+    }
+
+    regex += '://';
+
+    if (host &amp;&amp; host === '*') {
+        regex += '[^/]+?';
+    } else if (host) {
+        if (host.match(/^\*\./)) {
+            regex += '[^/]*?';
+            host = host.substring(2);
+        }
+        regex += host.replace(/\./g, '\\.');
+    }
+
+    if (path) {
+        if (path === '*') {
+            regex += '(/.*)?';
+        } else if (path.charAt(0) !== '/') {
+            regex += '/';
+            regex += path.replace(/\./g, '\\.').replace(/\*/</span>g<span class="token punctuation">,</span> <span class="token string">'.*?'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            regex <span class="token operator">+</span><span class="token operator">=</span> <span class="token string">'/?'</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    regex <span class="token operator">+</span><span class="token operator">=</span> <span class="token string">'$'</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">RegExp</span><span class="token punctuation">(</span>regex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+                  
+                
+              </article>
+
+              <!-- contributors -->
+              <div class="wiki-block contributors">
+                <h2 class="offscreen">Document Tags and Contributors</h2>
+                
+                
+  <div class="tag-attach-list contributors-sub">
+    <i aria-hidden="true" class="icon-tags icon-fw"></i>
+    <strong>Tags:</strong>&nbsp;
+    <ul class="tags tags-small">
+      
+        <li><a href="https://developer.mozilla.org/en-US/docs/tag/WebExtensions" rel="nofollow">WebExtensions</a></li>
+      
+    </ul>
+  </div>
+
+
+                
+                  <div class="contributors-sub">
+                    <i aria-hidden="true" class="icon-group icon-fw"></i>&nbsp;<strong>Contributors to this page:</strong> 
+        <a href="https://developer.mozilla.org/en-US/profiles/Frizbunny">Frizbunny</a>, 
+    
+        <a href="https://developer.mozilla.org/en-US/profiles/wbamberg">wbamberg</a>, 
+    
+        <a href="https://developer.mozilla.org/en-US/profiles/blaisekal">blaisekal</a>, 
+    
+        <a href="https://developer.mozilla.org/en-US/profiles/dirkjanm">dirkjanm</a>, 
+    
+        <a href="https://developer.mozilla.org/en-US/profiles/salar2k">salar2k</a>, 
+    
+        <a href="https://developer.mozilla.org/en-US/profiles/raymak">raymak</a>, 
+    
+        <a href="https://developer.mozilla.org/en-US/profiles/andrewtruongmoz">andrewtruongmoz</a>, 
+    
+        <a href="https://developer.mozilla.org/en-US/profiles/ericjung">ericjung</a>
+    
+                  </div>
+                
+
+                
+                  <div class="contributors-sub">
+                    <i aria-hidden="true" class="icon-clock-o icon-fw"></i>&nbsp;<strong>Last updated by:</strong>
+                    <a href="https://developer.mozilla.org/en-US/profiles/Frizbunny">Frizbunny</a>,
+                    <time datetime="2018-01-13T08:22:40.637382-08:00">Jan 13, 2018, 8:22:40 AM</time>
+                  </div>
+                
+              </div>
+            </div>
+
+            
+              <!-- quick links and zone subnav strip -->
+              <div id="wiki-left" class="column-strip wiki-column">
+
+                
+                  <!-- crumbs -->
+                  
+  
+    <nav class="crumbs" role="navigation">
+      <ol typeof="BreadcrumbList" vocab="https://schema.org/" aria-label="breadcrumbs">
+        
+          <li property="itemListElement" typeof="ListItem" class="crumb">
+            <a href="https://developer.mozilla.org/en-US/docs/Mozilla" property="item" typeof="WebPage">
+              <span property="name">Mozilla</span>
+            </a>
+            <meta property="position" content="1">
+          </li>
+        
+          <li property="itemListElement" typeof="ListItem" class="crumb">
+            <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons" property="item" typeof="WebPage">
+              <span property="name">Add-ons</span>
+            </a>
+            <meta property="position" content="2">
+          </li>
+        
+          <li property="itemListElement" typeof="ListItem" class="crumb">
+            <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions" property="item" typeof="WebPage">
+              <span property="name">Browser Extensions</span>
+            </a>
+            <meta property="position" content="3">
+          </li>
+        
+        <li property="itemListElement" typeof="ListItem" class="crumb">
+          <span property="name">Match patterns</span>
+        </li>
+      </ol>
+    </nav>
+  
+                
+
+                
+
+                
+                  <!-- quick links -->
+                  
+  <div class="quick-links" id="quick-links">
+    <div class="quick-links-head">Related Topics</div>
+    
+  <ol>
+    <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions"><strong>Browser extensions</strong></a></li>
+
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions#Getting_started" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Getting started</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/What_are_WebExtensions">What are extensions?</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Your_first_WebExtension">Your first extension</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Your_second_WebExtension">Your second extension</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Anatomy_of_a_WebExtension">Anatomy of an extension</a>
+        </li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Examples">Example extensions</a>
+      </li></ol>
+    </li>
+    
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions#Concepts" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Concepts</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Using_the_JavaScript_APIs">Using the JavaScript APIs</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts">Content scripts</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns">Match patterns</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Working_with_files">Working with files</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Internationalization">Internationalization</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_Security_Policy">Content Security Policy</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Native_messaging">Native messaging</a></li>
+      </ol>
+    </li>  
+
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions#How_to" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>User interface</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/user_interface">Introduction</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/user_interface/Browser_action">Toolbar button</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/user_interface/Page_actions">Address bar button</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/user_interface/Sidebars">Sidebar</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/user_interface/Context_menu_items">Context menu items</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/user_interface/Options_pages">Options page</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/user_interface/Bundled_web_pages">Bundled web pages</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/user_interface/Notifications">Notifications</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/user_interface/Omnibox">Address bar suggestions</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/user_interface/devtools_panels">Developer tools panels</a></li>
+      </ol>
+    </li>
+
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions#How_to" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>How to</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests">Intercept HTTP requests</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Modify_a_web_page">Modify a web page</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Safely_inserting_external_content_into_a_page">Insert external content</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Add_a_button_to_the_toolbar">Add a button to the toolbar</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Implement_a_settings_page">Implement a settings page</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Working_with_the_Tabs_API">Work with the Tabs API</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Work_with_the_Bookmarks_API">Work with the Bookmarks API</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Work_with_the_Cookies_API">Work with the Cookies API</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Work_with_contextual_identities">Work with contextual identities</a></li>
+	  </ol>
+    </li>
+
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions#Porting" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Porting</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Porting_a_Google_Chrome_extension">Porting a Google Chrome extension</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Porting_a_legacy_Firefox_add-on">Porting a legacy Firefox extension</a>
+        </li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Embedded_WebExtensions">Embedded WebExtensions</a>
+        </li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Comparison_with_the_Add-on_SDK">Comparison with the Add-on SDK</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Comparison_with_XUL_XPCOM_extensions">Comparison with XUL/XPCOM extensions</a>
+        </li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Chrome_incompatibilities">Chrome incompatibilities</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Differences_between_desktop_and_Android">Differences between desktop and Android</a></li>
+      </ol>
+    </li>  
+
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions#Firefox_workflow" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Firefox workflow</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_experience_best_practices">User Experience</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Temporary_Installation_in_Firefox">Temporary Installation in Firefox</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Debugging">Debugging</a>
+        </li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Testing_persistent_and_restart_features">Testing persistent and restart features</a>
+        </li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Developing_WebExtensions_for_Firefox_for_Android">Developing for Firefox for Android</a>
+        </li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext">Getting started with web-ext</a>
+        </li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/web-ext_command_reference">web-ext command reference</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/WebExtensions_and_the_Add-on_ID">Extensions and the Add-on ID</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Request_the_right_permissions">Request the right permissions</a></li>
+		  
+      </ol>
+    </li>  
+    
+    <li data-default-state="closed" class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>JavaScript APIs</a>
+     <ol class="toggle-container" style="display: none;"><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Browser_support_for_JavaScript_APIs">Browser support for JavaScript APIs</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/alarms">alarms</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/bookmarks">bookmarks</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserAction">browserAction</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserSettings">browserSettings</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browsingData">browsingData</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/clipboard">clipboard</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/commands">commands</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/contentScripts">contentScripts</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/contextualIdentities">contextualIdentities</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/cookies">cookies</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/devtools.inspectedWindow">devtools.inspectedWindow</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/devtools.network">devtools.network</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/devtools.panels">devtools.panels</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/downloads">downloads</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/events">events</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/extension">extension</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/extensionTypes">extensionTypes</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/find">find</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/history">history</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/i18n">i18n</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/identity">identity</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/idle">idle</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/management">management</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/menus">menus</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/notifications">notifications</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/omnibox">omnibox</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/pageAction">pageAction</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/permissions">permissions</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/pkcs11">pkcs11</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/privacy">privacy</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/proxy">proxy</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime">runtime</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/sessions">sessions</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/sidebarAction">sidebarAction</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage">storage</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs">tabs</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/theme">theme</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/topSites">topSites</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/types">types</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webNavigation">webNavigation</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest">webRequest</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/windows">windows</a></li></ol>
+    </li>
+    
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Manifest keys</a>
+    <ol class="toggle-container" style="display: none;"><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/applications">applications</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/author">author</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/background">background</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/browser_action">browser_action</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/chrome_settings_overrides">chrome_settings_overrides</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/chrome_url_overrides">chrome_url_overrides</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/commands">commands</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/content_scripts">content_scripts</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/content_security_policy">content_security_policy</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/default_locale">default_locale</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/description">description</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/developer">developer</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/devtools_page">devtools_page</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/homepage_url">homepage_url</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/icons">icons</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/incognito">incognito</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/manifest_version">manifest_version</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/name">name</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/omnibox">omnibox</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/optional_permissions">optional_permissions</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/options_ui">options_ui</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/page_action">page_action</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/permissions">permissions</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/protocol_handlers">protocol_handlers</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/short_name">short_name</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/sidebar_action">sidebar_action</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/theme">theme</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/version">version</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/web_accessible_resources">web_accessible_resources</a></li></ol>
+    </li>
+
+    <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Themes"><strong>Themes</strong></a></li>
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Themes/Theme_concepts" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Browser themes</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Themes/Theme_concepts">Browser theme concepts</a></li>
+      </ol>
+    </li>
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Themes/Lightweight_themes" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Lightweight themes</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Themes/Lightweight_themes">Lightweight themes</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Themes/Lightweight_Themes/FAQ">Lightweight themes FAQ</a></li>
+      </ol>
+    </li>
+
+    <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Distribution"><strong>Publishing and Distribution</strong></a></li>
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Distribution" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Publishing add-ons</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Distribution">Signing and distribution overview</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Publishing_your_WebExtension">Publishing your extension</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Distribution/Submitting_an_add-on">Submit an add-on</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Source_Code_Submission">Source code submission</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Listing">Creating an appealing listing</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/AMO/Policy/Reviews">Review policies</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/AMO/Policy/Agreement">Developer agreement</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/AMO/Policy/Featured">Featured add-ons</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/Distribution/Retiring_your_extension">Retiring your extension</a></li>
+      </ol>
+    </li>
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Alternative_distribution_options" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Distributing add-ons</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Alternative_distribution_options/Sideloading_add-ons">For sideloading</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Alternative_distribution_options/Add-ons_for_desktop_apps">For desktop apps</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Alternative_distribution_options/Add-ons_in_the_enterprise">For an enterprise</a></li>
+      </ol>
+    </li>
+
+    <li><a href="https://discourse.mozilla-community.org/c/add-ons" class="external external-icon" rel="noopener"><strong>Community and support</strong></a></li>
+    <li class="toggleable" data-closed="true"><a href="#" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Channels</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://blog.mozilla.org/addons" class="external external-icon" rel="noopener">Add-ons blog</a></li>
+        <li><a href="https://discourse.mozilla-community.org/c/add-ons" class="external external-icon" rel="noopener">Add-on forums</a></li>
+        <li><a href="http://stackoverflow.com/questions/tagged/firefox-addon" class="external external-icon" rel="noopener">Stack Overflow</a></li>
+        <li><a href="https://groups.google.com/forum/#!forum/mozilla.dev.extensions" class="external external-icon" rel="noopener">Development newsgroup</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/#Contact_us" class="new" rel="nofollow">Contact us</a></li>
+      </ol>
+    </li>
+
+  </ol>
+
+  </div>
+                
+
+                <!-- approvals -->
+                
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div> <!-- ends "main-content" -->
+
+    
+      <div class="newsletter-box">
+        <div class="newsletter">
+    <form id="newsletterForm" class="newsletter-form nodisable" name="newsletter-form" action="https://www.mozilla.org/en-US/newsletter/" method="post">
+        <div class="newsletter-head">
+            <h2 class="newsletter-teaser">Learn the best of web development</h2>
+            <p class="newsletter-description">Get the latest and greatest from MDN delivered straight to your inbox.</p>
+            
+        </div>
+
+        <div class="newsletter-fields">
+            <input id="fmt" name="fmt" value="H" type="hidden">
+            <input id="newsletterNewslettersInput" name="newsletters" value="app-dev" type="hidden">
+            <div id="newsletterErrors" class="newsletter-errors"></div>
+
+            <div id="newsletterEmail" class="form-group newsletter-group-email">
+                <label for="newsletterEmailInput" class="form-label offscreen">E-mail</label>
+                <input id="newsletterEmailInput" name="email" class="form-input newsletter-input-email" required="" placeholder="you@example.com" size="30" type="email">
+            </div>
+
+            <div id="newsletterPrivacy" class="form-group form-group-agree newsletter-group-privacy hidden">
+                <input id="newsletterPrivacyInput" name="privacy" required="" type="checkbox">
+                <label for="newsletterPrivacyInput">
+                I'm okay with Mozilla handling my info as explained in this <a href="https://www.mozilla.org/privacy/">Privacy Policy</a>.
+                </label>
+            </div>
+            <div id="newsletterSubmit" class="newsletter-group-submit">
+                <button id="newsletter-submit" type="submit" class="button neutral newsletter-submit">Sign up now</button>
+            </div>
+        </div>
+    </form>
+    <div id="newsletterThanks" class="newsletter-thanks hidden">
+        <h2>Thanks! Please check your inbox to confirm your subscription.</h2>
+        <p>If you haven’t previously confirmed a subscription to a 
+Mozilla-related newsletter you may have to do so. Please check your 
+inbox or your spam filter for an email from us.
+        </p>
+    </div>
+    <button id="newsletterHide" type="button" class="only-icon newsletter-hide"><span>Hide Newsletter Sign-up</span><i aria-hidden="true" class="icon-times"></i></button>
+</div>
+      </div>
+    
+
+  <menu type="context" id="edit-history-menu">
+    <menuitem data-action="/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns$edit" label="Edit page"></menuitem>
+    <menuitem data-action="/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns$history" label="View page history"></menuitem>
+  </menu>
+
+      </div>
+  </main>
+  <!-- Footer -->
+    <footer id="nav-footer" class="nav-footer">
+      <div class="center">
+          <a href="https://developer.mozilla.org/en-US/" class="nav-footer-logo">MDN Web Docs</a>
+          <div class="footer-group footer-group-mdn">
+            <h2 class="footer-title">MDN</h2>
+            <ul class="footer-list">
+              <li><a href="https://developer.mozilla.org/en-US/docs/Web">Web Technologies</a></li>
+              <li><a href="https://developer.mozilla.org/en-US/docs/Learn">Learn Web Development</a></li>
+              <li><a href="https://developer.mozilla.org/docs/MDN/About">About MDN</a></li>
+              <li><a href="https://developer.mozilla.org/en-US/docs/MDN/Feedback">Feedback</a></li>
+              <li class="footer-social"><a href="https://twitter.com/mozdevnet" class="only-icon"><i aria-hidden="true" class="icon-twitter"></i> <span>Twitter</span></a></li>
+              <li class="footer-social"><a href="https://github.com/mdn/" class="only-icon"><i aria-hidden="true" class="icon-github"></i> <span>GitHub</span></a></li>
+            </ul>
+          </div>
+
+          <a href="https://mozilla.org/" class="nav-footer-mozilla">Mozilla</a>
+          <div class="footer-group footer-group-mozilla">
+            <h2 class="footer-title">Mozilla</h2>
+            <ul class="footer-list">
+              <li><a href="https://www.mozilla.org/about/">About</a></li>
+              <li><a href="https://www.mozilla.org/contact/">Contact Us</a></li>
+              <li><a href="https://donate.mozilla.org/?utm_source=developer.mozilla.org&amp;utm_medium=referral&amp;utm_content=footer">Donate</a></li>
+              <li><a href="https://www.mozilla.org/firefox/?utm_source=developer.mozilla.org&amp;utm_campaign=footer&amp;utm_medium=referral">Firefox</a></li>
+              <li class="footer-social"><a href="https://twitter.com/mozilla" class="only-icon"><i aria-hidden="true" class="icon-twitter"></i> <span>Twitter</span></a></li>
+              <li class="footer-social"><a href="https://www.facebook.com/mozilla" class="only-icon"><i aria-hidden="true" class="icon-facebook"></i> <span>Facebook</span></a></li>
+              <li class="footer-social"><a href="https://www.instagram.com/mozillagram/" class="only-icon"><i aria-hidden="true" class="icon-instagram"></i> <span>Instagram</span></a></li>
+            </ul>
+          </div>
+
+          
+  
+    <form class="languages go" method="get" action="/en-US/docs/Web">
+      <label for="language">Other languages:</label>
+      <select id="language" class="wiki-l10n" name="next" dir="ltr">
+        <option title="English (US)" data-locale="en-US" value="/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns" selected="selected">
+          English (US) (en-US)
+        </option>
+        
+          <option title="Arabic" data-locale="en-US" value="/ar/docs/Mozilla/Add-ons/WebExtensions/Match_patterns">
+            عربي (ar)
+          </option>
+          <option title="French" data-locale="en-US" value="/fr/docs/Mozilla/Add-ons/WebExtensions/Match_patterns">
+            Français (fr)
+          </option>
+          <option title="Japanese" data-locale="en-US" value="/ja/docs/Mozilla/Add-ons/WebExtensions/Match_patterns">
+            日本語 (ja)
+          </option>
+          <option title="Chinese (Simplified)" data-locale="en-US" value="/zh-CN/docs/Mozilla/Add-ons/WebExtensions/Match_patterns">
+            中文 (简体) (zh-CN)
+          </option>
+      </select>
+      <noscript><button type="submit">Go</button></noscript>
+    </form>
+  
+
+
+          
+            <ul class="footer-tos">
+              <li><a href="https://www.mozilla.org/about/legal/terms/mozilla">Terms</a></li>
+              <li><a href="https://www.mozilla.org/privacy/websites/">Privacy</a></li>
+              <li><a href="https://www.mozilla.org/privacy/websites/#cookies">Cookies</a></li>
+            </ul>
+
+            <div id="license" class="contentinfo">
+              <p>© 2005-2018 Mozilla and individual contributors.</p> <p>Content is available under <a href="https://developer.mozilla.org/en-US/docs/MDN/About#Copyrights_and_licenses">these licenses</a>.</p>
+            </div>
+          
+      </div>
+    </footer> 
+
+  <!-- site js -->
+  
+    
+    <!--[if lte IE 8]><script type="text/javascript" src="https://cdn.mdn.mozilla.net/static/build/js/selectivizr.091e18cf669b.js" charset="utf-8"></script><![endif]-->
+
+    
+    <script type="text/javascript" src="Match%20patterns%20-%20Mozilla%20%20%20MDN_files/javascript.js"></script>
+    <script type="text/javascript" src="Match%20patterns%20-%20Mozilla%20%20%20MDN_files/main.js" charset="utf-8"></script>
+    <script>
+    if (window.mdn && mdn.analytics) mdn.analytics.trackOutboundLinks();
+</script>
+    
+
+  
+
+    <script async="" type="text/javascript" src="Match%20patterns%20-%20Mozilla%20%20%20MDN_files/wiki.js" charset="utf-8"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+    <script async="" type="text/javascript" src="Match%20patterns%20-%20Mozilla%20%20%20MDN_files/newsletter.js" charset="utf-8"></script>
+  
+
+
+
+<script async="" src="Match%20patterns%20-%20Mozilla%20%20%20MDN_files/iframe_api"></script></body></html>

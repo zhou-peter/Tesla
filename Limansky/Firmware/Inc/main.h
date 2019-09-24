@@ -70,6 +70,8 @@ extern "C" {
 
 /* USER CODE END EM */
 
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
+
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
@@ -80,8 +82,6 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define TIMER_PERIOD 1000
 #define TIMER_PRESCALER 100
-#define SD_Pin GPIO_PIN_0
-#define SD_GPIO_Port GPIOB
 #define A1_LO_Pin GPIO_PIN_1
 #define A1_LO_GPIO_Port GPIOB
 #define A1_HI_Pin GPIO_PIN_2

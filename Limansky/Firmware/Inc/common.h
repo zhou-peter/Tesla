@@ -19,17 +19,11 @@ typedef enum {FALSE = 0, TRUE = !FALSE} bool;
 typedef enum
 {
 	StepA,
-	StepA_B,
 	StepB,
-	StepB_C,
 	StepC,
-	StepC_MA,
-	StepMA,
-	StepMA_MB,
-	StepMB,
-	StepMB_MC,
-	StepMC,
-	StepMC_A
+	StepAA,
+	StepBB,
+	StepCC
 }Steps;
 
 
@@ -48,6 +42,7 @@ typedef struct
 	Directions Direction:8;
 
 	u32 freq:32;
+	u32 modulationFreq:32;
 } Env_t;
 
 

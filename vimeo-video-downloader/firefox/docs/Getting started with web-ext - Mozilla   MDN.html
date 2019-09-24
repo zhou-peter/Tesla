@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html dir="ltr" class="" lang="ru"><head prefix="og: http://ogp.me/ns#">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <script async="" src="Getting%20started%20with%20web-ext%20-%20Mozilla%20%20%20MDN_files/analytics.js"></script><script>(function(d) { d.className = d.className.replace(/\bno-js/, ''); })(document.documentElement);</script>
+  <title>Getting started with web-ext - Mozilla | MDN</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="index, follow">
+
+  
+<link rel="preload" href="https://cdn.mdn.mozilla.net/static/fonts/locales/ZillaSlab-Bold.8d7f01331d2b.woff2" as="font" type="font/woff2" crossorigin="">
+<link rel="preload" href="https://cdn.mdn.mozilla.net/static/fonts/locales/ZillaSlab-Regular.f9de6143fdfa.woff2" as="font" type="font/woff2" crossorigin="">
+    <link rel="home" href="https://developer.mozilla.org/ru/">
+    <link rel="license" href="#license">
+  
+
+  
+    
+    
+
+    <link href="Getting%20started%20with%20web-ext%20-%20Mozilla%20%20%20MDN_files/mdn.css" rel="stylesheet" type="text/css">
+
+    
+  
+
+    <link href="Getting%20started%20with%20web-ext%20-%20Mozilla%20%20%20MDN_files/wiki.css" rel="stylesheet" type="text/css">
+
+
+    
+      
+        <link href="Getting%20started%20with%20web-ext%20-%20Mozilla%20%20%20MDN_files/zone-addons.css" rel="stylesheet" type="text/css">
+      
+    
+
+  
+
+  
+    <script type="text/javascript" src="Getting%20started%20with%20web-ext%20-%20Mozilla%20%20%20MDN_files/mozilla-dnthelper.js" charset="utf-8"></script>
+    
+
+<script type="text/javascript">
+    // only load GA if DNT is not enabled
+    if (Mozilla && !Mozilla.dntEnabled()) {
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-36116321-5', 'mozilla.org');
+        ga('set', 'anonymizeIp', true);
+
+        
+
+        // dimension9 == "Section editing"
+        
+            // dimension12 == 'Page Revision'
+            ga('set', 'dimension12', '1331040');
+            // dimension17 == 'English Slug'
+            ga('set', 'dimension17', 'Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext');
+
+        (function() {
+            // http://cfsimplicity.com/61/removing-analytics-clutter-from-campaign-urls
+            var win = window;
+            var removeUtms = function(){
+                var location = win.location;
+                if (location.href.indexOf('utm') != -1 && win.history.replaceState) {
+                    win.history.replaceState({}, '', location.pathname);
+                }
+            };
+
+            ga('send', 'pageview', {'hitCallback': removeUtms});
+        })();
+    }
+</script>
+
+  
+    <!-- common social tags -->
+    
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://cdn.mdn.mozilla.net/static/img/opengraph-logo.72382e605ce3.png">
+    <meta property="og:site_name" content="Веб-документация MDN">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:image" content="https://cdn.mdn.mozilla.net/static/img/opengraph-logo.72382e605ce3.png">
+    <meta name="twitter:site" content="@MozDevNet">
+    <meta name="twitter:creator" content="@MozDevNet">
+    <link rel="search" type="application/opensearchdescription+xml" href="https://developer.mozilla.org/ru/search/xml" title="Веб-документация MDN">
+  
+
+  <!-- third-generation iPad with high-resolution Retina display: -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://cdn.mdn.mozilla.net/static/img/favicon144.e7e21ca263ca.png">
+  <!-- iPhone with high-resolution Retina display: -->
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="https://cdn.mdn.mozilla.net/static/img/favicon114.d526f38b09c5.png">
+  <!-- first- and second-generation iPad: -->
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="https://cdn.mdn.mozilla.net/static/img/favicon72.cc65d1d762a0.png">
+  <!-- non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+  <link rel="apple-touch-icon-precomposed" href="https://cdn.mdn.mozilla.net/static/img/favicon57.de33179910ae.png">
+  <!-- basic favicon -->
+     <!-- basic favicon -->
+  
+    
+  
+  <link rel="shortcut icon" href="https://cdn.mdn.mozilla.net/static/img/favicon32.7f3da72dcea1.png">
+  <!--[if IE]>
+  <meta http-equiv="imagetoolbar" content="no">
+  <script type="text/javascript" src="https://cdn.mdn.mozilla.net/static/build/js/html5shiv.3948ccddab6f.js" charset="utf-8"></script>
+  <![endif]-->
+
+  
+  <link rel="dns-prefetch" href="https://interactive-examples.mdn.mozilla.net/" pr="0.75">
+  <link rel="preconnect" href="https://interactive-examples.mdn.mozilla.net/" pr="0.75">
+
+  <link rel="preload" href="https://interactive-examples.mdn.mozilla.net/js/codemirror-5-31-0.js" as="script">
+  <link rel="preload" href="https://interactive-examples.mdn.mozilla.net/js/editor-js.js" as="script">
+
+  <link rel="alternate" type="application/json" href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext$json">
+  <link rel="canonical" href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext">
+
+  
+    
+      <link rel="alternate" hreflang="en-US" href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext" title="Getting started with web-ext">
+    
+      <link rel="alternate" hreflang="es" href="https://developer.mozilla.org/es/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext" title="Primeros pasos con web-ext">
+    
+      <link rel="alternate" hreflang="fr" href="https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext" title="Démarrer avec Web-ext">
+    
+      <link rel="alternate" hreflang="ja" href="https://developer.mozilla.org/ja/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext" title="はじめての web-ext">
+    
+      <link rel="alternate" hreflang="pt-PT" href="https://developer.mozilla.org/pt-PT/docs/Mozilla/Add-ons/WebExtensions/Primeiros_passos_com_web-ext" title="Primeiros passos com web-ext">
+    
+      <link rel="alternate" hreflang="zh-CN" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext" title="web-ext 新手入门">
+    
+  
+
+  <!-- document-specific social tags -->
+  <meta property="og:title" content="Getting started with web-ext">
+  <meta property="og:url" content="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext">
+  <meta name="twitter:url" content="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext">
+  <meta name="twitter:title" content="Getting started with web-ext">
+  
+  <meta property="og:description" content="web-ext - это инструмент командной строки, предназначенный для ускорения различных частей процесса разработки расширения, делая разработку более быстрой и простой. Эта статья объясняет как установить и использовать web-ext.">
+  <meta name="description" content="web-ext - это инструмент командной строки, предназначенный для ускорения различных частей процесса разработки расширения, делая разработку более быстрой и простой. Эта статья объясняет как установить и использовать web-ext.">
+  <meta name="twitter:description" content="web-ext - это инструмент командной строки, предназначенный для ускорения различных частей процесса разработки расширения, делая разработку более быстрой и простой. Эта статья объясняет как установить и использовать web-ext.">
+  
+
+<script async="" data-manual="true" src="Getting%20started%20with%20web-ext%20-%20Mozilla%20%20%20MDN_files/syntax-prism.js"></script></head>
+<body data-slug="Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext" contextmenu="edit-history-menu" data-search-url="" class="document zone ">
+
+  <script type="text/javascript">
+    // make sure global mdn object exists
+    var mdn = window.mdn || {};
+
+    (function(win) {
+        'use strict';
+
+        (function(){
+  var FLAGS = {
+    'compat_data': true,'kumaediting': false,'line_length': true,'page_move': false,'registration_disabled': false,'search_suggestions': false,'section_edit': false,'sg_task_completion': false,'spam_admin_override': false,'spam_checks_enabled': true,'spam_spammer_override': false,'spam_submissions_enabled': false,'spam_testing_mode': false,'wiki_samples': true,'wiki_spam_exempted': false,'wiki_spam_training': false
+    },
+    SWITCHES = {
+    'wiki_error_on_delete': false,'wiki_force_immediate_rendering': false,'enable_optimizely': false,'welcome_email': true,'application_ACAO': true,'store_revision_ips': true,'dumb_doc_urls': true,'newsletter': true,'newsletter_article': true,'foundation_callout': false,'helpful-survey-2': true,'wiki_spam_training': true
+    },
+    SAMPLES = {
+    
+    };
+  window.waffle = {
+    "flag_is_active": function waffle_flag(flag_name) {
+      
+      return !!FLAGS[flag_name];
+    },
+    "switch_is_active": function waffle_switch(switch_name) {
+      
+      return !!SWITCHES[switch_name];
+    },
+    "sample_is_active": function waffle_sample(sample_name) {
+      
+      return !!SAMPLES[sample_name];
+    },
+    "FLAGS": FLAGS,
+    "SWITCHES": SWITCHES,
+    "SAMPLES": SAMPLES
+  };
+})();
+
+
+        // This needs to be set before ckeditor.js loads
+        window.CKEDITOR_BASEPATH = '/static/js/libs/ckeditor/build/ckeditor/';
+
+        // Site configuration
+        win.mdn.ckeditor = {};
+        win.mdn.features = {};
+        win.mdn.staticPath = 'https://cdn.mdn.mozilla.net/static/';
+        win.mdn.wiki = {
+            autosuggestTitleUrl: '/ru/docs/get-documents'
+        };
+        win.mdn.assets = {
+            css: {
+                'editor-content': ['https://cdn.mdn.mozilla.net/static/build/styles/editor-content.fc2e2a3d4883.css',
+                ],
+
+                'wiki-compat-tables': ['https://cdn.mdn.mozilla.net/static/build/styles/wiki-compat-tables.aed4662ba49c.css',]
+            },
+            js: {
+                'syntax-prism': ['https://cdn.mdn.mozilla.net/static/build/js/syntax-prism.05dc5663d445.js',],
+                'wiki-compat-tables': ['https://cdn.mdn.mozilla.net/static/build/js/wiki-compat-tables.003f4acf76ea.js',]
+            }
+        };
+
+        win.mdn.notifications = [];
+
+        
+
+        // interactive editor config
+        win.mdn.interactiveEditor = {
+            siteUrl: "https://developer.mozilla.org",
+            editorUrl: "https://interactive-examples.mdn.mozilla.net"
+        };
+
+    })(this);
+</script>
+    
+    <ul id="nav-access">
+  <li><a href="#content" id="skip-main">Перейти к главному содержимому</a></li>
+  <li><a id="skip-language" href="#language">Выберите язык</a></li>
+  <li><a href="#q" id="skip-search">Перейти к поиску</a></li>
+</ul>
+
+    <!-- Header -->
+    <header id="main-header" class="header-main">
+      <a href="https://developer.mozilla.org/ru/" class="logo">Веб-документация MDN</a>
+      <div class="nav-toolbox-wrapper">
+        <nav id="main-nav" class="nav-main" role="navigation">
+    <ul>
+        <li class="nav-main-item">
+            <a href="https://developer.mozilla.org/ru/docs/Web">Технологии
+                <i aria-hidden="true" class="icon-caret-down"></i>
+            </a>
+            <div class="submenu js-submenu" id="nav-tech-submenu">
+                <div class="submenu-column">
+                  <ul>
+                    <li><a href="https://developer.mozilla.org/ru/docs/Web/HTML">HTML</a></li>
+                    <li><a href="https://developer.mozilla.org/ru/docs/Web/CSS">CSS</a></li>
+                    <li><a href="https://developer.mozilla.org/ru/docs/Web/JavaScript">JavaScript</a></li>
+                    <li><a href="https://developer.mozilla.org/ru/docs/Web/Guide/Graphics">Графика</a></li>
+                    <li><a href="https://developer.mozilla.org/ru/docs/Web/HTTP">HTTP</a></li>
+                    <li><a href="https://developer.mozilla.org/ru/docs/Web/API">API / DOM</a></li>
+                    <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions">Расширения для браузеров</a></li>
+                    <li><a href="https://developer.mozilla.org/ru/docs/Web/MathML">MathML</a></li>
+                  </ul>
+                </div>
+            </div>
+        </li>
+        <li class="nav-main-item">
+            <a href="https://developer.mozilla.org/ru/docs/Learn">Справочники и руководства
+                <i aria-hidden="true" class="icon-caret-down"></i>
+            </a>
+            <div class="submenu js-submenu" id="nav-learn-submenu">
+                <div class="submenu-column">
+                  <ul>
+                    <li><a href="https://developer.mozilla.org/ru/docs/Learn">Изучение Веб-разработки</a></li>
+                    <li><a href="https://developer.mozilla.org/ru/docs/Web/Tutorials">Уроки</a></li>
+                    <li><a href="https://developer.mozilla.org/ru/docs/Web/Reference">Справочники</a></li>
+                    <li><a href="https://developer.mozilla.org/ru/docs/Web/Guide">Руководства разработчика</a></li>
+                    <li><a href="https://developer.mozilla.org/ru/docs/Web/Accessibility">Доступность</a></li>
+                    <li><a href="https://developer.mozilla.org/ru/docs/Games">Разработка игр</a></li>
+                    <li><a href="https://developer.mozilla.org/ru/docs/Web">...больше документации</a></li>
+                  </ul>
+                </div>
+            </div>
+        </li>
+        <li class="nav-main-item">
+            <a href="https://developer.mozilla.org/ru/docs/MDN/Feedback">Обратная связь
+                <i aria-hidden="true" class="icon-caret-down"></i>
+            </a>
+            <div class="submenu js-submenu" id="nav-contact-submenu">
+              <div class="submenu-column">
+                <ul>
+                  <li>
+                      <a href="https://support.mozilla.org/">Получить помощь Firefox
+                          <i aria-hidden="true" class="icon-external-link"></i>
+                      </a>
+                  </li>
+                  <li>
+                      <a href="https://stackoverflow.com/">Получить помощь по веб-разработке
+                          <i aria-hidden="true" class="icon-external-link"></i>
+                      </a>
+                  </li>
+                </ul>
+                <ul>
+                  <li>
+                      <a href="https://developer.mozilla.org/ru/docs/MDN/Community">Присоединиться к сообществу MDN</a>
+                  </li>
+                  <li>
+                      <a target="_blank" href="https://bugzilla.mozilla.org/form.doc?bug_file_loc=https%3A//developer.mozilla.org/ru/Add-ons/WebExtensions/Getting_started_with_web-ext">Сообщить о проблеме содержания
+                          <i aria-hidden="true" class="icon-external-link"></i>
+                      </a>
+                  </li>
+                  <li>
+                      <a target="_blank" href="https://bugzilla.mozilla.org/form.mdn">Сообщить об ошибке
+                          <i aria-hidden="true" class="icon-external-link"></i>
+                      </a>
+                  </li>
+                </ul>
+              </div>
+          </div>
+      </li>
+  </ul>
+</nav>
+        <div id="toolbox" class="toolbox">
+  <ul>
+  <li class="nav-login"><div class="login">
+    
+        
+        <a href="https://developer.mozilla.org/users/github/login/?next=%2Fru%2FAdd-ons%2FWebExtensions%2FGetting_started_with_web-ext" class="login-link js-login-link" data-service="GitHub" rel="nofollow">
+            Войти
+            <i class="icon-github" aria-hidden="true"></i>
+        </a>
+    
+</div></li>
+  </ul>
+</div>
+      </div>
+      <form id="nav-main-search" action="/ru/search" method="get" role="search" class="nav-main-search">
+  <div class="search-wrap">
+    <label for="main-q" class="offscreen">Поиск</label>
+    <input id="main-q" name="q" placeholder="Поиск" data-value="" aria-hidden="true" type="search">
+    <span class="search-trigger"><i aria-hidden="true" class="icon-search"></i></span>
+    <button type="submit" class="offscreen">Поиск</button>
+    <button type="button" id="close-header-search" class="close-header-search transparent">
+        <span class="offscreen">Закрыть поиск</span>
+        <i aria-hidden="true" class="icon-times"></i>
+    </button>
+  </div>
+</form>
+    </header> 
+
+  <!-- Content will go here -->
+  <main id="content" role="main">
+      
+  <!-- heading -->
+  <div id="wiki-document-head" class="document-head">
+    <div class="center">
+      <!-- action buttons -->
+      <div class="document-actions">
+        
+
+  
+    
+    
+  
+
+  
+    
+  
+
+  
+
+  <ul class="page-buttons">
+      <li><button id="languages-menu" class="transparent" aria-haspopup="true" aria-owns="languages-menu-submenu" aria-expanded="false"><span>Языки</span><i aria-hidden="true" class="icon-language"></i></button>
+
+        <div class="submenu js-submenu" id="languages-menu-submenu">
+          <div class="submenu-column">
+            <ul id="translations">
+              
+                
+                
+                
+                  <li><bdi><a rel="internal" href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext" data-locale="en-US" title="Английский (США)">English (US) (en-US)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="https://developer.mozilla.org/es/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext" data-locale="es" title="Испанский">Español (es)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="https://developer.mozilla.org/fr/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext" data-locale="fr" title="Французский">Français (fr)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="https://developer.mozilla.org/ja/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext" data-locale="ja" title="Японский">日本語 (ja)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="https://developer.mozilla.org/pt-PT/docs/Mozilla/Add-ons/WebExtensions/Primeiros_passos_com_web-ext" data-locale="pt-PT" title="Португальский (Португалия)">Português (Europeu) (pt-PT)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="https://developer.mozilla.org/zh-CN/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext" data-locale="zh-CN" title="Китайский (Упрощённый)">中文 (简体) (zh-CN)</a></bdi></li>
+                
+              
+
+              
+            </ul>
+          </div>
+        </div>
+      </li>
+      
+      <li class="page-buttons-edit"><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext$edit" class="button neutral" id="edit-button" rel="nofollow">Редактировать<i aria-hidden="true" class="icon-pencil"></i></a></li>
+      
+
+        
+
+        <li class="page-buttons-advanced"><button id="advanced-menu" class="only-icon" aria-haspopup="true" aria-owns="advanced-menu-submenu" aria-expanded="false"><span>Дополнительно</span><i aria-hidden="true" class="icon-cog"></i></button>
+        <div class="submenu js-submenu" id="advanced-menu-submenu">
+          <!-- this page -->
+          <div class="submenu-column">
+            <div class="title">Дополнительно</div>
+            <ul>
+                <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext$history" rel="nofollow">История</a></li>
+                
+                
+                
+
+
+                
+
+                
+                
+                
+                <li class="page-print"><a href="#" onclick="return window.print();">Распечатать эту статью</a></li>
+            </ul>
+          </div>
+        </div>
+  </li></ul>
+      </div>
+
+      <div class="document-title">
+        
+          <!-- zone image, link to zone root -->
+          <a class="zone-parent" href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons">Дополнения</a>
+        
+
+        <h1>Getting started with web-ext</h1>
+      </div>
+    </div>
+  </div>
+  
+  <div id="toc" class="toc">
+    <div class="center">
+      <div class="toc-head">Перейти к:</div>
+        <ol class="toc-links">
+          <li><a href="#Установка" rel="internal" class="toc-current">Установка</a></li><li><a href="#Использование_web-ext" rel="internal">Использование web-ext</a></li><li><a href="#See_also" rel="internal">See also</a>
+        </li></ol>
+    </div>
+  </div>
+  
+
+      <div class="center clear">
+      
+
+    <div class="wiki-main-content"><div class="center">
+      <!-- start the main content container -->
+        <div id="wiki-column-container" class="wiki-left-present">
+
+          <!-- content row with three strips -->
+          <div class="column-container column-container-reverse">
+
+            <!-- center: main article content -->
+            <div id="wiki-content" class="column-main wiki-column text-content">
+
+              
+
+              
+              
+
+              
+
+              
+                
+                  
+                    <div class="overheadIndicator translationInProgress"><p>Перевод не завершен. Пожалуйста, помогите <a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext$edit">перевести эту статью</a> с английского.</p></div>
+                  
+                
+              
+              
+
+              <!-- just the article content -->
+              <article id="wikiArticle">
+                
+                  
+                    <pre class="syntaxbox"></pre>
+
+<p class="summary">web-ext - это инструмент командной строки, 
+предназначенный для ускорения различных частей процесса разработки 
+расширения, делая разработку более быстрой и простой. Эта статья 
+объясняет как установить и использовать web-ext.</p>
+
+<h2 id="Установка">Установка</h2>
+
+<p>web-ext - это утилита, основанная на Node, которую вы можете установить с помощью&nbsp;<a href="https://nodejs.org/" class="external external-icon" rel="noopener">nodejs/npm</a>. Установите&nbsp;web-ext с помощью следующей команды:</p>
+
+<pre class="brush: bash"><code>npm install --global web-ext</code></pre>
+
+<p>web-ext требует текущей&nbsp;<a href="https://github.com/nodejs/LTS" class="external external-icon" rel="noopener">LTS</a> (long term support) версии&nbsp;<a href="https://nodejs.org/" class="external external-icon" rel="noopener">NodeJS</a>.</p>
+
+<p>Вы можете проверить, установилась ли утилита, выполнив следующую 
+команду,&nbsp;которая выведет номер версии установленного web-ext:</p>
+
+<pre class="brush: bash"><code>web-ext --version</code></pre>
+
+<h2 id="Использование_web-ext">Использование web-ext</h2>
+
+<p>Once you've installed it, you can test web-ext out. At this point, it
+ is a good idea to have a sample extension to try it out on — if you 
+don't have one of your own, you can clone our <a href="https://github.com/mdn/webextensions-examples" class="external external-icon" rel="noopener">webextensions-examples</a> repo.</p>
+
+<h3 id="Testing_out_an_extension" class="highlight-spanned"><span class="highlight-span">Testing out an extension</span></h3>
+
+<p>You can test an extension in Firefox by <code>cd</code>'ing into your extension's root directory and entering the following command:</p>
+
+<pre class="brush: bash"><code>web-ext run</code></pre>
+
+<p>This will start up Firefox and load the extension temporarily in the browser, just like you could on the <a href="https://developer.mozilla.org/en-US/docs/Tools/about:debugging#Add-ons">about:debugging page</a>.</p>
+
+<p>See the <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/web-ext_command_reference#web-ext_run">run reference guide</a> to learn about all available options.</p>
+
+<h3 id="Automatic_extension_reloading" class="highlight-spanned"><span class="highlight-span">Automatic extension reloading</span></h3>
+
+<p>The <code>run</code> command will watch your source files and tell 
+Firefox to reload the extension after you edit and save a file. For 
+example, if you changed the <code>name</code> property in your <code>manifest.json</code>
+ file, Firefox would display the new name. This makes it easy to try out
+ new features and see them immediately. The automatic reloading feature 
+is active by default so you can use it like this:</p>
+
+<pre class="brush: bash"><code>web-ext run</code></pre>
+
+<p>You can also press the <code>r</code> key from the <code>web-ext</code> terminal to trigger an extension reload manually.</p>
+
+<p>If you experience unexpected behavior with the reloading feature, please <a href="https://github.com/mozilla/web-ext/issues" class="external external-icon" rel="noopener">file a bug</a>. You can also disable reloading like this:</p>
+
+<pre class="brush: bash"><code>web-ext run --no-reload</code></pre>
+
+<div class="note">
+<p>Extension reloading is only supported in Firefox 49 or higher.</p>
+</div>
+
+<h3 id="Testing_in_different_versions_of_Firefox" class="highlight-spanned"><span class="highlight-span">Testing in different versions of Firefox</span></h3>
+
+<p>To run your extension in a version of Firefox other than the default, use the <code>--firefox</code> option to specify a full path to the binary file. Here is an example on Mac OS:</p>
+
+<pre class="brush: bash line-numbers  language-bash"><code class=" language-bash">web-ext run --firefox=/Applications/FirefoxNightly.app/Contents/MacOS/firefox-bin<span class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>On Windows, the path needs to include the <code>firefox.exe</code> part, for example:</p>
+
+<pre class="brush: bash line-numbers  language-bash"><code class=" language-bash">web-ext run --firefox="C:\Program Files\Mozilla Firefox\firefox.exe"<span class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="Testing_in_Firefox_48" class="highlight-spanned"><span class="highlight-span">Testing in Firefox 48</span></h3>
+
+<p>Firefox 48 was the first stable version to use the WebExtension platform but it doesn't allow <code>web-ext</code> to install an extension remotely. You need to run your extension in Firefox 48 with a different installation option:</p>
+
+<pre class="brush: bash line-numbers  language-bash"><code class=" language-bash">web-ext run --pre-install<span class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="Testing_unsigned_extensions" class="highlight-spanned"><span class="highlight-span">Testing unsigned extensions</span></h3>
+
+<p>When you execute <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/web-ext_command_reference#web-ext_run">web-ext run</a>,
+ the extension gets installed temporarily until you close Firefox. This 
+does not violate any signing restrictions. If instead you create a zip 
+file with <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/web-ext_command_reference#web-ext_build">web-ext build</a> and try to install it into Firefox, you will see an error telling you that the add-on is not signed. You will need to use an <a href="https://wiki.mozilla.org/Addons/Extension_Signing#Unbranded_Builds" class="external external-icon" rel="noopener">unbranded build</a> or use a <a href="https://www.mozilla.org/en-US/firefox/developer/" class="external external-icon" rel="noopener">development build</a> to install unsigned extensions.</p>
+
+<h3 id="Using_a_custom_profile" class="highlight-spanned"><span class="highlight-span">Using a custom profile</span></h3>
+
+<p>By default, the <code>run</code> command will create a temporary Firefox profile. You can run your extension with a specific profile using the <code>--firefox-profile</code> option, like this:</p>
+
+<pre class="brush: bash line-numbers  language-bash"><code class=" language-bash">web-ext run --firefox-profile=your-custom-profile<span class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>This option accepts a string containing the name of your profile or 
+an absolute path to the profile directory. This may be helpful if you 
+want to manually configure some settings that will always available to 
+the <code>run</code> command.</p>
+
+<h3 id="Keeping_profile_changes" class="highlight-spanned"><span class="highlight-span">Keeping profile changes</span></h3>
+
+<p>The <code>run</code> command will not save any changes made to the custom profile specified by <code>--firefox-profile</code>. To keep changes, add this option:</p>
+
+<pre class="brush: bash line-numbers  language-bash"><code class=" language-bash">web-ext run --keep-profile-changes --firefox-profile=your-custom-profile<span class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>This may be helpful if your extension has many different run states.</p>
+
+<div class="warning">
+<p>This option makes the profile specified by <code>--firefox-profile</code>
+ completely insecure for daily usage. It turns off auto-updates and 
+allows silent remote connections, among other things. Specifically, it 
+will make destructive changes to the profile that are required for <code>web-ext</code> to operate.</p>
+</div>
+
+<h3 id="Packaging_your_extension" class="highlight-spanned"><span class="highlight-span">Packaging your extension</span></h3>
+
+<p>Once you've tested your extension and verified that it's working, you can turn it into a package for submitting to <a href="https://addons.mozilla.org/" class="external external-icon" rel="noopener">addons.mozilla.org</a> using the following command:</p>
+
+<pre class="brush: bash"><code>web-ext build</code></pre>
+
+<p>This will output a full path to the generated <code>.zip</code> file that can be loaded into a browser.</p>
+
+<div class="warning">
+<p>The generated <code>.zip</code> file doesn't work on Firefox without signing it, or adding <code><a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json/applications">applications</a>.gecko.id</code> key into <code><a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json">manifest.json</a></code>.&nbsp; For more information, please refer <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/WebExtensions_and_the_Add-on_ID">WebExtensions and the Add-on ID</a> page.</p>
+</div>
+
+<p><code>web-ext build</code> is designed to automatically ignore files that are commonly unwanted in packages, such as <code>.git</code>, <code>node_modules</code>, and other artifacts.</p>
+
+<p>See the <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/web-ext_command_reference#web-ext_build">build reference guide</a> to learn more.</p>
+
+<h3 id="Signing_your_extension_for_distribution" class="highlight-spanned"><span class="highlight-span">Signing your extension for distribution</span></h3>
+
+<p>As an alternative to publishing your extension on <a href="https://addons.mozilla.org/" class="external external-icon" rel="noopener">addons.mozilla.org</a>, you can self-host your package file but it needs to be <a href="https://developer.mozilla.org/Add-ons/Distribution">signed by Mozilla</a> first. The following command packages and signs a ZIP file, then returns it as a signed XPI file for distribution:</p>
+
+<pre class="brush: bash"><code>web-ext sign --api-key=$AMO_JWT_ISSUER --api-secret=$AMO_JWT_SECRET </code></pre>
+
+<p>The API options are required to specify your <a href="https://addons.mozilla.org/en-US/developers/addon/api/key/" class="external external-icon" rel="noopener">addons.mozilla.org credentials</a>.</p>
+
+<ul>
+ <li><code>--api-key</code>: the API key (JWT issuer) from <code>addons.mozilla.org</code> needed to sign the extension. This should always be a string.</li>
+ <li><code>--api-secret</code>: the API secret (JWT secret) from <code>addons.mozilla.org</code> needed to sign the extension. This should always be a string.</li>
+</ul>
+
+<p>See the <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/web-ext_command_reference#web-ext_sign">sign reference guide</a> to learn about all available options.</p>
+
+<h3 id="Signing_extensions_without_an_explicit_ID" class="highlight-spanned"><span class="highlight-span">Signing extensions without an explicit ID</span></h3>
+
+<p><code>web-ext</code> fully supports signing extensions that do not declare the <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json/applications">applications.gecko.id</a> property in their manifest. The first time you sign an extension without an explicit ID, <a href="https://addons.mozilla.org/" class="external external-icon" rel="noopener">addons.mozilla.org</a> will auto-generate an ID and <code>web-ext</code> will save it to <code>.web-extension-id</code>
+ in the current working directory. You should save the ID file so that 
+you can sign future versions of the same extension. If you lose the ID 
+file, you will have to add back the <code>applications.gecko.id</code> property or use the <code>--id</code> option when signing future versions, for example:</p>
+
+<pre class="brush: bash"><code>web-ext sign --api-key=... --api-secret=... --id="</code>{c23c69a7-f889-447c-9d6b-7694be8035bc}<code>"</code></pre>
+
+<h3 id="Signing_in_a_restricted_environment" class="highlight-spanned"><span class="highlight-span">Signing in a restricted environment</span></h3>
+
+<p>If you are working in an environment that restricts access to certain domains, you can try using a proxy when signing:</p>
+
+<pre class="brush: bash"><code>web-ext sign --api-key=... --api-secret=... --api-proxy=https://yourproxy:6000</code></pre>
+
+<p>See the <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/web-ext_command_reference#--api-proxy">--api-proxy</a> to learn more.</p>
+
+<p>If you simply need to allow the domains used for signing and downloading files, allow these:</p>
+
+<ul>
+ <li>addons.mozilla.org</li>
+ <li>addons.cdn.mozilla.net</li>
+</ul>
+
+<h3 id="Checking_for_code_lint" class="highlight-spanned"><span class="highlight-span">Checking for code "lint"</span></h3>
+
+<p>Before trying out your extension with the <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/web-ext_command_reference#web-ext_run">run</a> command or submitting your package to <a href="https://addons.mozilla.org/en-US/firefox/" class="external external-icon" rel="noopener">addons.mozilla.org</a>, you can use the <code>lint</code> command to make sure your <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json">manifest</a> and other source files do not contain any errors. Example:</p>
+
+<pre class="brush: bash line-numbers  language-bash"><code class=" language-bash">web-ext lint<span class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>This uses the <a href="https://github.com/mozilla/addons-linter" class="external external-icon" rel="noopener">addons-linter</a> library to walk through your source code directory and report any errors, such as the declaration of an unknown permission.</p>
+
+<p>See the <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/web-ext_command_reference#web-ext_lint">lint reference guide</a> to learn about all available options.</p>
+
+<h3 id="Specifying_different_source_and_destination_directories" class="highlight-spanned"><span class="highlight-span">Specifying different source and destination directories</span></h3>
+
+<p>The above commands all use default directories for the extension source and artifact creation (e.g. built <code>.zip</code> files). The defaults are:</p>
+
+<ul>
+ <li>Source: The directory you are currently inside.</li>
+ <li>Artifacts: A directory called <code>./web-ext-artifacts</code>, created inside the current directory.</li>
+</ul>
+
+<p>You can specify different source and destination directories using the <code>--source-dir</code> (or <code>-s</code> alias) and <code>--artifacts-dir</code> (or <code>-a</code>
+ alias) options when running your commands. Their values can be relative
+ or absolute paths, but must always be specified as strings. Here is an 
+example of specifying both options at the same time when&nbsp; building 
+an extension:</p>
+
+<pre class="brush: bash"><code>web-ext build --source-dir=webextension-examples/notify-link-clicks-i18n --artifacts-dir=zips</code></pre>
+
+<h3 id="Outputting_verbose_messages" class="highlight-spanned"><span class="highlight-span">Outputting verbose messages</span></h3>
+
+<p>If you want to see exactly what web-ext is doing when you run a command, you can include the <code>--verbose</code> option (or the <code>-v</code> alias). For example:</p>
+
+<pre class="brush: bash"><code>web-ext build --verbose</code></pre>
+
+<h3 id="Viewing_all_commands_and_options" class="highlight-spanned"><span class="highlight-span">Viewing all commands and options</span></h3>
+
+<p>You can list all commands and options like this:</p>
+
+<pre class="brush: bash"><code>web-ext --help</code></pre>
+
+<div class="note">
+<p><strong>Note</strong>: You can also use the <code>-h</code> alias.</p>
+</div>
+
+<p>You can list options for a specific command by adding it as an argument:</p>
+
+<pre class="brush: bash"><code>web-ext --help run</code></pre>
+
+<h2 id="See_also">See also</h2>
+
+<ul>
+ <li><a href="https://github.com/mozilla/web-ext" class="external external-icon" rel="noopener">web-ext repo</a></li>
+ <li>
+  <p><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/web-ext_command_reference">web-ext command reference</a></p>
+ </li>
+</ul>
+                  
+                
+              </article>
+
+              <!-- contributors -->
+              <div class="wiki-block contributors">
+                <h2 class="offscreen">Метки документа и участники</h2>
+                
+                
+
+                
+                  <div class="contributors-sub">
+                    <i aria-hidden="true" class="icon-group icon-fw"></i>&nbsp;<strong>Внесли вклад в эту страницу:</strong> 
+        <a href="https://developer.mozilla.org/ru/profiles/shass">shass</a>, 
+    
+        <a href="https://developer.mozilla.org/ru/profiles/Shadow1458666">Shadow1458666</a>
+    
+                  </div>
+                
+
+                
+                  <div class="contributors-sub">
+                    <i aria-hidden="true" class="icon-clock-o icon-fw"></i>&nbsp;<strong>Обновлялась последний раз:</strong>
+                    <a href="https://developer.mozilla.org/ru/profiles/shass">shass</a>,
+                    <time datetime="2017-11-28T07:17:05.144629-08:00">28 нояб. 2017 г., 7:17:05</time>
+                  </div>
+                
+              </div>
+            </div>
+
+            
+              <!-- quick links and zone subnav strip -->
+              <div id="wiki-left" class="column-strip wiki-column">
+
+                
+                  <!-- crumbs -->
+                  
+  
+    <nav class="crumbs" role="navigation">
+      <ol typeof="BreadcrumbList" vocab="https://schema.org/" aria-label="хлебныекрошки">
+        
+          <li property="itemListElement" typeof="ListItem" class="crumb">
+            <a href="https://developer.mozilla.org/ru/docs/Mozilla" property="item" typeof="WebPage">
+              <span property="name">Mozilla</span>
+            </a>
+            <meta property="position" content="1">
+          </li>
+        
+          <li property="itemListElement" typeof="ListItem" class="crumb">
+            <a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons" property="item" typeof="WebPage">
+              <span property="name">Дополнения</span>
+            </a>
+            <meta property="position" content="2">
+          </li>
+        
+          <li property="itemListElement" typeof="ListItem" class="crumb">
+            <a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions" property="item" typeof="WebPage">
+              <span property="name">Расширения браузера</span>
+            </a>
+            <meta property="position" content="3">
+          </li>
+        
+        <li property="itemListElement" typeof="ListItem" class="crumb">
+          <span property="name">Getting started with web-ext</span>
+        </li>
+      </ol>
+    </nav>
+  
+                
+
+                
+
+                
+                  <!-- quick links -->
+                  
+  <div class="quick-links" id="quick-links">
+    <div class="quick-links-head">Связанные темы</div>
+    
+  <ol>
+    <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions"><strong>Browser extensions</strong></a></li>
+
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions#Getting_started" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Getting started</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/What_are_WebExtensions">What are extensions?</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Your_first_WebExtension">Your first extension</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Your_second_WebExtension">Your second extension</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Anatomy_of_a_WebExtension">Anatomy of an extension</a>
+        </li><li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Examples" class="new" rel="nofollow">Example extensions</a>
+      </li></ol>
+    </li>
+    
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions#Concepts" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Concepts</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Using_the_JavaScript_APIs" class="new" rel="nofollow">Using the JavaScript APIs</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Content_scripts" class="new" rel="nofollow">Content scripts</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Match_patterns" class="new" rel="nofollow">Match patterns</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Working_with_files" class="new" rel="nofollow">Working with files</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Internationalization" class="new" rel="nofollow">Internationalization</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Content_Security_Policy" class="new" rel="nofollow">Content Security Policy</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Native_messaging" class="new" rel="nofollow">Native messaging</a></li>
+      </ol>
+    </li>  
+
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions#How_to" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>User interface</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/user_interface">Introduction</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/user_interface/Browser_action">Toolbar button</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/user_interface/Page_actions" class="new" rel="nofollow">Address bar button</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/user_interface/Sidebars">Sidebar</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/user_interface/Context_menu_items" class="new" rel="nofollow">Context menu items</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/user_interface/Options_pages" class="new" rel="nofollow">Options page</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/user_interface/Bundled_web_pages" class="new" rel="nofollow">Bundled web pages</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/user_interface/Notifications" class="new" rel="nofollow">Notifications</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/user_interface/Omnibox" class="new" rel="nofollow">Address bar suggestions</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/user_interface/devtools_panels" class="new" rel="nofollow">Developer tools panels</a></li>
+      </ol>
+    </li>
+
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions#How_to" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>How to</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Intercept_HTTP_requests">Intercept HTTP requests</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Modify_a_web_page" class="new" rel="nofollow">Modify a web page</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Safely_inserting_external_content_into_a_page" class="new" rel="nofollow">Insert external content</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Add_a_button_to_the_toolbar" class="new" rel="nofollow">Add a button to the toolbar</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Implement_a_settings_page" class="new" rel="nofollow">Implement a settings page</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Working_with_the_Tabs_API" class="new" rel="nofollow">Work with the Tabs API</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Work_with_the_Bookmarks_API" class="new" rel="nofollow">Work with the Bookmarks API</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Work_with_the_Cookies_API" class="new" rel="nofollow">Work with the Cookies API</a></li>
+      </ol>
+    </li>
+
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions#Porting" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Porting</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Porting_a_Google_Chrome_extension" class="new" rel="nofollow">Porting a Google Chrome extension</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Porting_a_legacy_Firefox_add-on">Porting a legacy Firefox extension</a>
+        </li><li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Embedded_WebExtensions" class="new" rel="nofollow">Embedded WebExtensions</a>
+        </li><li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Comparison_with_the_Add-on_SDK" class="new" rel="nofollow">Comparison with the Add-on SDK</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Comparison_with_XUL_XPCOM_extensions" class="new" rel="nofollow">Comparison with XUL/XPCOM extensions</a>
+        </li><li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Chrome_incompatibilities">Chrome incompatibilities</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Differences_between_desktop_and_Android" class="new" rel="nofollow">Differences between desktop and Android</a></li>
+      </ol>
+    </li>  
+
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions#Firefox_workflow" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Firefox workflow</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/User_experience_best_practices" class="new" rel="nofollow">User Experience</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Temporary_Installation_in_Firefox">Temporary Installation in Firefox</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Debugging" class="new" rel="nofollow">Debugging</a>
+        </li><li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Developing_WebExtensions_for_Firefox_for_Android" class="new" rel="nofollow">Developing for Firefox for Android</a>
+        </li><li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext">Getting started with web-ext</a>
+        </li><li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/web-ext_command_reference" class="new" rel="nofollow">web-ext command reference</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/WebExtensions_and_the_Add-on_ID" class="new" rel="nofollow">Extensions and the Add-on ID</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Request_the_right_permissions" class="new" rel="nofollow">Request the right permissions</a></li>
+		  
+      </ol>
+    </li>  
+    
+    <li data-default-state="closed" class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/API" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>JavaScript APIs</a>
+     <ol class="toggle-container" style="display: none;"><li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Browser_support_for_JavaScript_APIs" class="new" rel="nofollow">Browser support for JavaScript APIs</a></li><li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/API/cookies">cookies</a></li><li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/API/tabs">tabs</a></li><li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/API/windows">windows</a></li></ol>
+    </li>
+    
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/manifest.json" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Manifest keys</a>
+    <ol class="toggle-container" style="display: none;"><li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/manifest.json/background">background</a></li><li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/manifest.json/description">description</a></li><li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/manifest.json/version">version</a></li><li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/manifest.json/icons">ключ icons</a></li><li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/manifest.json/manifest_version">ключ manifest_version</a></li><li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/manifest.json/name">ключ name</a></li></ol>
+    </li>
+
+    <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/Themes" class="new" rel="nofollow"><strong>Themes</strong></a></li>
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/Themes/Theme_concepts" class="new toggler" rel="nofollow" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Browser themes</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/Themes/Theme_concepts" class="new" rel="nofollow">Browser theme concepts</a></li>
+      </ol>
+    </li>
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/Themes/Lightweight_themes" class="new toggler" rel="nofollow" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Lightweight themes</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/Themes/Lightweight_themes" class="new" rel="nofollow">Lightweight themes</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/Themes/Lightweight_Themes/FAQ" class="new" rel="nofollow">Lightweight themes FAQ</a></li>
+      </ol>
+    </li>
+
+    <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/Distribution"><strong>Publishing and Distribution</strong></a></li>
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/Distribution" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Publishing add-ons</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/Distribution">Signing and distribution overview</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Publishing_your_WebExtension" class="new" rel="nofollow">Publishing your extension</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/Distribution/Submitting_an_add-on">Submit an add-on</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/Listing" class="new" rel="nofollow">Creating an appealing listing</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/AMO/Policy/Reviews">Review policies</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/AMO/Policy/Agreement">Developer agreement</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/AMO/Policy/Featured" class="new" rel="nofollow">Featured add-ons</a></li>
+      </ol>
+    </li>
+    <li class="toggleable" data-closed="true"><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Alternative_distribution_options" class="new toggler" rel="nofollow" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Distributing add-ons</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Alternative_distribution_options/Sideloading_add-ons" class="new" rel="nofollow">For sideloading</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Alternative_distribution_options/Add-ons_for_desktop_apps" class="new" rel="nofollow">For desktop apps</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/WebExtensions/Alternative_distribution_options/Add-ons_in_the_enterprise" class="new" rel="nofollow">For an enterprise</a></li>
+      </ol>
+    </li>
+
+    <li><a href="https://discourse.mozilla-community.org/c/add-ons" class="external external-icon" rel="noopener"><strong>Community and support</strong></a></li>
+    <li class="toggleable" data-closed="true"><a href="#" class="toggler" aria-haspopup="true"><i aria-hidden="true" class="icon-caret-right"></i>Channels</a>
+      <ol class="toggle-container" style="display: none;">
+        <li><a href="https://blog.mozilla.org/addons" class="external external-icon" rel="noopener">Add-ons blog</a></li>
+        <li><a href="https://discourse.mozilla-community.org/c/add-ons" class="external external-icon" rel="noopener">Add-on forums</a></li>
+        <li><a href="http://stackoverflow.com/questions/tagged/firefox-addon" class="external external-icon" rel="noopener">Stack Overflow</a></li>
+        <li><a href="https://groups.google.com/forum/#!forum/mozilla.dev.extensions" class="external external-icon" rel="noopener">Development newsgroup</a></li>
+        <li><a href="https://developer.mozilla.org/ru/docs/Mozilla/Add-ons/#Contact_us" class="new" rel="nofollow">Contact us</a></li>
+      </ol>
+    </li>
+
+  </ol>
+
+  </div>
+                
+
+                <!-- approvals -->
+                
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div> <!-- ends "main-content" -->
+
+    
+      <div class="newsletter-box">
+        <div class="newsletter">
+    <form id="newsletterForm" class="newsletter-form nodisable" name="newsletter-form" action="https://www.mozilla.org/en-US/newsletter/" method="post">
+        <div class="newsletter-head">
+            <h2 class="newsletter-teaser">Изучите лучшие материалы по Веб-разработке</h2>
+            <p class="newsletter-description">Получайте самые последние важные новости от MDN прямо в ваш почтовый ящик.</p>
+            
+            <p class="newsletter-lang">В настоящий момент новостная рассылка доступна только на английском языке.</p>
+            
+        </div>
+
+        <div class="newsletter-fields">
+            <input id="fmt" name="fmt" value="H" type="hidden">
+            <input id="newsletterNewslettersInput" name="newsletters" value="app-dev" type="hidden">
+            <div id="newsletterErrors" class="newsletter-errors"></div>
+
+            <div id="newsletterEmail" class="form-group newsletter-group-email">
+                <label for="newsletterEmailInput" class="form-label offscreen">Эл. почта</label>
+                <input id="newsletterEmailInput" name="email" class="form-input newsletter-input-email" required="" placeholder="вы@сайт.ru" size="30" type="email">
+            </div>
+
+            <div id="newsletterPrivacy" class="form-group form-group-agree newsletter-group-privacy hidden">
+                <input id="newsletterPrivacyInput" name="privacy" required="" type="checkbox">
+                <label for="newsletterPrivacyInput">
+                Я согласен с тем, как Mozilla обращается с моей информацией, согласно <a href="https://www.mozilla.org/privacy/">этой Политике приватности</a>.
+                </label>
+            </div>
+            <div id="newsletterSubmit" class="newsletter-group-submit">
+                <button id="newsletter-submit" type="submit" class="button neutral newsletter-submit">Подписаться сейчас</button>
+            </div>
+        </div>
+    </form>
+    <div id="newsletterThanks" class="newsletter-thanks hidden">
+        <h2>Спасибо! Пожалуйста, проверьте свою папку "Входящие" для подтверждения подписки.</h2>
+        <p>Если вы ранее не подтверждали подписку на новостную рассылку 
+Mozilla, то вам, возможно, придётся сделать это. Пожалуйста, проверьте 
+папку Входящие или Спам в своём почтовом ящике, чтобы посмотреть, не 
+пришло ли от нас письмо.
+        </p>
+    </div>
+    <button id="newsletterHide" type="button" class="only-icon newsletter-hide"><span>Скрыть подписку на новостную рассылку</span><i aria-hidden="true" class="icon-times"></i></button>
+</div>
+      </div>
+    
+
+  <menu type="context" id="edit-history-menu">
+    <menuitem data-action="/ru/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext$edit" label="Редактировать страницу"></menuitem>
+    <menuitem data-action="/ru/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext$history" label="Просмотреть историю страницы"></menuitem>
+  </menu>
+
+      </div>
+  </main>
+  <!-- Footer -->
+    <footer id="nav-footer" class="nav-footer">
+      <div class="center">
+          <a href="https://developer.mozilla.org/ru/" class="nav-footer-logo">Веб-документация MDN</a>
+          <div class="footer-group footer-group-mdn">
+            <h2 class="footer-title">MDN</h2>
+            <ul class="footer-list">
+              <li><a href="https://developer.mozilla.org/ru/docs/Web">Веб-технологии</a></li>
+              <li><a href="https://developer.mozilla.org/ru/docs/Learn">Изучите веб-разработку</a></li>
+              <li><a href="https://developer.mozilla.org/docs/MDN/About">О MDN</a></li>
+              <li><a href="https://developer.mozilla.org/ru/docs/MDN/Feedback">Обратная связь</a></li>
+              <li class="footer-social"><a href="https://twitter.com/mozdevnet" class="only-icon"><i aria-hidden="true" class="icon-twitter"></i> <span>Твиттер</span></a></li>
+              <li class="footer-social"><a href="https://github.com/mdn/" class="only-icon"><i aria-hidden="true" class="icon-github"></i> <span>GitHub</span></a></li>
+            </ul>
+          </div>
+
+          <a href="https://mozilla.org/" class="nav-footer-mozilla">Mozilla</a>
+          <div class="footer-group footer-group-mozilla">
+            <h2 class="footer-title">Mozilla</h2>
+            <ul class="footer-list">
+              <li><a href="https://www.mozilla.org/about/">О нас</a></li>
+              <li><a href="https://www.mozilla.org/contact/">Связаться с нами</a></li>
+              <li><a href="https://donate.mozilla.org/?utm_source=developer.mozilla.org&amp;utm_medium=referral&amp;utm_content=footer">Пожертвовать</a></li>
+              <li><a href="https://www.mozilla.org/firefox/?utm_source=developer.mozilla.org&amp;utm_campaign=footer&amp;utm_medium=referral">Firefox</a></li>
+              <li class="footer-social"><a href="https://twitter.com/mozilla" class="only-icon"><i aria-hidden="true" class="icon-twitter"></i> <span>Твиттер</span></a></li>
+              <li class="footer-social"><a href="https://www.facebook.com/mozilla" class="only-icon"><i aria-hidden="true" class="icon-facebook"></i> <span>Фейсбук</span></a></li>
+              <li class="footer-social"><a href="https://www.instagram.com/mozillagram/" class="only-icon"><i aria-hidden="true" class="icon-instagram"></i> <span>Instagram</span></a></li>
+            </ul>
+          </div>
+
+          
+  
+    <form class="languages go" method="get" action="/ru/docs/Web">
+      <label for="language">На других языках:</label>
+      <select id="language" class="wiki-l10n" name="next" dir="ltr">
+        <option title="Русский" data-locale="ru" value="/ru/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext" selected="selected">
+          Русский (ru)
+        </option>
+        
+          <option title="Английский (США)" data-locale="ru" value="/en-US/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext">
+            English (US) (en-US)
+          </option>
+          <option title="Испанский" data-locale="ru" value="/es/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext">
+            Español (es)
+          </option>
+          <option title="Французский" data-locale="ru" value="/fr/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext">
+            Français (fr)
+          </option>
+          <option title="Японский" data-locale="ru" value="/ja/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext">
+            日本語 (ja)
+          </option>
+          <option title="Португальский (Португалия)" data-locale="ru" value="/pt-PT/docs/Mozilla/Add-ons/WebExtensions/Primeiros_passos_com_web-ext">
+            Português (Europeu) (pt-PT)
+          </option>
+          <option title="Китайский (Упрощённый)" data-locale="ru" value="/zh-CN/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext">
+            中文 (简体) (zh-CN)
+          </option>
+      </select>
+      <noscript><button type="submit">Перейти</button></noscript>
+    </form>
+  
+
+
+          
+            <ul class="footer-tos">
+              <li><a href="https://www.mozilla.org/about/legal/terms/mozilla">Условия использования</a></li>
+              <li><a href="https://www.mozilla.org/privacy/websites/">Конфиденциальность</a></li>
+              <li><a href="https://www.mozilla.org/privacy/websites/#cookies">Куки</a></li>
+            </ul>
+
+            <div id="license" class="contentinfo">
+              <p>© 2005-2018 Mozilla и отдельные соучастники.</p> <p>Содержимое доступно на условиях <a href="https://developer.mozilla.org/en-US/docs/MDN/About#Copyrights_and_licenses">этих лицензий</a>.</p>
+            </div>
+          
+      </div>
+    </footer> 
+
+  <!-- site js -->
+  
+    
+    <!--[if lte IE 8]><script type="text/javascript" src="https://cdn.mdn.mozilla.net/static/build/js/selectivizr.091e18cf669b.js" charset="utf-8"></script><![endif]-->
+
+    
+    <script type="text/javascript" src="Getting%20started%20with%20web-ext%20-%20Mozilla%20%20%20MDN_files/javascript.js"></script>
+    <script type="text/javascript" src="Getting%20started%20with%20web-ext%20-%20Mozilla%20%20%20MDN_files/main.js" charset="utf-8"></script>
+    <script>
+    if (window.mdn && mdn.analytics) mdn.analytics.trackOutboundLinks();
+</script>
+    
+
+  
+
+    <script async="" type="text/javascript" src="Getting%20started%20with%20web-ext%20-%20Mozilla%20%20%20MDN_files/wiki.js" charset="utf-8"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+    <script async="" type="text/javascript" src="Getting%20started%20with%20web-ext%20-%20Mozilla%20%20%20MDN_files/newsletter.js" charset="utf-8"></script>
+  
+
+
+
+</body></html>
