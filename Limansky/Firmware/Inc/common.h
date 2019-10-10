@@ -37,12 +37,16 @@ typedef enum
 typedef struct
 {
 	Steps	CurrentStep:8;
-	u8		tmp:8;
+	bool	ChangeStep:1;
+	bool	HighState:1;
+	u8		tmp:6;
 	bool	Enabled:8;
 	Directions Direction:8;
 
 	u32 freq:32;
 	u32 modulationFreq:32;
+	u16 setPinHI:16;
+	u16 setPinLO:16;
 } Env_t;
 
 

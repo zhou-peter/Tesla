@@ -22,13 +22,16 @@ extern void stopTimers();
 void initMain() {
 	//5Ãö 60/12
 	Env.freq = 2;
-	Env.modulationFreq = 1000;
-
+	Env.modulationFreq = 500;
+	Env.setPinHI = A1_HI_Pin;
+	Env.setPinLO = A2_LO_Pin;
 	stopTimers();
 	updateTImerValues();
 
 	__HAL_TIM_ENABLE_IT(&htimMain, TIM_IT_UPDATE);
 	__HAL_TIM_ENABLE_IT(&htimMain, TIM_IT_CC1);
+	__HAL_TIM_ENABLE_IT(&htim6, TIM_IT_UPDATE);
+
 	//HAL_TIM_OC_Start(&htimMain, TIM_CHANNEL_1);
 	//HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
 	//checkState();
@@ -44,6 +47,7 @@ void loopMain() {
 	startTimers();
 	//HAL_GPIO_WritePin(GPIOM, SD_Pin, GPIO_PIN_SET);
 	while (1) {
+		HAL_Delay(100);
 		/*int shortCounter = 10;
 		while (shortCounter--) {
 			//nop
@@ -93,9 +97,9 @@ void updateTImerValues() {
 	period=result&0xFFFF;
 	prescaler=result>>16;
 
-	htim3.Instance->PSC = prescaler;
-	htim3.Instance->ARR = period;
-	htim3.Instance->CCR3 = period /2;
+	htim6.Instance->PSC = prescaler;
+	htim6.Instance->ARR = period;
+	htim6.Instance->CCR3 = period /2;
 
 }
 
@@ -103,8 +107,8 @@ void startTimers(){
 	HAL_TIM_OC_Start(&htimMain,TIM_CHANNEL_1);
 	HAL_TIM_Base_Start(&htimMain);
 
-	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
-	HAL_TIM_Base_Start(&htim3);
+	//HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
+	HAL_TIM_Base_Start(&htim6);
 }
 
 void stopTimers(){
@@ -157,68 +161,65 @@ void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim)
 }
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-
-	switch(Env.CurrentStep){
-		case StepA:
-			//Disable Step A pins
-			HAL_GPIO_WritePin(GPIOM, A1_HI_Pin, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin(GPIOM, A2_LO_Pin, GPIO_PIN_RESET);
-
-			Env.CurrentStep=StepB;
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
-
-			HAL_GPIO_WritePin(GPIOM, B1_HI_Pin, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(GPIOM, B2_LO_Pin, GPIO_PIN_SET);
-			break;
-		case StepB:
-			//Disable Step B pins
-			HAL_GPIO_WritePin(GPIOM, B1_HI_Pin, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin(GPIOM, B2_LO_Pin, GPIO_PIN_RESET);
-
-			Env.CurrentStep=StepC;
-
-			HAL_GPIO_WritePin(GPIOM, C1_HI_Pin, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(GPIOM, C2_LO_Pin, GPIO_PIN_SET);
-			break;
-		case StepC:
-			HAL_GPIO_WritePin(GPIOM, C1_HI_Pin, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin(GPIOM, C2_LO_Pin, GPIO_PIN_RESET);
-
-			Env.CurrentStep=StepAA;
-
-			HAL_GPIO_WritePin(GPIOM, A2_HI_Pin, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(GPIOM, A1_LO_Pin, GPIO_PIN_SET);
-			break;
-		case StepAA:
-			HAL_GPIO_WritePin(GPIOM, A2_HI_Pin, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin(GPIOM, A1_LO_Pin, GPIO_PIN_RESET);
-
-			Env.CurrentStep=StepBB;
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
-
-			HAL_GPIO_WritePin(GPIOM, B2_HI_Pin, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(GPIOM, B1_LO_Pin, GPIO_PIN_SET);
-			break;
-		case StepBB:
-			HAL_GPIO_WritePin(GPIOM, B2_HI_Pin, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin(GPIOM, B1_LO_Pin, GPIO_PIN_RESET);
-
-			Env.CurrentStep=StepCC;
-
-			HAL_GPIO_WritePin(GPIOM, C2_HI_Pin, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(GPIOM, C1_LO_Pin, GPIO_PIN_SET);
-			break;
-		case StepCC:
-			HAL_GPIO_WritePin(GPIOM, C2_HI_Pin, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin(GPIOM, C1_LO_Pin, GPIO_PIN_RESET);
-
-			Env.CurrentStep=StepA;
-
-			HAL_GPIO_WritePin(GPIOM, A1_HI_Pin, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(GPIOM, A2_LO_Pin, GPIO_PIN_SET);
-			break;
+	if (htim==&htimMain){
+		//just setup flag to change step
+		Env.ChangeStep=TRUE;
+		return;
 	}
 
+	if (Env.ChangeStep==TRUE)
+	{
+		//Disable Previous Step
+		HAL_GPIO_WritePin(GPIOM, Env.setPinHI, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOM, Env.setPinLO, GPIO_PIN_RESET);
+		switch(Env.CurrentStep){
+			case StepA:
+				Env.CurrentStep=StepB;
+				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
+				Env.setPinHI = B1_HI_Pin;
+				Env.setPinLO = B2_LO_Pin;
+				break;
+			case StepB:
+				Env.CurrentStep=StepC;
+				Env.setPinHI = C1_HI_Pin;
+				Env.setPinLO = C2_LO_Pin;
+				break;
+			case StepC:
+				Env.CurrentStep=StepAA;
+				Env.setPinHI = A2_HI_Pin;
+				Env.setPinLO = A1_LO_Pin;
+				break;
+			case StepAA:
+				Env.CurrentStep=StepBB;
+				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
+				Env.setPinHI = B2_HI_Pin;
+				Env.setPinLO = B1_LO_Pin;
+				break;
+			case StepBB:
+				Env.CurrentStep=StepCC;
+				Env.setPinHI = C2_HI_Pin;
+				Env.setPinLO = C1_LO_Pin;
+				break;
+			case StepCC:
+				Env.CurrentStep=StepA;
+				Env.setPinHI = A1_HI_Pin;
+				Env.setPinLO = A2_LO_Pin;
+				break;
+		}
+		HAL_GPIO_WritePin(GPIOM, Env.setPinHI, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOM, Env.setPinLO, GPIO_PIN_SET);
+		Env.ChangeStep=FALSE;
+	}else{
+		if (Env.HighState==TRUE){
+			HAL_GPIO_WritePin(GPIOM, Env.setPinHI, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(GPIOM, Env.setPinLO, GPIO_PIN_SET);
+			Env.HighState=FALSE;
+		}else{
+			HAL_GPIO_WritePin(GPIOM, Env.setPinHI, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOM, Env.setPinLO, GPIO_PIN_RESET);
+			Env.HighState=TRUE;
+		}
+	}
 }
 
 void checkSpeed() {/*
@@ -333,6 +334,80 @@ void checkSpeed() {/*
  }
  }
  */
+
+
+
+
+
+ /*
+ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	if (htim==&htimMain){
+		//just setup flag to change step
+		Env.ChangeStep=TRUE;
+		return;
+	}
+
+	if (Env.ChangeStep==TRUE)
+	{
+		//Disable Previous Step
+		HAL_GPIO_WritePin(GPIOM, Env.setPinHI, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOM, Env.setPinLO, GPIO_PIN_RESET);
+		switch(Env.CurrentStep){
+			case StepA:
+				Env.CurrentStep=StepB;
+				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
+				Env.setPinHI = B1_HI_Pin;
+				Env.setPinLO = B2_LO_Pin;
+				break;
+			case StepB:
+				Env.CurrentStep=StepC;
+				Env.setPinHI = C1_HI_Pin;
+				Env.setPinLO = C2_LO_Pin;
+				break;
+			case StepC:
+				Env.CurrentStep=StepAA;
+				Env.setPinHI = A2_HI_Pin;
+				Env.setPinLO = A1_LO_Pin;
+				break;
+			case StepAA:
+				Env.CurrentStep=StepBB;
+				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
+				Env.setPinHI = B2_HI_Pin;
+				Env.setPinLO = B1_LO_Pin;
+				break;
+			case StepBB:
+				Env.CurrentStep=StepCC;
+				Env.setPinHI = C2_HI_Pin;
+				Env.setPinLO = C1_LO_Pin;
+				break;
+			case StepCC:
+				Env.CurrentStep=StepA;
+				Env.setPinHI = A1_HI_Pin;
+				Env.setPinLO = A2_LO_Pin;
+				break;
+		}
+		HAL_GPIO_WritePin(GPIOM, Env.setPinHI, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOM, Env.setPinLO, GPIO_PIN_SET);
+		Env.ChangeStep=FALSE;
+	}else{
+		if (Env.HighState==TRUE){
+			HAL_GPIO_WritePin(GPIOM, Env.setPinHI, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(GPIOM, Env.setPinLO, GPIO_PIN_SET);
+			Env.HighState=FALSE;
+		}else{
+			HAL_GPIO_WritePin(GPIOM, Env.setPinHI, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOM, Env.setPinLO, GPIO_PIN_RESET);
+			Env.HighState=TRUE;
+		}
+	}
+}
+
+  */
+
+
+
+
  /*
  void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim)
  {

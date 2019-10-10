@@ -12,7 +12,7 @@
 
 #define MAX_PERIOD 0xFFFF
 
-extern TIM_HandleTypeDef htim3;
+extern TIM_HandleTypeDef htim6;
 
 extern TIM_HandleTypeDef htim15;
 extern ADC_HandleTypeDef hadc1;
