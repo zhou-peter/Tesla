@@ -172,51 +172,75 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		//Disable Previous Step
 		HAL_GPIO_WritePin(GPIOM, Env.setPinHI, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOM, Env.setPinLO, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOM, Env.setPinHIM, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOM, Env.setPinLOM, GPIO_PIN_RESET);
+		//wait one pwm cycle (delay -deadtime)
 		switch(Env.CurrentStep){
-			case StepA:
-				Env.CurrentStep=StepB;
+			case Step0:
+				Env.CurrentStep=Step1;
 				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
+				//+B,C` -C,B`
 				Env.setPinHI = B1_HI_Pin;
-				Env.setPinLO = B2_LO_Pin;
+				Env.setPinLO = C1_LO_Pin;
+				Env.setPinHIM = C2_HI_Pin;
+				Env.setPinLOM = B2_LO_Pin;
 				break;
-			case StepB:
-				Env.CurrentStep=StepC;
+			case Step1:
+				Env.CurrentStep=Step2;
 				Env.setPinHI = C1_HI_Pin;
-				Env.setPinLO = C2_LO_Pin;
+				Env.setPinLO = A2_LO_Pin;
+				Env.setPinHIM = A1_HI_Pin;
+				Env.setPinLOM = C2_LO_Pin;
 				break;
-			case StepC:
-				Env.CurrentStep=StepAA;
+			case Step2:
+				Env.CurrentStep=Step3;
 				Env.setPinHI = A2_HI_Pin;
-				Env.setPinLO = A1_LO_Pin;
+				Env.setPinLO = B2_LO_Pin;
+				Env.setPinHIM = B1_HI_Pin;
+				Env.setPinLOM = A1_LO_Pin;
 				break;
-			case StepAA:
-				Env.CurrentStep=StepBB;
+			case Step3:
+				Env.CurrentStep=Step4;
 				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
 				Env.setPinHI = B2_HI_Pin;
-				Env.setPinLO = B1_LO_Pin;
+				Env.setPinLO = C2_LO_Pin;
+				Env.setPinHIM = C1_HI_Pin;
+				Env.setPinLOM = B1_LO_Pin;
 				break;
-			case StepBB:
-				Env.CurrentStep=StepCC;
+			case Step4:
+				Env.CurrentStep=Step5;
 				Env.setPinHI = C2_HI_Pin;
-				Env.setPinLO = C1_LO_Pin;
+				Env.setPinLO = A1_LO_Pin;
+				Env.setPinHIM = A2_HI_Pin;
+				Env.setPinLOM = C1_LO_Pin;
 				break;
-			case StepCC:
-				Env.CurrentStep=StepA;
+			case Step5:
+				Env.CurrentStep=Step0;
 				Env.setPinHI = A1_HI_Pin;
-				Env.setPinLO = A2_LO_Pin;
+				Env.setPinLO = B1_LO_Pin;
+				Env.setPinHIM = B2_HI_Pin;
+				Env.setPinLOM = A2_LO_Pin;
 				break;
 		}
+		/*
 		HAL_GPIO_WritePin(GPIOM, Env.setPinHI, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(GPIOM, Env.setPinLO, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOM, Env.setPinHIM, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOM, Env.setPinLOM, GPIO_PIN_SET);
+		 */
 		Env.ChangeStep=FALSE;
 	}else{
 		if (Env.HighState==TRUE){
 			HAL_GPIO_WritePin(GPIOM, Env.setPinHI, GPIO_PIN_SET);
 			HAL_GPIO_WritePin(GPIOM, Env.setPinLO, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(GPIOM, Env.setPinHIM, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(GPIOM, Env.setPinLOM, GPIO_PIN_SET);
 			Env.HighState=FALSE;
 		}else{
 			HAL_GPIO_WritePin(GPIOM, Env.setPinHI, GPIO_PIN_RESET);
 			HAL_GPIO_WritePin(GPIOM, Env.setPinLO, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOM, Env.setPinHIM, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOM, Env.setPinLOM, GPIO_PIN_RESET);
 			Env.HighState=TRUE;
 		}
 	}

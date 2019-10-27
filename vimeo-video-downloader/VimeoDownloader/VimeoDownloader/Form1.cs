@@ -150,8 +150,16 @@ namespace VimeoDownloader
                         }
                         if (c.videos != null && c.videos.Length > 0)
                         {
-                            videoSegments = c.videos[c.videos.Length - 1];
-                            segmentsCount = videoSegments.segments.Length;
+                            videoSegments = c.videos[0];
+                            //берём лудшую качеству
+                            foreach (video v in c.videos)
+                            {
+                                if (v.width > videoSegments.width)
+                                {
+                                    videoSegments = v;
+                                    segmentsCount = videoSegments.segments.Length;
+                                }
+                            }
                         }
 
                         if (segmentsCount > 0)

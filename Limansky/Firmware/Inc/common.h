@@ -18,12 +18,12 @@ typedef enum {FALSE = 0, TRUE = !FALSE} bool;
 
 typedef enum
 {
-	StepA,
-	StepB,
-	StepC,
-	StepAA,
-	StepBB,
-	StepCC
+	Step0,
+	Step1,
+	Step2,
+	Step3,
+	Step4,
+	Step5
 }Steps;
 
 
@@ -47,6 +47,8 @@ typedef struct
 	u32 modulationFreq:32;
 	u16 setPinHI:16;
 	u16 setPinLO:16;
+	u16 setPinHIM:16;//Mirror
+	u16 setPinLOM:16;//Mirror
 } Env_t;
 
 

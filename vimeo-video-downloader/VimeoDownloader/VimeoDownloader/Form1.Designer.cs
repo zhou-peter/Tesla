@@ -192,7 +192,7 @@
             this.Controls.Add(this.textBoxInit);
             this.Controls.Add(this.label1);
             this.Name = "Form1";
-            this.Text = "Vimeo Video Downloader (sinushkin_alexey@mail.ru)";
+            this.Text = "Vimeo Video Downloader (sinushkin_alexey@mail.ru) v.1.1";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
