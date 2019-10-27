@@ -1,0 +1,29 @@
+﻿var makerApp = makerApp || {};
+makerApp.CopyNow = makerApp.CopyNow || {};
+
+
+makerApp.CopyNow = function (text) {
+
+    // Create a "hidden" input
+    var aux = document.createElement("textarea");
+    aux.innerHTML = text.replace(/<br\s*\/?>/g, '\r\n');
+    // Append it to the body
+    document.body.appendChild(aux);
+    // Highlight its content
+    aux.select();
+    // Copy the highlighted text
+    document.execCommand("copy");
+    // Remove it from the body
+    document.body.removeChild(aux);
+
+}
+
+$(function (makerApp) {
+    $('.copy-text').click(function () {
+        var codeElement = $(this).parent();
+        makerApp.CopyNow(codeElement.children('pre').html());
+        codeElement.children("span").css("color", "black");
+        setTimeout(function () { codeElement.children("span").removeAttr("style") }, 200);
+    });
+
+}(makerApp));

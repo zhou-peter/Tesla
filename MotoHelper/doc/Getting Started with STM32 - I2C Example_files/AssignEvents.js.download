@@ -1,0 +1,25 @@
+﻿$(document).ready(function () {
+    if ($('.otherlinksclasswrapper a').length > 0) {//Additional items beyond initial source
+        $('.schemeclass').attr('width', '70%');
+    }
+    else {
+        $('.schemeclass').attr('width', '100%');//One item, switch scheme to full width
+        var linkitem = document.getElementById('linklabel');
+        var linkparent = $('#linklabel').parent();
+        linkparent.remove();
+    }
+
+    $('.otherlinksclasswrapper a').click(function (e) {
+        e.preventDefault();//don't go to target
+        //change source to clicked item and update
+        var clicksrc = this.getAttribute('data-target');
+        var myparent = $(this).parent();
+        var mygrandparent = myparent.parent().parent();
+        mygrandparent.find('.schemeclass').attr('src', clicksrc);
+        var iframeparent = mygrandparent.find('.mainlinkclass');
+        var framhtml = iframeparent.html();
+        iframeparent.html("");
+        iframeparent.html(framhtml);
+    });
+
+});

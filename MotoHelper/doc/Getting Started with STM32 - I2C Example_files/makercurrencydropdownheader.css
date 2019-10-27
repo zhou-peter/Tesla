@@ -1,0 +1,166 @@
+meta.foundation-version {
+    font-family: "/5.5.1/";
+}
+
+meta.foundation-mq-small {
+    font-family: "/only screen/";
+    width: 0em;
+}
+
+meta.foundation-mq-small-only {
+    font-family: "/only screen and (max-width: 40em)/";
+    width: 0em;
+}
+
+meta.foundation-mq-medium {
+    font-family: "/only screen and (min-width:40.063em)/";
+    width: 40.063em;
+}
+
+meta.foundation-mq-medium-only {
+    font-family: "/only screen and (min-width:40.063em) and (max-width:64em)/";
+    width: 40.063em;
+}
+
+meta.foundation-mq-large {
+    font-family: "/only screen and (min-width:64.063em)/";
+    width: 64.063em;
+}
+
+meta.foundation-mq-large-only {
+    font-family: "/only screen and (min-width:64.063em) and (max-width:90em)/";
+    width: 64.063em;
+}
+
+meta.foundation-mq-xlarge {
+    font-family: "/only screen and (min-width:90.063em)/";
+    width: 90.063em;
+}
+
+meta.foundation-mq-xlarge-only {
+    font-family: "/only screen and (min-width:90.063em) and (max-width:120em)/";
+    width: 90.063em;
+}
+
+meta.foundation-mq-xxlarge {
+    font-family: "/only screen and (min-width:120.063em)/";
+    width: 120.063em;
+}
+
+meta.foundation-data-attribute-namespace {
+    font-family: false;
+}
+
+meta.foundation-mq-topbar {
+    font-family: "/only screen and (min-width: 1025px)/";
+    width: 1025px;
+}
+
+.header-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  opacity: .75;
+  filter: Alpha(Opacity=75);
+  z-index: 100;
+}
+.header-popup iframe {
+    width: 100%;
+    min-height: 400px;
+    background-color: #FFF;
+    border: none;
+}
+
+@media screen and (max-width:640px) {
+    div.header-popup{
+        width: 95%; left: 0; margin-left: 2%; margin-right: 2%;
+    }
+}
+
+.header-popup {
+    width: 600px;
+    min-height: 400px;
+    position: fixed;
+    left: 50%;
+    padding: .2em;
+    overflow: hidden;
+    margin-left: -303px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    border: 1px solid #aaaaaa;
+    background: #ffffff;
+    color: #222222;
+}
+
+.header-popup-titlebar {
+    padding: 0.5em 1em 0.3em 65px;
+    position: relative;
+    color: #fff;
+    font-weight: bold;
+    border: solid 2px #ed1c24;
+    background: url(//www.digikey.com/web%20export/mkt/general/smlogo.png) #000000 left no-repeat;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    display: block;
+}
+
+.rtl .header-popup-titlebar {
+  background-position: right;
+}
+
+.header-popup-titlebar:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+.header-popup-title {
+    float: left;
+    margin: .1em 16px .2em 0;
+    color: #fff;
+    font-weight: bold;    
+}
+
+.rtl .header-popup-title {
+  float: right;
+  margin-right:55px;
+}
+
+.header-popup-close {
+    position: absolute;
+    right: .3em;
+    top: 50%;
+    width: 19px;
+    margin: -10px 0 0 0;
+    padding: 1px;
+    height: 18px;
+    color: #222222;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.rtl .header-popup-close {
+  right:auto;
+  left:.3em;
+}
+
+.header-popup-icon {
+    display: block;
+    margin: 1px;
+    background-image: url(//www.digikey.com/~/media/Files/Global/iw-hf/images/ui-icons_888888_256x240.png);
+    background-position: -96px -128px;
+    width: 16px;
+    height: 16px;
+    text-indent: -99999px;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    color: #222222;
+}

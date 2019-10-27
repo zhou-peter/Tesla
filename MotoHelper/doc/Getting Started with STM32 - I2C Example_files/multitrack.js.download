@@ -1,0 +1,94 @@
+var multiTrackInterval = undefined;
+var populateDefaultDataInterval = undefined;
+var populateDataSaved = [];
+
+function multiTrackInternal(mt, args) {
+	mt.call(window['utag'], args);
+}
+
+function multiTrack(obj) {
+	var multiTrackSaved = [];
+	var utag = window['utag'];
+	var args = obj;
+	if (utag && utag['handler']['iflag']) {
+		var mt = utag['dklink'];
+		multiTrackInternal(mt, args);
+	} else {
+		multiTrackSaved.push(args);
+		if (multiTrackInterval === undefined) {
+			multiTrackInterval = setInterval(function () {
+				var utag = window['utag'];
+				var i;
+				if (utag && utag['handler']['iflag']) {
+					var mt = utag['dklink'];
+					clearInterval(multiTrackInterval);
+					for (i = 0; i < multiTrackSaved.length; i++) {
+						multiTrackInternal(mt, multiTrackSaved[i]);
+					}
+					multiTrackSaved = undefined;
+				}
+			}, 1000);
+		}
+	}
+}
+
+function populateDefaultData(obj) {
+	var utag = window['utag'];
+
+	if (utag && utag['handler']['iflag']) {
+		var data = getData(utag, obj);
+		multiTrack(data);
+	} else {
+		populateDataSaved.push(obj);
+		if (populateDefaultDataInterval === undefined) {
+			populateDefaultDataInterval = setInterval(function () {
+			    utag = window['utag'];
+
+				if (utag && utag['handler']['iflag']) {				
+					clearInterval(populateDefaultDataInterval);
+					for (i = 0; i < populateDataSaved.length; i++) {
+						multiTrack(getData(utag, populateDataSaved[i]));
+					}
+				}
+			}, 1000)
+		}
+	}
+}
+
+function getData(utag, obj) {
+	var data = {};
+	data['not_a_pageview'] = '1';
+	data['page_site'] = utag.data['page_site'];
+	data['page_language'] = utag.data['page_language'];
+	data['ref_page_type'] = utag.data['page_type'];
+	data['ref_page_sub_type'] = utag.data['page_sub_type'];
+	data['ref_page_event'] = 'Impression';
+	data['ref_page_id'] = utag.data['page_id'];
+	data['event_domain'] = window.location.host;
+	data['event_uri'] = utag.data['dom.pathname'];
+	data['event_category'] = 'Coded Event';
+	data['event_query'] = utag.data['dom.query'];
+	data['event_referrer_url'] = null;
+	data['wt_dl'] = "2";
+	data['event_track_version'] = "1.1";
+	data['wt_use_udo'] = 'true';
+
+	var objCount = 0;
+	for (var key in obj) {
+		if (obj.hasOwnProperty(key)) {
+			objCount++;
+		}
+	}
+
+	if (objCount > 0) {
+		var values = Object.keys(obj).map(function (e) {
+			return obj[e];
+		});
+
+		for (var i = 0; i < objCount; i++) {
+			data[Object.keys(obj)[i]] = values[i];
+		}
+	}
+
+	return data;
+}

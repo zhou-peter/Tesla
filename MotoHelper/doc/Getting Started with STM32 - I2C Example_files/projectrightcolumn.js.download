@@ -1,0 +1,208 @@
+﻿$(function () {
+    $("#bookmarkme").on("click", function addToFavorites() {
+        // Bookmark this page
+        // http://www.apphp.com/index.php?snippet=javascript-add-to-favorites-button
+
+        var title = document.title;
+        var url = window.location.href;
+
+        if (window.sidebar && window.sidebar.addPanel) {
+            // Mozilla Firefox Bookmark - works with opening in a side panel only
+            window.sidebar.addPanel(title, url, "");
+        } else if (window.opera && window.print) {
+            // Opera Hotlist 
+            alert("Press Control + D to bookmark");
+            return true;
+        } else if (window.external) {
+            // IE Favorite 
+            try {
+                window.external.AddFavorite(url, title);
+            } catch (e) {
+                alert("Press Control + D to bookmark");
+            }
+        } else {
+            // Other 
+            alert("Press Control + D to bookmark");
+        }
+    });
+
+    $("#changeFavoriteLink").on("click", function (e) {
+        e.preventDefault();
+        var guid = $(this).data("guid");
+        var type = $(this).data("contenttype");
+        var antiforgeryToken = $('[name=__RequestVerificationToken]').val();
+        $.ajax({
+            type: 'post',
+            context: this,
+            url: window.location.href,
+            data: { scController: "ProjectRightColumn", scAction: "ChangeFavoriteStatus", contentId: guid, contentType: type, __RequestVerificationToken: antiforgeryToken },
+            beforeSend: function () {
+                ChangeFavoriteStatus(this);
+            },
+            error: function () {
+                ChangeFavoriteStatus(this);
+            }
+        });
+    });
+
+    $("#changeLikeLink").on("click", function (e) {
+        e.preventDefault();
+        var guid = $(this).data("guid");
+        var type = $(this).data("contenttype");
+        var antiforgeryToken = $('[name=__RequestVerificationToken]').val();
+        $.ajax({
+            type: 'post',
+            context: this,
+            url: window.location.href,
+            data: { scController: "ProjectRightColumn", scAction: "ChangeLikeStatus", contentId: guid, contentType: type, __RequestVerificationToken: antiforgeryToken },
+            beforeSend: function () {
+                ChangeLikeStatus(this);
+            },
+            error: function () {
+                ChangeLikeStatus(this);
+            }
+        });
+    });
+
+    function ChangeLikeStatus(context) {
+        var text = $(context).text();
+        if (text == "Like") {
+            $(context).text("Unlike");
+        } else {
+            $(context).text("Like");
+        }
+    }
+
+    function ChangeFavoriteStatus(context) {
+        var text = $(context).text();
+        if (text == "Favorite") {
+            $(context).text("Unfavorite");
+        }
+        else {
+            $(context).text("Favorite");
+        }
+    }
+});
+
+$(function () {
+    $("#publishProjectButton").on("click", function () {
+        var antiforgeryToken = $('[name=__RequestVerificationToken]').val();
+        $.ajax({
+            type: 'post',
+            context: this,
+            url: window.location.href,
+            data: { scController: "ProjectRightColumn", scAction: "PublishProject", __RequestVerificationToken: antiforgeryToken },
+            beforeSend: function () {
+            },
+            success: function () {
+                ChangePublishToUnpublish();
+            },
+            error: function () {
+            }
+        });
+    });
+});
+
+$(function () {
+    $("#finalApprovalProjectButton").on("click", function () {
+        var antiforgeryToken = $('[name=__RequestVerificationToken]').val();
+        $.ajax({
+            type: 'post',
+            context: this,
+            url: window.location.href,
+            data: { scController: "ProjectRightColumn", scAction: "FinalApprovalProject", __RequestVerificationToken: antiforgeryToken },
+            beforeSend: function () {
+            },
+            success: function () {
+                FinalApprovalProject();
+            },
+            error: function () {
+            }
+        });
+    });
+});
+
+function FinalApprovalProject() {
+    $("#finalApprovalProjectButton").hide();
+}
+
+function ChangePublishToUnpublish() {
+    $("#publishProjectButton").hide();
+    $("#unpublishProjectButton").show();
+}
+
+$(function () {
+    $("#deleteYes").on("click", function () {
+        var antiforgeryToken = $('[name=__RequestVerificationToken]').val();
+        $.ajax({
+            type: 'post',
+            context: this,
+            url: window.location.href,
+            data: { scController: "ProjectRightColumn", scAction: "DeleteProject", __RequestVerificationToken: antiforgeryToken },
+            beforeSend: function () {
+            },
+            success: function (d) {
+                window.location = d;
+            },
+            error: function () {
+            }
+        });
+    });
+});
+
+$(function () {
+    $("#recoverYes").on("click", function () {
+        var antiforgeryToken = $('[name=__RequestVerificationToken]').val();
+        $.ajax({
+            type: 'post',
+            context: this,
+            url: window.location.href,
+            data: { scController: "ProjectRightColumn", scAction: "RecoverProject", __RequestVerificationToken: antiforgeryToken },
+            beforeSend: function () {
+            },
+            success: function (d) {
+                window.location = d;
+            },
+            error: function () {
+            }
+        });
+    });
+});
+
+$(function () {
+    $("#deleteNo").on("click", function () {
+        $("#deleteProjectButton").show();
+        $("#deleteConfirmation").hide();
+    });
+});
+
+$(function () {
+    $("#deleteProjectButton").on("click", function () {
+        $("#deleteProjectButton").hide();
+        $("#deleteConfirmation").show();
+    });
+});
+
+$(function () {
+    $("#unpublishProjectButton").on("click", function () {
+        var antiforgeryToken = $('[name=__RequestVerificationToken]').val();
+        $.ajax({
+            type: 'post',
+            context: this,
+            url: window.location.href,
+            data: { scController: "ProjectRightColumn", scAction: "UnpublishProject", __RequestVerificationToken: antiforgeryToken },
+            beforeSend: function () {
+            },
+            success: function () {
+                ChangeUnpublishToPublish();
+            },
+            error: function () {
+            }
+        });
+    });
+});
+
+function ChangeUnpublishToPublish() {
+    $("#unpublishProjectButton").hide();
+    $("#publishProjectButton").show();
+}

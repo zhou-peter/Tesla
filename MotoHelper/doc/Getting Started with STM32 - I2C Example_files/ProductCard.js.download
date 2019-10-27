@@ -1,0 +1,80 @@
+﻿$(function () {
+  var smallImageSelector = '.popup-small-image';
+  var largeImageSelector = '.popup-large-image';
+  var selectedClass = 'popup-image-selected';
+  var leftSelector = '.popup-left-arrow';
+  var rightSelector = '.popup-right-arrow';
+  var visibleNum = 3;
+
+  function displayPopup(content) {
+    // Paginate the images (if applicable)
+    var thumbnails = content.find(smallImageSelector);
+    var largeImage = content.find(largeImageSelector);
+    var selected;
+
+    function selectImage(idx) {
+      if (idx >= thumbnails.length) {
+        return;
+      }
+
+      selected = idx;
+      thumbnails.removeClass(selectedClass);
+      var current = $(thumbnails[idx]);
+      current.addClass(selectedClass);
+      largeImage.attr('src', current.data('large'));
+      var groupSelected = Math.floor(idx / visibleNum);
+      thumbnails.each(function (n) {
+        var group = Math.floor(n / visibleNum);
+        if (group === groupSelected) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    }
+
+    content.find(leftSelector).click(function () {
+      selectImage(Math.max(0, selected - 1));
+    });
+
+    content.find(rightSelector).click(function () {
+      selectImage(Math.min(thumbnails.length - 1, selected + 1));
+    });
+
+    selectImage(0);
+
+    // Display the dialog
+    content.dialog({
+      width: 800,
+      modal: true,
+      close: function () {
+        content.dialog('destroy');
+      }
+    });
+  }
+
+  $('#content-wrapper').on('click', '.product-popup-opener', function () {
+    $.ajax({
+      type: 'post',
+      url: window.location.href,
+      data: { scController: "ProductDetailPopup", scAction: "GetDetails", digikeyPartNumber: $(this).data("id") },
+      beforeSend: function () {
+        $('body').append('<div class=loading></div>');
+      },
+      success: function (html) {
+        $('.loading').remove();
+        if (html) {
+          if (html.url) {
+            window.location.href = html.url;
+          }
+          else {
+            displayPopup($(html));
+          }
+        }
+        else {
+          alert("Invalid Digi-Key part number");
+        }
+      }
+    });
+  });
+});

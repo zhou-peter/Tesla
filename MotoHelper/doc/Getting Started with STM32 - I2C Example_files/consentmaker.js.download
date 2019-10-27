@@ -1,0 +1,22 @@
+function createCookieLS() {
+    localStorage.setItem("gdpr_cookie_consent", JSON.stringify({ "acceptedOn": new Date() }));
+    clearCookieDisplay();
+}
+
+function clearCookieDisplay(){
+    document.getElementsByClassName("cookie-notice")[0].style.display = "none";
+    document.getElementsByClassName("cookie-mask")[0].style.display = "none";
+    document.getElementsByTagName("body")[0].style.marginTop = "0";
+    document.getElementsByTagName("body")[0].style.backgroundPosition = "0px 0px";
+}
+
+if (localStorage.getItem("gdpr_cookie_consent") == null) {
+    document.body.insertAdjacentHTML("beforeend", window.__gdprtext);
+    document.body.className += " gdpr";
+}
+else {
+    var cookieconsent = document.getElementsByClassName('cookie-notice');
+    if (cookieconsent.length) {
+        clearCookieDisplay();
+    }
+}

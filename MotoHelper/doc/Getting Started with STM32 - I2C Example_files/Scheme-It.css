@@ -1,0 +1,53 @@
+﻿.otherlinksclass /* */ {
+	border: solid 1px #666;
+	border-left: none;
+	background-color:#F2F2F2;
+}
+
+.maincontainerclass /* holds all */ {}
+ 
+.mainlinkclass /* holds the iframe */ {}
+
+.schemeclass /* the actual iframe */ {
+	height:300px;
+	float:left;
+	min-width:400px;
+	border: none;
+}
+
+.otherlinksclass /* right column */ {
+	float: left;
+	width: 200px;
+}
+ 
+	.otherlinksclass h2 /* headline for right column  */ {
+		background-color:#4d4d4d;
+		color:#ececec !important;
+		padding: 5px 10px;
+		margin: 0px; 
+        font-size: 14px;
+        font-family: Arial,Helvetica,sans-serif;
+	}
+
+.otherlinksclasswrapper {
+	max-height:200px;
+	overflow:auto;
+	padding:10px;
+}
+
+	.otherlinksclasswrapper a {
+		display: block;
+		padding-bottom:5px;
+		text-decoration: none;
+		color: #000;
+		font-weight: bold;
+	}
+
+	.otherlinksclasswrapper a:hover {
+		text-decoration: underline;
+	}
+
+
+#postdiv /* */ {
+	clear:both;
+}
