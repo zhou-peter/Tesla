@@ -440,7 +440,7 @@ void btTaskEntry(void const * argument)
 void gTaskEntry(void const * argument)
 {
   /* USER CODE BEGIN gTaskEntry */
-	ACCEL_Init(&htim17, &hi2c2);
+	ACCEL_Init(&htim17, &hi2c2, gTaskHandle);
 	ACCEL_Task();
 
   /* USER CODE END gTaskEntry */

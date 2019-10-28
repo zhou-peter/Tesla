@@ -13,7 +13,7 @@ TIM_HandleTypeDef *accelerationTimer;
 /*
 	Timer 16 everty 10ms invoking
 */
-void ACCEL_Init(TIM_HandleTypeDef *htim, I2C_HandleTypeDef *hi2c){
+void ACCEL_Init(TIM_HandleTypeDef *htim, I2C_HandleTypeDef *hi2c, TaskHandle_t taskHandle){
 	accelerationTimer = htim;
 
 	TimerConf_t result=calculatePeriodAndPrescaler(ACCELEROMETER_FREQ);
@@ -21,7 +21,7 @@ void ACCEL_Init(TIM_HandleTypeDef *htim, I2C_HandleTypeDef *hi2c){
 	accelerationTimer->Instance->ARR = result.Period;
 
 
-	Accelerometer_Config(hi2c);
+	Accelerometer_Config(hi2c, taskHandle);
 
 	HAL_TIM_Base_Start_IT(accelerationTimer);
 }

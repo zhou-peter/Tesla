@@ -11,7 +11,7 @@
 
 
 
-extern void ACCEL_Init(TIM_HandleTypeDef *htim, I2C_HandleTypeDef *hi2c);
+extern void ACCEL_Init(TIM_HandleTypeDef *htim, I2C_HandleTypeDef *hi2c, TaskHandle_t taskHandle);
 extern void ACCEL_Task();
 extern void ACCEL_PeriodElapsedCallback();
 

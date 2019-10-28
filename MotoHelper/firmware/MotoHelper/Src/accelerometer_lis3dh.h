@@ -10,6 +10,6 @@
 #ifndef ACCELEROMETER_LIS3DH_H_
 #define ACCELEROMETER_LIS3DH_H_
 
-extern void Accelerometer_Config(I2C_HandleTypeDef *hi2c);
+extern void Accelerometer_Config(I2C_HandleTypeDef *hi2c, TaskHandle_t taskHandle);
 
 #endif /* ACCELEROMETER_LIS3DH_H_ */
