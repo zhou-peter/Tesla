@@ -21,3 +21,7 @@ TimerConf_t calculatePeriodAndPrescaler(u32 freq){
 	result.Prescaler--;
 	return result;
 }
+
+s16 getS16(volatile u8* buf, u8 offset){
+	return (s16)(*(buf+offset) | (*(buf+offset+1))<<8);
+}

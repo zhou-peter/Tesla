@@ -1,5 +1,5 @@
 #include "common.h"
-#include "stm32f1xx_hal_i2c.h"
+#include "accelerometer_manager.h"
 
 I2C_HandleTypeDef *i2c;
 #define ADDRESS_READ	0b00110011
@@ -7,19 +7,20 @@ I2C_HandleTypeDef *i2c;
 #define BUFFER_SIZE 6
 
 volatile u8 acc_buf[BUFFER_SIZE];
-u8* bufPtr = &acc_buf;
 
+TaskHandle_t gHandle;
 
 #define STATUS_REG		0x27
 #define WHO_AM_I		0x0F
 #define OUT_X_L			0x28
 
 //ODR3 ODR2 ODR1 ODR0 LPen Zen Yen Xen
+//100Hz
 #define CTRL_REG1		0x20
 #define CTRL_REG1_VALUE 0b01010111
 
 
-TaskHandle_t gHandle;
+
 
 HAL_StatusTypeDef writeDMA(u8 count){
 	return HAL_I2C_Master_Transmit_DMA(i2c, ADDRESS_WRITE,
@@ -31,7 +32,7 @@ HAL_StatusTypeDef readDMA(u8 count){
 			&acc_buf, count);
 }
 
-void writeRegister(u8 reg, u8 value){
+HAL_StatusTypeDef writeRegister(u8 reg, u8 value){
 	acc_buf[0] = reg;
 	acc_buf[1] = value;
 	HAL_StatusTypeDef ret = writeDMA(2);
@@ -40,9 +41,10 @@ void writeRegister(u8 reg, u8 value){
 	}else{
 		Error_Handler();
 	}
+	return ret;
 }
 
-u8 readRegister(u8 reg, u8 count){
+HAL_StatusTypeDef readRegister(u8 reg, u8 count){
 	if (count>1){
 		reg |= 0b10000000;
 	}
@@ -55,21 +57,19 @@ u8 readRegister(u8 reg, u8 count){
 		ret = readDMA(count);
 		if (ret == HAL_OK) {
 			vTaskSuspend(gHandle);
-			return acc_buf[0];
 		}else{
 			Error_Handler();
 		}
 	}else{
 		Error_Handler();
 	}
-	return 0;
+	return ret;
 }
 
 void Accelerometer_Config(I2C_HandleTypeDef *hi2c, TaskHandle_t taskHandle) {
 
 	i2c = hi2c;
 	gHandle = taskHandle;
-
 	/*
 	 acc_buf[0] = 0x0F; //Who am I
 	 HAL_StatusTypeDef ret = HAL_I2C_Master_Transmit(i2c,ADDRESS_WRITE, &acc_buf, 1, 5000);
@@ -83,20 +83,37 @@ void Accelerometer_Config(I2C_HandleTypeDef *hi2c, TaskHandle_t taskHandle) {
 
 	 */
 
+reconfigure:
 	readRegister(WHO_AM_I, 1);
 
-	if (*bufPtr == 0x33)
+	if (acc_buf[0] == 0x33)
 	{
 		writeRegister(CTRL_REG1, CTRL_REG1_VALUE);
 		osDelay(2);
-		u8 state = readRegister(STATUS_REG, 1);
-		osDelay(1);
-		u8 xl = readRegister(OUT_X_L, 6);
-		u8 xh = acc_buf[1];
+		AccelState.State=AccelReady;
 
-		osDelay(2);
+	}else{
+		goto reconfigure;
 	}
 
+}
+
+void ACCEL_readData()
+{
+	AccelState.State=AccelDataRetriving;
+	if (HAL_OK == readRegister(OUT_X_L, 6))
+	{
+		AccelState.State=AccelDataRetrived;
+		return;
+	}
+	AccelState.State=AccelError;
+}
+
+void ACCEL_buildStruct(){
+	AccelData.ticks=AccelState.ms;
+	AccelData.x = getS16(&acc_buf, 0);
+	AccelData.y = getS16(&acc_buf, 2);
+	AccelData.z = getS16(&acc_buf, 4);
 }
 
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
@@ -117,10 +134,3 @@ void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c) {
 	}
 }
 
-/*
- void ACCEL_Task(){
-
-
-
- }
- */

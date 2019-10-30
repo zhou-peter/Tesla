@@ -107,4 +107,5 @@ extern volatile State_t State;
 
 extern TimerConf_t calculatePeriodAndPrescaler(u32 freq);
 
+extern s16 getS16(volatile u8* buf, u8 offset);
 #endif
