@@ -4,7 +4,7 @@
  *  Created on: 20 но€б. 2018 г.
  *      Author: User
  */
-#include "common.h"
+/*#include "common.h"
 #include "cmsis_os.h"
 #include "timers.h"
 #include "packet_manager.h"
@@ -39,21 +39,15 @@ void PM_Init(){
 	Uart.RxState=WaitingStart;
 
 	xTimerTimeout = xTimerCreate
-              ( /* Just a text name, not used by the RTOS
-                kernel. */
+              (
                 "Rx Timeout",
-                /* The timer period in ticks, must be
-                greater than 0. */
+
 				pdMS_TO_TICKS(RECEIVE_TIMEOUT),
-                /* The timers will auto-reload themselves
-                when they expire. */
+
 				pdFALSE,
-                /* The ID is used to store a count of the
-                number of times the timer has expired, which
-                is initialised to 0. */
+
                 ( void * ) 0,
-                /* Each timer calls the same callback when
-                it expires. */
+
                 vTimerCallback
               );
 	xTimerState=xTimerCreate("Tx State", pdMS_TO_TICKS(STATE_SEND_PERIOD), pdTRUE, ( void * ) 0,
@@ -65,13 +59,10 @@ void PM_Init(){
 
 void startTimer(){
 	xTimerReset(xTimerTimeout,100);
-    /* Start the timer.  No block time is specified, and
-    even if one was it would be ignored because the RTOS
-    scheduler has not yet been started. */
+
     if( xTimerStart( xTimerTimeout, 0  ) != pdPASS )
     {
-        /* The timer could not be set into the Active
-        state. */
+
     	configASSERT( xTimerTimeout );
     }
     }
@@ -272,3 +263,4 @@ void vTimerStateSend(TimerHandle_t xTimer )
 void PM_TxComplete(DMA_HandleTypeDef * hdma){
 	Uart.TxState=TxIdle;
 }
+*/
