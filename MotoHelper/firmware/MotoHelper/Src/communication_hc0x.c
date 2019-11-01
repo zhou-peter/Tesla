@@ -1,8 +1,7 @@
 #include "communication_hc0x.h"
 #include "communication_manager.h"
 
-u16 rxIndex;
-u16 txIndex;
+
 UART_HandleTypeDef* uart;
 DMA_HandleTypeDef* dma_usart_tx;
 volatile u8 rxByte;
@@ -17,7 +16,7 @@ void COMM_Configure_Driver(UART_HandleTypeDef* uart_,
 	HAL_UART_Receive_IT(uart, &rxByte, 1);
 }
 
-void COMM_SendData(u8 size) {
+void COMM_SendData(u16 size) {
 	HAL_UART_Transmit_DMA(uart, &commOutBuf, size);
 	CommState.TxState = TxSending;
 }
@@ -30,10 +29,9 @@ void COMM_TxComplete(DMA_HandleTypeDef * hdma) {
 }
 
 void COMM_RxCallback() {
-	if (rxIndex < COMM_IN_BUF_SIZE - 1) {
-		commInBuf[rxIndex] = rxByte;
-		rxIndex++;
-		CommState.RxEvent = TRUE;
+	if (CommState.rxIndex < COMM_IN_BUF_SIZE - 1) {
+		commInBuf[CommState.rxIndex] = rxByte;
+		CommState.rxIndex++;
 		HAL_UART_Receive_IT(uart, &rxByte, 1);
 		if (commHandle != NULL) {
 			xTaskResumeFromISR(commHandle);
