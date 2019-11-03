@@ -9,7 +9,38 @@
 #ifndef COMMUNICATION_HC0X_H_
 #define COMMUNICATION_HC0X_H_
 
-extern void COMM_Configure_Driver(UART_HandleTypeDef* uart_, DMA_HandleTypeDef* hdma_usart_);
+
+typedef enum
+{
+	AT = 0,
+	ATAnswerWait,
+	ATNameGet,
+	ATNameGetAnswerWait,
+	ATName,
+	ATNameAnswerWait,
+	ATPinGet,
+	ATPinGetAnswerWait,
+	ATPin,
+	ATPinAnswerWait,
+	ATSpeed,
+	ATSpeedAT2, //again send AT command
+	ATSpeedAT2AnswerWait,
+	ATWaitStream,
+	ATInitFail
+}ATStates;
+
+
+typedef struct
+{
+	//indicate that answer from previous command
+	//came as expected
+	ATStates ATState:8;
+}HCModule_t;
+
+
+extern void COMM_Configure_Driver(UART_HandleTypeDef* uart_,
+		DMA_HandleTypeDef* hdma_usart_, TIM_HandleTypeDef* timer,
+		TaskHandle_t taskHandle);
 extern void COMM_RxCallback();
 
 

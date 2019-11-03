@@ -33,7 +33,8 @@ typedef enum
 typedef struct
 {
 	RxStates RxState:4;
-	TxStates TxState:4;//16
+	TxStates TxState:3;
+	bool	CommDriverReady:1;
 	u16 rxPacketSize:12;
 	u16 rxIndex:12;
 } CommState_t;
@@ -48,8 +49,9 @@ extern volatile u8 commOutBuf[COMM_OUT_BUF_SIZE];
 
 extern void COMM_Init(TIM_HandleTypeDef* timer, TaskHandle_t taskHandle);
 extern void COMM_PeriodElapsedCallback();
+extern void COMM_DRIVER_PeriodElapsedCallback();
 extern void COMM_Task();
 extern void createOutPacketAndSend(u8 command, u16 bodySize, u8* bodyData);
 extern void notifyPacketProcessed();
-
+extern void resetRxBuf();
 #endif /* COMMUNICATION_H_ */

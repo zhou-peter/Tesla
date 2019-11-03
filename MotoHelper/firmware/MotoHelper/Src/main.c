@@ -25,9 +25,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "common.h"
-#include "packet_manager.h"
 #include "accelerometer_manager.h"
-#include "accelerometer_manager.h"
+#include "communication_manager.h"
 #include "kernel.h"
 /* USER CODE END Includes */
 
@@ -480,7 +479,7 @@ void btTaskEntry(void const * argument)
 {
   /* USER CODE BEGIN btTaskEntry */
   /* Infinite loop */
-	COMM_Configure_Driver(&huart2, &hdma_usart2_tx);
+	COMM_Configure_Driver(&huart2, &hdma_usart2_tx, &htim16, btTaskHandle);
 	COMM_Init(&htim16, btTaskHandle);
 
 	COMM_Task();
@@ -515,7 +514,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
   if (htim->Instance == TIM16) {
-	COMM_PeriodElapsedCallback();
+	if (CommState.CommDriverReady){
+		COMM_PeriodElapsedCallback();
+	}else{
+		COMM_DRIVER_PeriodElapsedCallback();
+	}
+
   }
   if (htim->Instance == TIM17) {
 	ACCEL_PeriodElapsedCallback();

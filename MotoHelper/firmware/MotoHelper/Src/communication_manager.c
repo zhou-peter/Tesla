@@ -64,6 +64,13 @@ void create_rx_err(u8 err){
 	}
 }
 
+void resetRxBuf(){
+	int i=0;
+	CommState.rxIndex=0;
+	for(i=0;i<COMM_IN_BUF_SIZE;i++){
+		commInBuf[i]=0;
+	}
+}
 
 void COMM_Task(){
 
