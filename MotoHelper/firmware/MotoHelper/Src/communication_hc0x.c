@@ -8,6 +8,10 @@ TIM_HandleTypeDef* communicationTimer;
 
 //333ms Timer
 #define AT_TIMEOUT 1000/300
+#define BT_DISABLE GPIO_PIN_4
+#define BT_PORT GPIOA
+
+
 volatile u8 rxByte;
 volatile HCModule_t HCState;
 
@@ -31,7 +35,8 @@ void COMM_Configure_Driver(UART_HandleTypeDef* uart_,
 	commHandle = taskHandle;
 	uart = uart_;
 	dma_usart_tx = hdma_usart_;
-	dma_usart_tx->XferCpltCallback = COMM_TxComplete;
+
+	//dma_usart_tx->XferCpltCallback = COMM_TxComplete;
 	HAL_UART_Receive_IT(uart, &rxByte, 1);
 
 	HC_Configure();
@@ -39,11 +44,21 @@ void COMM_Configure_Driver(UART_HandleTypeDef* uart_,
 }
 
 void COMM_SendData(u16 size) {
-	HAL_UART_Transmit_DMA(uart, &commOutBuf, size);
-	CommState.TxState = TxSending;
+	if (HAL_UART_Transmit_DMA(uart, &commOutBuf, size) == HAL_OK){
+		CommState.TxState = TxSending;
+	}else{
+		if (CommState.CommDriverReady){
+			//notify communication manager
+
+		}else{
+			HCState.ATState = ATInitFail;
+		}
+	}
+
 }
 
-void COMM_TxComplete(DMA_HandleTypeDef * hdma) {
+//void COMM_TxComplete(DMA_HandleTypeDef * hdma) {
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart){
 	CommState.TxState = TxIdle;
 	xTaskResumeFromISR(commHandle);
 }
@@ -113,6 +128,7 @@ bool configSendCommand(const u8* text, u8 length) {
 		HC_StartTimer();
 		return TRUE;
 	} else {
+		osDelay(1);
 		return FALSE;
 	}
 }
@@ -133,7 +149,7 @@ void configModuleAT() {
 	} else if (HCState.ATState == ATAnswerWait && CommState.TxState == TxIdle) { //Tx Idle means everything sent
 		if (CommState.rxIndex > 2) {
 			if (hasText(&textATOK[0], 2) == TRUE) {
-				stopTimer();
+				HC_StopTimer();
 				HCState.ATState = ATNameGet;
 				//между командами паузу делать надо
 				HC_Delay();
@@ -251,7 +267,7 @@ void configModuleAT() {
 	} else if (HCState.ATState == ATSpeedAT2AnswerWait && CommState.TxState == TxIdle) {
 		if (CommState.rxIndex > 2) {
 			if (hasText(&textATOK[0], 2) == TRUE) {
-				stopTimer();
+				HC_StopTimer();
 				HCState.ATState = ATWaitStream;
 			} else {
 				//no text
@@ -272,10 +288,17 @@ void configModuleAT() {
 //setup pin, speed, etc
 void HC_Configure() {
 configure:
-	stopTimer();
+	HC_StopTimer();
 	TimerConf_t result = calculatePeriodAndPrescaler(AT_TIMEOUT);
 	communicationTimer->Instance->PSC = result.Prescaler;
 	communicationTimer->Instance->ARR = result.Period;
+
+	//reset bluetooth
+	HAL_GPIO_WritePin(BT_PORT, BT_DISABLE, GPIO_PIN_SET);
+	osDelay(300);
+	HAL_GPIO_WritePin(BT_PORT, BT_DISABLE, GPIO_PIN_RESET);
+	osDelay(200);
+	HCState.ATState = AT;
 
 	while(TRUE){
 		configModuleAT();
