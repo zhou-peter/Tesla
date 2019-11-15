@@ -7,7 +7,7 @@ TaskHandle_t commHandle;
 TIM_HandleTypeDef* communicationTimer;
 
 //333ms Timer
-#define AT_TIMEOUT 1000/300
+#define AT_TIMEOUT 1
 #define BT_DISABLE GPIO_PIN_4
 #define BT_PORT GPIOA
 
@@ -24,7 +24,6 @@ const u8 textATPinOK[] = { "+PIN=2020" };
 const u8 textATSpeed[] = { "AT+UART=115200,0,0" };
 
 
-extern void COMM_TxComplete(DMA_HandleTypeDef * hdma);
 extern void HC_Configure();
 
 void COMM_Configure_Driver(UART_HandleTypeDef* uart_,
@@ -36,7 +35,7 @@ void COMM_Configure_Driver(UART_HandleTypeDef* uart_,
 	uart = uart_;
 	dma_usart_tx = hdma_usart_;
 
-	//dma_usart_tx->XferCpltCallback = COMM_TxComplete;
+
 	HAL_UART_Receive_IT(uart, &rxByte, 1);
 
 	HC_Configure();
@@ -44,7 +43,7 @@ void COMM_Configure_Driver(UART_HandleTypeDef* uart_,
 }
 
 void COMM_SendData(u16 size) {
-	if (HAL_UART_Transmit_DMA(uart, &commOutBuf, size) == HAL_OK){
+	if (HAL_UART_Transmit_DMA(uart, (uint8_t *)&commOutBuf[0], size) == HAL_OK){
 		CommState.TxState = TxSending;
 	}else{
 		if (CommState.CommDriverReady){
@@ -57,11 +56,18 @@ void COMM_SendData(u16 size) {
 
 }
 
-//void COMM_TxComplete(DMA_HandleTypeDef * hdma) {
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart){
-	CommState.TxState = TxIdle;
-	xTaskResumeFromISR(commHandle);
+void COMM_ResumeTaskFromISR(){
+
+		xTaskResumeFromISR(commHandle);
+
 }
+
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+	CommState.TxState = TxIdle;
+	COMM_ResumeTaskFromISR();
+}
+
 
 void COMM_RxCallback() {
 	if (CommState.rxIndex < COMM_IN_BUF_SIZE - 1) {
@@ -69,14 +75,14 @@ void COMM_RxCallback() {
 		CommState.rxIndex++;
 	}
 	HAL_UART_Receive_IT(uart, &rxByte, 1);
-	xTaskResumeFromISR(commHandle);
+	COMM_ResumeTaskFromISR();
 }
 
 
 void COMM_DRIVER_PeriodElapsedCallback()
 {
 	HCState.ATState = ATInitFail;
-	xTaskResumeFromISR(commHandle);
+	COMM_ResumeTaskFromISR();
 }
 
 
@@ -86,7 +92,7 @@ void HC_StartTimer() {
 
 void HC_StopTimer() {
 	HAL_TIM_Base_Stop(communicationTimer);
-	communicationTimer->Instance->CNT = 0;
+	communicationTimer->Instance->CNT = 1;
 }
 
 //delay between commands
@@ -120,8 +126,8 @@ bool configSendCommand(const u8* text, u8 length) {
 			for (i = 0; i < length; i++) {
 				commOutBuf[i] = *(text + i);
 			}
-			commOutBuf[i] = '\r';
-			commOutBuf[i + 1] = '\n';
+			commOutBuf[i] = 0x0D;
+			commOutBuf[i + 1] = 0x0A;
 			COMM_SendData(length + 2);
 		}
 
@@ -142,15 +148,16 @@ void configModuleAT() {
 
 	//AT-OK
 	if (HCState.ATState == AT) {
-		if (configSendCommand(&textAT[0], sizeof(textAT)) == TRUE) {
+		if (configSendCommand(&textAT[0], 2) == TRUE) {
 			resetRxBuf();
+			HC_Delay();
 			HCState.ATState = ATAnswerWait;
 		}
 	} else if (HCState.ATState == ATAnswerWait && CommState.TxState == TxIdle) { //Tx Idle means everything sent
 		if (CommState.rxIndex > 2) {
 			if (hasText(&textATOK[0], 2) == TRUE) {
 				HC_StopTimer();
-				HCState.ATState = ATNameGet;
+				HCState.ATState = ATNameSet;
 				//между командами паузу делать надо
 				HC_Delay();
 			} else {
@@ -163,7 +170,7 @@ void configModuleAT() {
 	}
 
 	//Name check
-	if (HCState.ATState == ATNameGet) {
+	/*if (HCState.ATState == ATNameGet) {
 		if (configSendCommand(&textATName[0], 7) == TRUE) {
 			resetRxBuf();
 			HCState.ATState = ATNameGetAnswerWait;
@@ -182,22 +189,22 @@ void configModuleAT() {
 		} else {
 			HC_Suspend();
 		}
-	}
+	}*/
 
 	//Name set
-	if (HCState.ATState == ATName) {
+	if (HCState.ATState == ATNameSet) {
 		if (configSendCommand(&textATName[0], sizeof(textATName)) == TRUE) {
 			resetRxBuf();
-			HCState.ATState = ATNameAnswerWait;
+			HCState.ATState = ATNameSetAnswerWait;
 		}
-	} else if (HCState.ATState == ATNameAnswerWait
+	} else if (HCState.ATState == ATNameSetAnswerWait
 			&& CommState.TxState == TxIdle) {
 		if (CommState.rxIndex > 5) {
 			if (hasText(&textATNameOK[0], 5) == TRUE) {
 				HCState.ATState = ATPinGet;
 			} else {
 				//no text
-				HCState.ATState = ATName;
+				HCState.ATState = ATNameSet;
 			}
 			HC_StopTimer();
 			HC_Delay();
@@ -297,7 +304,7 @@ configure:
 	HAL_GPIO_WritePin(BT_PORT, BT_DISABLE, GPIO_PIN_SET);
 	osDelay(300);
 	HAL_GPIO_WritePin(BT_PORT, BT_DISABLE, GPIO_PIN_RESET);
-	osDelay(200);
+	osDelay(300);
 	HCState.ATState = AT;
 
 	while(TRUE){
