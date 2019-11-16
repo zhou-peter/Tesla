@@ -49,7 +49,7 @@
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-
+extern void prvGetRegistersFromStack( uint32_t *pulFaultStackAddress );
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -61,6 +61,7 @@
 extern DMA_HandleTypeDef hdma_i2c2_rx;
 extern DMA_HandleTypeDef hdma_i2c2_tx;
 extern I2C_HandleTypeDef hi2c2;
+extern SPI_HandleTypeDef hspi1;
 extern TIM_HandleTypeDef htim16;
 extern TIM_HandleTypeDef htim17;
 extern DMA_HandleTypeDef hdma_usart2_tx;
@@ -93,7 +94,17 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
-
+    __asm volatile
+    (
+        " tst lr, #4                                                \n"
+        " ite eq                                                    \n"
+        " mrseq r0, msp                                             \n"
+        " mrsne r0, psp                                             \n"
+        " ldr r1, [r0, #24]                                         \n"
+        " ldr r2, handler2_address_const                            \n"
+        " bx r2                                                     \n"
+        " handler2_address_const: .word prvGetRegistersFromStack    \n"
+    );
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {
@@ -166,6 +177,33 @@ void DebugMon_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32f1xx.s).                    */
 /******************************************************************************/
+
+/**
+  * @brief This function handles Flash global interrupt.
+  */
+void FLASH_IRQHandler(void)
+{
+  /* USER CODE BEGIN FLASH_IRQn 0 */
+
+  /* USER CODE END FLASH_IRQn 0 */
+  HAL_FLASH_IRQHandler();
+  /* USER CODE BEGIN FLASH_IRQn 1 */
+
+  /* USER CODE END FLASH_IRQn 1 */
+}
+
+/**
+  * @brief This function handles RCC global interrupt.
+  */
+void RCC_IRQHandler(void)
+{
+  /* USER CODE BEGIN RCC_IRQn 0 */
+
+  /* USER CODE END RCC_IRQn 0 */
+  /* USER CODE BEGIN RCC_IRQn 1 */
+
+  /* USER CODE END RCC_IRQn 1 */
+}
 
 /**
   * @brief This function handles DMA1 channel4 global interrupt.
@@ -252,6 +290,34 @@ void I2C2_EV_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles I2C2 error interrupt.
+  */
+void I2C2_ER_IRQHandler(void)
+{
+  /* USER CODE BEGIN I2C2_ER_IRQn 0 */
+
+  /* USER CODE END I2C2_ER_IRQn 0 */
+  HAL_I2C_ER_IRQHandler(&hi2c2);
+  /* USER CODE BEGIN I2C2_ER_IRQn 1 */
+
+  /* USER CODE END I2C2_ER_IRQn 1 */
+}
+
+/**
+  * @brief This function handles SPI1 global interrupt.
+  */
+void SPI1_IRQHandler(void)
+{
+  /* USER CODE BEGIN SPI1_IRQn 0 */
+
+  /* USER CODE END SPI1_IRQn 0 */
+  HAL_SPI_IRQHandler(&hspi1);
+  /* USER CODE BEGIN SPI1_IRQn 1 */
+
+  /* USER CODE END SPI1_IRQn 1 */
+}
+
+/**
   * @brief This function handles USART2 global interrupt.
   */
 void USART2_IRQHandler(void)
@@ -280,6 +346,33 @@ void TIM7_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
+void prvGetRegistersFromStack( uint32_t *pulFaultStackAddress )
+{
+/* These are volatile to try and prevent the compiler/linker optimising them
+away as the variables never actually get used.  If the debugger won't show the
+values of the variables, make them global my moving their declaration outside
+of this function. */
+volatile uint32_t r0;
+volatile uint32_t r1;
+volatile uint32_t r2;
+volatile uint32_t r3;
+volatile uint32_t r12;
+volatile uint32_t lr; /* Link register. */
+volatile uint32_t pc; /* Program counter. */
+volatile uint32_t psr;/* Program status register. */
 
+    r0 = pulFaultStackAddress[ 0 ];
+    r1 = pulFaultStackAddress[ 1 ];
+    r2 = pulFaultStackAddress[ 2 ];
+    r3 = pulFaultStackAddress[ 3 ];
+
+    r12 = pulFaultStackAddress[ 4 ];
+    lr = pulFaultStackAddress[ 5 ];
+    pc = pulFaultStackAddress[ 6 ];
+    psr = pulFaultStackAddress[ 7 ];
+
+    /* When the following line is hit, the variables contain the register values. */
+    for( ;; );
+}
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

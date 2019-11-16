@@ -37,7 +37,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define USE_FULL_ASSERT
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -58,9 +58,14 @@ TIM_HandleTypeDef htim17;
 UART_HandleTypeDef huart2;
 DMA_HandleTypeDef hdma_usart2_tx;
 
-osThreadId kernelTaskHandle;
-osThreadId btTaskHandle;
-osThreadId gTaskHandle;
+typedef StaticTask_t osStaticThreadDef_t;
+osThreadId_t kernelTaskHandle;
+osThreadId_t btTaskHandle;
+uint32_t btTaskBuffer[ 128 ];
+osStaticThreadDef_t btTaskControlBlock;
+osThreadId_t gTaskHandle;
+uint32_t gTaskBuffer[ 64 ];
+osStaticThreadDef_t gTaskControlBlock;
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -74,9 +79,9 @@ static void MX_SPI1_Init(void);
 static void MX_TIM16_Init(void);
 static void MX_TIM17_Init(void);
 static void MX_USART2_UART_Init(void);
-void kernelTaskEntry(void const * argument);
-void btTaskEntry(void const * argument);
-void gTaskEntry(void const * argument);
+void kernelTaskEntry(void *argument);
+void btTaskEntry(void *argument);
+void gTaskEntry(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -126,6 +131,8 @@ int main(void)
 
   /* USER CODE END 2 */
 
+  osKernelInitialize();
+
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
@@ -144,16 +151,34 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of kernelTask */
-  osThreadDef(kernelTask, kernelTaskEntry, osPriorityNormal, 0, 256);
-  kernelTaskHandle = osThreadCreate(osThread(kernelTask), NULL);
+  const osThreadAttr_t kernelTask_attributes = {
+    .name = "kernelTask",
+    .priority = (osPriority_t) osPriorityNormal,
+    .stack_size = 256
+  };
+  kernelTaskHandle = osThreadNew(kernelTaskEntry, NULL, &kernelTask_attributes);
 
   /* definition and creation of btTask */
-  osThreadDef(btTask, btTaskEntry, osPriorityNormal, 0, 64);
-  btTaskHandle = osThreadCreate(osThread(btTask), NULL);
+  const osThreadAttr_t btTask_attributes = {
+    .name = "btTask",
+    .stack_mem = &btTaskBuffer[0],
+    .stack_size = sizeof(btTaskBuffer),
+    .cb_mem = &btTaskControlBlock,
+    .cb_size = sizeof(btTaskControlBlock),
+    .priority = (osPriority_t) osPriorityNormal,
+  };
+  btTaskHandle = osThreadNew(btTaskEntry, NULL, &btTask_attributes);
 
   /* definition and creation of gTask */
-  osThreadDef(gTask, gTaskEntry, osPriorityIdle, 0, 64);
-  gTaskHandle = osThreadCreate(osThread(gTask), NULL);
+  const osThreadAttr_t gTask_attributes = {
+    .name = "gTask",
+    .stack_mem = &gTaskBuffer[0],
+    .stack_size = sizeof(gTaskBuffer),
+    .cb_mem = &gTaskControlBlock,
+    .cb_size = sizeof(gTaskControlBlock),
+    .priority = (osPriority_t) osPriorityLow,
+  };
+  //gTaskHandle = osThreadNew(gTaskEntry, NULL, &gTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -186,11 +211,11 @@ void SystemClock_Config(void)
 
   /** Initializes the CPU, AHB and APB busses clocks 
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV5;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI_DIV2;
   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL6;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
@@ -391,13 +416,13 @@ static void MX_DMA_Init(void)
 
   /* DMA interrupt init */
   /* DMA1_Channel4_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 5, 0);
+  HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 7, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
   /* DMA1_Channel5_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 5, 0);
+  HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 7, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
   /* DMA1_Channel7_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel7_IRQn, 5, 0);
+  HAL_NVIC_SetPriority(DMA1_Channel7_IRQn, 7, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel7_IRQn);
 
 }
@@ -461,14 +486,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
   * @retval None
   */
 /* USER CODE END Header_kernelTaskEntry */
-void kernelTaskEntry(void const * argument)
+void kernelTaskEntry(void *argument)
 {
-    
-    
-    
-    
-    
-
   /* USER CODE BEGIN 5 */
   /* Infinite loop */
   for(;;)
@@ -485,7 +504,7 @@ void kernelTaskEntry(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_btTaskEntry */
-void btTaskEntry(void const * argument)
+void btTaskEntry(void *argument)
 {
   /* USER CODE BEGIN btTaskEntry */
   /* Infinite loop */
@@ -493,6 +512,10 @@ void btTaskEntry(void const * argument)
 	COMM_Init(&htim16, btTaskHandle);
 
 	COMM_Task();
+	  for(;;)
+	  {
+	    osDelay(1);
+	  }
   /* USER CODE END btTaskEntry */
 }
 
@@ -503,7 +526,7 @@ void btTaskEntry(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_gTaskEntry */
-void gTaskEntry(void const * argument)
+void gTaskEntry(void *argument)
 {
   /* USER CODE BEGIN gTaskEntry */
 	ACCEL_Init(&htim17, &hi2c2, gTaskHandle);

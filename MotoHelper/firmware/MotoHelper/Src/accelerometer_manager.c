@@ -5,7 +5,7 @@
 #define ACCELEROMETER_FREQ	100
 
 TIM_HandleTypeDef *accelerationTimer;
-TaskHandle_t gaHandle;
+osThreadId_t gaHandle;
 volatile AccelState_t 	AccelState;
 volatile AccelData_t 	AccelData;
 
@@ -13,7 +13,7 @@ volatile AccelData_t 	AccelData;
 /*
 	Timer 16 everty 10ms invoking
 */
-void ACCEL_Init(TIM_HandleTypeDef *htim, I2C_HandleTypeDef *hi2c, TaskHandle_t taskHandle){
+void ACCEL_Init(TIM_HandleTypeDef *htim, I2C_HandleTypeDef *hi2c, osThreadId_t taskHandle){
 	accelerationTimer = htim;
 	gHandle = taskHandle;
 
@@ -69,7 +69,7 @@ void ACCEL_PeriodElapsedCallback() {
 	if (AccelState.State==AccelReady)
 	{
 		AccelState.State=AccelShouldRequest;
-		if (xTaskResumeFromISR(gHandle) == pdTRUE) {
+		if (xTaskResumeFromISR(gHandle)) {
 			vTaskMissedYield();
 		}
 	}

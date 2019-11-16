@@ -3,14 +3,13 @@
 
 UART_HandleTypeDef* uart;
 DMA_HandleTypeDef* dma_usart_tx;
-TaskHandle_t commHandle;
+osThreadId_t commHandle;
 TIM_HandleTypeDef* communicationTimer;
 
 //333ms Timer
 #define AT_TIMEOUT 1
 #define BT_DISABLE GPIO_PIN_4
 #define BT_PORT GPIOA
-
 
 volatile u8 rxByte;
 volatile HCModule_t HCState;
@@ -23,18 +22,16 @@ const u8 textATPin[] = { "AT+PIN2020" };
 const u8 textATPinOK[] = { "+PIN=2020" };
 const u8 textATSpeed[] = { "AT+UART=115200,0,0" };
 
-
 extern void HC_Configure();
 
 void COMM_Configure_Driver(UART_HandleTypeDef* uart_,
 		DMA_HandleTypeDef* hdma_usart_, TIM_HandleTypeDef* timer,
-		TaskHandle_t taskHandle) {
+		osThreadId_t taskHandle) {
 
 	communicationTimer = timer;
 	commHandle = taskHandle;
 	uart = uart_;
 	dma_usart_tx = hdma_usart_;
-
 
 	HAL_UART_Receive_IT(uart, &rxByte, 1);
 
@@ -43,31 +40,28 @@ void COMM_Configure_Driver(UART_HandleTypeDef* uart_,
 }
 
 void COMM_SendData(u16 size) {
-	if (HAL_UART_Transmit_DMA(uart, (uint8_t *)&commOutBuf[0], size) == HAL_OK){
+	if (HAL_UART_Transmit_DMA(uart, (uint8_t *) &commOutBuf[0], size)
+			== HAL_OK) {
 		CommState.TxState = TxSending;
-	}else{
-		if (CommState.CommDriverReady){
+	} else {
+		if (CommState.CommDriverReady) {
 			//notify communication manager
 
-		}else{
+		} else {
 			HCState.ATState = ATInitFail;
 		}
 	}
 
 }
 
-void COMM_ResumeTaskFromISR(){
-
-		xTaskResumeFromISR(commHandle);
-
+void COMM_ResumeTaskFromISR() {
+	xTaskResumeFromISR(commHandle);
 }
 
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
-{
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 	CommState.TxState = TxIdle;
 	COMM_ResumeTaskFromISR();
 }
-
 
 void COMM_RxCallback() {
 	if (CommState.rxIndex < COMM_IN_BUF_SIZE - 1) {
@@ -78,13 +72,10 @@ void COMM_RxCallback() {
 	COMM_ResumeTaskFromISR();
 }
 
-
-void COMM_DRIVER_PeriodElapsedCallback()
-{
+void COMM_DRIVER_PeriodElapsedCallback() {
 	HCState.ATState = ATInitFail;
 	COMM_ResumeTaskFromISR();
 }
-
 
 void HC_StartTimer() {
 	HAL_TIM_Base_Start_IT(communicationTimer);
@@ -171,25 +162,25 @@ void configModuleAT() {
 
 	//Name check
 	/*if (HCState.ATState == ATNameGet) {
-		if (configSendCommand(&textATName[0], 7) == TRUE) {
-			resetRxBuf();
-			HCState.ATState = ATNameGetAnswerWait;
-		}
-	} else if (HCState.ATState == ATNameGetAnswerWait
-			&& CommState.TxState == TxIdle) {
-		if (CommState.rxIndex > 10) {
-			if (hasText(&textATNameOK[0], 10) == TRUE) {
-				//имя было установлено уже
-				HCState.ATState = ATPinGet;
-			} else {
-				HCState.ATState = ATName;
-			}
-			HC_StopTimer();
-			HC_Delay();
-		} else {
-			HC_Suspend();
-		}
-	}*/
+	 if (configSendCommand(&textATName[0], 7) == TRUE) {
+	 resetRxBuf();
+	 HCState.ATState = ATNameGetAnswerWait;
+	 }
+	 } else if (HCState.ATState == ATNameGetAnswerWait
+	 && CommState.TxState == TxIdle) {
+	 if (CommState.rxIndex > 10) {
+	 if (hasText(&textATNameOK[0], 10) == TRUE) {
+	 //имя было установлено уже
+	 HCState.ATState = ATPinGet;
+	 } else {
+	 HCState.ATState = ATName;
+	 }
+	 HC_StopTimer();
+	 HC_Delay();
+	 } else {
+	 HC_Suspend();
+	 }
+	 }*/
 
 	//Name set
 	if (HCState.ATState == ATNameSet) {
@@ -254,12 +245,11 @@ void configModuleAT() {
 		}
 	}
 
-
 	if (HCState.ATState == ATSpeed) {
 		if (configSendCommand(&textATSpeed[0], sizeof(textATSpeed)) == TRUE) {
 			resetRxBuf();
 			HC_StopTimer();
-			uart->Init.BaudRate=115200;
+			uart->Init.BaudRate = 115200;
 			HAL_UART_Init(uart);
 			HCState.ATState = ATSpeedAT2;
 			HC_Delay();
@@ -271,7 +261,8 @@ void configModuleAT() {
 			resetRxBuf();
 			HCState.ATState = ATSpeedAT2AnswerWait;
 		}
-	} else if (HCState.ATState == ATSpeedAT2AnswerWait && CommState.TxState == TxIdle) {
+	} else if (HCState.ATState == ATSpeedAT2AnswerWait
+			&& CommState.TxState == TxIdle) {
 		if (CommState.rxIndex > 2) {
 			if (hasText(&textATOK[0], 2) == TRUE) {
 				HC_StopTimer();
@@ -285,8 +276,7 @@ void configModuleAT() {
 		}
 	}
 
-	if (HCState.ATState == ATWaitStream ||
-			HCState.ATState == ATInitFail) {
+	if (HCState.ATState == ATWaitStream || HCState.ATState == ATInitFail) {
 		osDelay(1);
 	}
 
@@ -294,7 +284,8 @@ void configModuleAT() {
 
 //setup pin, speed, etc
 void HC_Configure() {
-configure:
+	configure:
+
 	HC_StopTimer();
 	TimerConf_t result = calculatePeriodAndPrescaler(AT_TIMEOUT);
 	communicationTimer->Instance->PSC = result.Prescaler;
@@ -307,14 +298,12 @@ configure:
 	osDelay(300);
 	HCState.ATState = AT;
 
-	while(TRUE){
+	while (TRUE) {
 		configModuleAT();
-		if (HCState.ATState == ATWaitStream)
-		{
+		if (HCState.ATState == ATWaitStream) {
 			CommState.CommDriverReady = TRUE;
 			return;
-		}
-		else if (HCState.ATState == ATInitFail) {
+		} else if (HCState.ATState == ATInitFail) {
 			CommState.CommDriverReady = FALSE;
 			goto configure;
 		}
