@@ -7,8 +7,7 @@ I2C_HandleTypeDef *i2c;
 #define BUFFER_SIZE 6
 
 volatile u8 acc_buf[BUFFER_SIZE];
-
-osThreadId_t gHandle;
+TaskHandle_t gHandle;
 
 #define STATUS_REG		0x27
 #define WHO_AM_I		0x0F
@@ -66,7 +65,7 @@ HAL_StatusTypeDef readRegister(u8 reg, u8 count){
 	return ret;
 }
 
-void Accelerometer_Config(I2C_HandleTypeDef *hi2c, osThreadId_t taskHandle) {
+void Accelerometer_Config(I2C_HandleTypeDef *hi2c, TaskHandle_t taskHandle) {
 
 	i2c = hi2c;
 	gHandle = taskHandle;
@@ -128,7 +127,7 @@ void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
 void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c) {
 	if (hi2c == i2c) {
 		//vTaskResume(gHandle);
-		if (xTaskResumeFromISR(gHandle)) {
+		if (xTaskResumeFromISR(gHandle)==pdTRUE) {
 			vTaskMissedYield();
 		}
 	}

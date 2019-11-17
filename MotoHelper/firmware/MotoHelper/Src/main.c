@@ -58,14 +58,9 @@ TIM_HandleTypeDef htim17;
 UART_HandleTypeDef huart2;
 DMA_HandleTypeDef hdma_usart2_tx;
 
-typedef StaticTask_t osStaticThreadDef_t;
-osThreadId_t kernelTaskHandle;
-osThreadId_t btTaskHandle;
-uint32_t btTaskBuffer[ 128 ];
-osStaticThreadDef_t btTaskControlBlock;
-osThreadId_t gTaskHandle;
-uint32_t gTaskBuffer[ 64 ];
-osStaticThreadDef_t gTaskControlBlock;
+osThreadId defaultTaskHandle;
+osThreadId accelTaskHandle;
+osThreadId btTaskHandle;
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -79,9 +74,9 @@ static void MX_SPI1_Init(void);
 static void MX_TIM16_Init(void);
 static void MX_TIM17_Init(void);
 static void MX_USART2_UART_Init(void);
-void kernelTaskEntry(void *argument);
-void btTaskEntry(void *argument);
-void gTaskEntry(void *argument);
+void StartDefaultTask(void const * argument);
+void StartTaskAccel(void const * argument);
+void StartTaskBt(void const * argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -131,8 +126,6 @@ int main(void)
 
   /* USER CODE END 2 */
 
-  osKernelInitialize();
-
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
@@ -150,35 +143,17 @@ int main(void)
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* definition and creation of kernelTask */
-  const osThreadAttr_t kernelTask_attributes = {
-    .name = "kernelTask",
-    .priority = (osPriority_t) osPriorityNormal,
-    .stack_size = 256
-  };
-  kernelTaskHandle = osThreadNew(kernelTaskEntry, NULL, &kernelTask_attributes);
+  /* definition and creation of defaultTask */
+  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
+  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+
+  /* definition and creation of accelTask */
+  osThreadDef(accelTask, StartTaskAccel, osPriorityNormal, 0, 128);
+  accelTaskHandle = osThreadCreate(osThread(accelTask), NULL);
 
   /* definition and creation of btTask */
-  const osThreadAttr_t btTask_attributes = {
-    .name = "btTask",
-    .stack_mem = &btTaskBuffer[0],
-    .stack_size = sizeof(btTaskBuffer),
-    .cb_mem = &btTaskControlBlock,
-    .cb_size = sizeof(btTaskControlBlock),
-    .priority = (osPriority_t) osPriorityNormal,
-  };
-  btTaskHandle = osThreadNew(btTaskEntry, NULL, &btTask_attributes);
-
-  /* definition and creation of gTask */
-  const osThreadAttr_t gTask_attributes = {
-    .name = "gTask",
-    .stack_mem = &gTaskBuffer[0],
-    .stack_size = sizeof(gTaskBuffer),
-    .cb_mem = &gTaskControlBlock,
-    .cb_size = sizeof(gTaskControlBlock),
-    .priority = (osPriority_t) osPriorityLow,
-  };
-  //gTaskHandle = osThreadNew(gTaskEntry, NULL, &gTask_attributes);
+  osThreadDef(btTask, StartTaskBt, osPriorityBelowNormal, 0, 128);
+  btTaskHandle = osThreadCreate(osThread(btTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -416,13 +391,13 @@ static void MX_DMA_Init(void)
 
   /* DMA interrupt init */
   /* DMA1_Channel4_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 7, 0);
+  HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
   /* DMA1_Channel5_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 7, 0);
+  HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
   /* DMA1_Channel7_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel7_IRQn, 7, 0);
+  HAL_NVIC_SetPriority(DMA1_Channel7_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel7_IRQn);
 
 }
@@ -479,14 +454,14 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 }
 /* USER CODE END 4 */
 
-/* USER CODE BEGIN Header_kernelTaskEntry */
+/* USER CODE BEGIN Header_StartDefaultTask */
 /**
-  * @brief  Function implementing the kernelTask thread.
+  * @brief  Function implementing the defaultTask thread.
   * @param  argument: Not used 
   * @retval None
   */
-/* USER CODE END Header_kernelTaskEntry */
-void kernelTaskEntry(void *argument)
+/* USER CODE END Header_StartDefaultTask */
+void StartDefaultTask(void const * argument)
 {
   /* USER CODE BEGIN 5 */
   /* Infinite loop */
@@ -497,42 +472,42 @@ void kernelTaskEntry(void *argument)
   /* USER CODE END 5 */ 
 }
 
-/* USER CODE BEGIN Header_btTaskEntry */
+/* USER CODE BEGIN Header_StartTaskAccel */
+/**
+* @brief Function implementing the accelTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTaskAccel */
+void StartTaskAccel(void const * argument)
+{
+  /* USER CODE BEGIN StartTaskAccel */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartTaskAccel */
+}
+
+/* USER CODE BEGIN Header_StartTaskBt */
 /**
 * @brief Function implementing the btTask thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_btTaskEntry */
-void btTaskEntry(void *argument)
+/* USER CODE END Header_StartTaskBt */
+void StartTaskBt(void const * argument)
 {
-  /* USER CODE BEGIN btTaskEntry */
-  /* Infinite loop */
+  /* USER CODE BEGIN StartTaskBt */
 	COMM_Configure_Driver(&huart2, &hdma_usart2_tx, &htim16, btTaskHandle);
-	COMM_Init(&htim16, btTaskHandle);
-
-	COMM_Task();
-	  for(;;)
-	  {
-	    osDelay(1);
-	  }
-  /* USER CODE END btTaskEntry */
-}
-
-/* USER CODE BEGIN Header_gTaskEntry */
-/**
-* @brief Function implementing the gTask thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_gTaskEntry */
-void gTaskEntry(void *argument)
-{
-  /* USER CODE BEGIN gTaskEntry */
-	ACCEL_Init(&htim17, &hi2c2, gTaskHandle);
-	ACCEL_Task();
-
-  /* USER CODE END gTaskEntry */
+	//COMM_Init(&htim16, btTaskHandle);
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartTaskBt */
 }
 
 /**

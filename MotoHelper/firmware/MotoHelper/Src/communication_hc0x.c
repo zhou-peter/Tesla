@@ -3,7 +3,7 @@
 
 UART_HandleTypeDef* uart;
 DMA_HandleTypeDef* dma_usart_tx;
-osThreadId_t commHandle;
+TaskHandle_t commHandle;
 TIM_HandleTypeDef* communicationTimer;
 
 //333ms Timer
@@ -26,7 +26,7 @@ extern void HC_Configure();
 
 void COMM_Configure_Driver(UART_HandleTypeDef* uart_,
 		DMA_HandleTypeDef* hdma_usart_, TIM_HandleTypeDef* timer,
-		osThreadId_t taskHandle) {
+		TaskHandle_t taskHandle) {
 
 	communicationTimer = timer;
 	commHandle = taskHandle;
@@ -55,7 +55,12 @@ void COMM_SendData(u16 size) {
 }
 
 void COMM_ResumeTaskFromISR() {
-	xTaskResumeFromISR(commHandle);
+	BaseType_t taskYieldRequired = xTaskResumeFromISR(commHandle);
+	// If the taskYield is reuiqred then trigger the same.
+	if(taskYieldRequired == pdTRUE)
+	{
+		taskYIELD();
+	}
 }
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
@@ -88,13 +93,13 @@ void HC_StopTimer() {
 
 //delay between commands
 void HC_Delay() {
-	HC_Delay();
+	osDelay(300);
 }
 
 //as a rule not enough amount of bytes received
 //await rest
 void HC_Suspend() {
-	vTaskSuspend(commHandle);
+	vTaskSuspend(NULL);
 }
 
 bool hasText(const u8* searchText, u8 length) {
@@ -284,28 +289,29 @@ void configModuleAT() {
 
 //setup pin, speed, etc
 void HC_Configure() {
-	configure:
 
-	HC_StopTimer();
-	TimerConf_t result = calculatePeriodAndPrescaler(AT_TIMEOUT);
-	communicationTimer->Instance->PSC = result.Prescaler;
-	communicationTimer->Instance->ARR = result.Period;
+	while (CommState.CommDriverReady == FALSE) {
 
-	//reset bluetooth
-	HAL_GPIO_WritePin(BT_PORT, BT_DISABLE, GPIO_PIN_SET);
-	osDelay(300);
-	HAL_GPIO_WritePin(BT_PORT, BT_DISABLE, GPIO_PIN_RESET);
-	osDelay(300);
-	HCState.ATState = AT;
+		HC_StopTimer();
+		TimerConf_t result = calculatePeriodAndPrescaler(AT_TIMEOUT);
+		communicationTimer->Instance->PSC = result.Prescaler;
+		communicationTimer->Instance->ARR = result.Period;
 
-	while (TRUE) {
-		configModuleAT();
-		if (HCState.ATState == ATWaitStream) {
-			CommState.CommDriverReady = TRUE;
-			return;
-		} else if (HCState.ATState == ATInitFail) {
-			CommState.CommDriverReady = FALSE;
-			goto configure;
+		//reset bluetooth
+		HAL_GPIO_WritePin(BT_PORT, BT_DISABLE, GPIO_PIN_SET);
+		osDelay(300);
+		HAL_GPIO_WritePin(BT_PORT, BT_DISABLE, GPIO_PIN_RESET);
+		osDelay(300);
+		HCState.ATState = AT;
+
+		while (TRUE) {
+			configModuleAT();
+			if (HCState.ATState == ATWaitStream) {
+				CommState.CommDriverReady = TRUE;
+				break;
+			} else if (HCState.ATState == ATInitFail) {
+				CommState.CommDriverReady = FALSE;
+			}
 		}
 	}
 }

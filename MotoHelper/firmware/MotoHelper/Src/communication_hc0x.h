@@ -40,7 +40,7 @@ typedef struct
 
 extern void COMM_Configure_Driver(UART_HandleTypeDef* uart_,
 		DMA_HandleTypeDef* hdma_usart_, TIM_HandleTypeDef* timer,
-		osThreadId_t taskHandle);
+		TaskHandle_t taskHandle);
 extern void COMM_RxCallback();
 
 

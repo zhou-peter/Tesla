@@ -40,13 +40,13 @@ typedef struct
 	s16		z:16;
 } AccelData_t;
 
-extern osThreadId_t gHandle;
+extern TaskHandle_t gHandle;
 extern volatile AccelState_t 	AccelState;
 extern volatile AccelData_t 	AccelData;
 
-extern void ACCEL_Init(TIM_HandleTypeDef *htim, I2C_HandleTypeDef *hi2c, osThreadId_t taskHandle);
+extern void ACCEL_Init(TIM_HandleTypeDef *htim, I2C_HandleTypeDef *hi2c, TaskHandle_t taskHandle);
 extern void ACCEL_Task();
-extern void Accelerometer_Config(I2C_HandleTypeDef *hi2c, osThreadId_t taskHandle);
+extern void Accelerometer_Config(I2C_HandleTypeDef *hi2c, TaskHandle_t taskHandle);
 extern void ACCEL_PeriodElapsedCallback();
 extern void ACCEL_buildStruct();
 extern void ACCEL_readData();

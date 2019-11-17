@@ -19,12 +19,12 @@ volatile u8 commInBuf[COMM_IN_BUF_SIZE];
 volatile u8 commOutBuf[COMM_OUT_BUF_SIZE];
 volatile CommState_t CommState;
 volatile u16 rxIndex;
-osThreadId_t commHandle;
+TaskHandle_t commHandle;
 TIM_HandleTypeDef* communicationTimer;
 
 
 
-void COMM_Init(TIM_HandleTypeDef* timer, osThreadId_t taskHandle)
+void COMM_Init(TIM_HandleTypeDef* timer, TaskHandle_t taskHandle)
 {
 	communicationTimer = timer;
 	commHandle = taskHandle;
