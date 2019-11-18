@@ -47,7 +47,7 @@ extern volatile CommState_t CommState;
 extern volatile u8 commInBuf[COMM_IN_BUF_SIZE];
 extern volatile u8 commOutBuf[COMM_OUT_BUF_SIZE];
 
-extern void COMM_Init(TIM_HandleTypeDef* timer, TaskHandle_t taskHandle);
+extern void COMM_Init(TaskHandle_t taskHandle);
 extern void COMM_PeriodElapsedCallback();
 extern void COMM_DRIVER_PeriodElapsedCallback();
 extern void COMM_Task();

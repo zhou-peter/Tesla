@@ -23,8 +23,7 @@ typedef enum
 	ATPin,
 	ATPinAnswerWait,
 	ATSpeed,
-	ATSpeedAT2, //again send AT command
-	ATSpeedAT2AnswerWait,
+	ATSpeedAnswerWait,
 	ATWaitStream
 }ATStates;
 

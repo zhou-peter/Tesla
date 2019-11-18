@@ -20,30 +20,28 @@ volatile u8 commOutBuf[COMM_OUT_BUF_SIZE];
 volatile CommState_t CommState;
 volatile u16 rxIndex;
 TaskHandle_t commHandle;
-TIM_HandleTypeDef* communicationTimer;
 
 
 
-void COMM_Init(TIM_HandleTypeDef* timer, TaskHandle_t taskHandle)
+
+void COMM_Init(TaskHandle_t taskHandle)
 {
-	communicationTimer = timer;
+
 	commHandle = taskHandle;
 
-	TimerConf_t result=calculatePeriodAndPrescaler(RECEIVE_TIMEOUT);
-	communicationTimer->Instance->PSC = result.Prescaler;
-	communicationTimer->Instance->ARR = result.Period;
+
 }
 
 
 
 void startTimer(){
-	HAL_TIM_Base_Start_IT(communicationTimer);
+	//HAL_TIM_Base_Start_IT(communicationTimer);
 }
 
 
 void stopTimer(){
-	HAL_TIM_Base_Stop(communicationTimer);
-	communicationTimer->Instance->CNT=0;
+	//HAL_TIM_Base_Stop(communicationTimer);
+	//communicationTimer->Instance->CNT=0;
 }
 
 void restartTimer(){

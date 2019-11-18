@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<LogCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://haascnc.com">
+  <LogDataItems>
+    <LogDataItem ID="1" DataType="ReceivedData" Timestamp="2019-11-17T18:56:51.1677866-08:00" PortNumber="2">
+      <CompiledLine>.
+[FE]
+</CompiledLine>
+      <Data>/g==</Data>
+    </LogDataItem>
+    <LogDataItem ID="2" DataType="ReceivedData" Timestamp="2019-11-17T18:56:51.5334296-08:00" PortNumber="1">
+      <CompiledLine>AT..
+[41-54-0D-0A]
+</CompiledLine>
+      <Data>QVQNCg==</Data>
+    </LogDataItem>
+    <LogDataItem ID="3" DataType="ReceivedData" Timestamp="2019-11-17T18:56:51.5334296-08:00" PortNumber="2">
+      <CompiledLine>OK.
+[4F-4B-0D]
+..
+[0D-0A]
+</CompiledLine>
+      <Data>T0sNDQo=</Data>
+    </LogDataItem>
+    <LogDataItem ID="4" DataType="ReceivedData" Timestamp="2019-11-17T18:56:52.1134618-08:00" PortNumber="1">
+      <CompiledLine>AT+NAME..
+[41-54-2B-4E-41-4D-45-0D-0A]
+</CompiledLine>
+      <Data>QVQrTkFNRQ0K</Data>
+    </LogDataItem>
+    <LogDataItem ID="5" DataType="ReceivedData" Timestamp="2019-11-17T18:56:52.1333814-08:00" PortNumber="2">
+      <CompiledLine>+NAME=MotoHelpeR..
+[2B-4E-41-4D-45-3D-4D-6F-74-6F-48-65-6C-70-65-52-0D-0A]
+</CompiledLine>
+      <Data>K05BTUU9TW90b0hlbHBlUg0K</Data>
+    </LogDataItem>
+    <LogDataItem ID="6" DataType="ReceivedData" Timestamp="2019-11-17T18:56:52.4332934-08:00" PortNumber="1">
+      <CompiledLine>AT+PIN..
+[41-54-2B-50-49-4E-0D-0A]
+</CompiledLine>
+      <Data>QVQrUElODQo=</Data>
+    </LogDataItem>
+    <LogDataItem ID="7" DataType="ReceivedData" Timestamp="2019-11-17T18:56:52.4535195-08:00" PortNumber="2">
+      <CompiledLine>+PIN=2020..
+[2B-50-49-4E-3D-32-30-32-30-0D-0A]
+</CompiledLine>
+      <Data>K1BJTj0yMDIwDQo=</Data>
+    </LogDataItem>
+    <LogDataItem ID="8" DataType="ReceivedData" Timestamp="2019-11-17T18:56:52.7251244-08:00" PortNumber="1">
+      <CompiledLine>AT+BAUD6...
+[41-54-2B-42-41-55-44-36-00-0D-0A]
+</CompiledLine>
+      <Data>QVQrQkFVRDYADQo=</Data>
+    </LogDataItem>
+    <LogDataItem ID="9" DataType="ReceivedData" Timestamp="2019-11-17T18:56:52.7371352-08:00" PortNumber="2">
+      <CompiledLine>ERROR=103.
+[45-52-52-4F-52-3D-31-30-33-0D]
+..
+[0D-0A]
+</CompiledLine>
+      <Data>RVJST1I9MTAzDQ0K</Data>
+    </LogDataItem>
+    <LogDataItem ID="10" DataType="ReceivedData" Timestamp="2019-11-17T18:56:53.0533229-08:00" PortNumber="1">
+      <CompiledLine>AT+VERSION...
+[41-54-2B-56-45-52-53-49-4F-4E-00-0D-0A]
+</CompiledLine>
+      <Data>QVQrVkVSU0lPTgANCg==</Data>
+    </LogDataItem>
+    <LogDataItem ID="11" DataType="ReceivedData" Timestamp="2019-11-17T18:56:53.0936519-08:00" PortNumber="2">
+      <CompiledLine>+VERSION=+JDY-30-V2.7, Bluetooth V3.0.
+[2B-56-45-52-53-49-4F-4E-3D-2B-4A-44-59-2D-33-30-2D-56-32-2E-37-2C-20-42-6C-75-65-74-6F-6F-74-68-20-56-33-2E-30-0D]
+..
+[0D-0A]
+</CompiledLine>
+      <Data>K1ZFUlNJT049K0pEWS0zMC1WMi43LCBCbHVldG9vdGggVjMuMA0NCg==</Data>
+    </LogDataItem>
+    <LogDataItem ID="12" DataType="ReceivedData" Timestamp="2019-11-17T18:56:53.3535413-08:00" PortNumber="1">
+      <CompiledLine>AT..
+[41-54-0D-0A]
+</CompiledLine>
+      <Data>QVQNCg==</Data>
+    </LogDataItem>
+    <LogDataItem ID="13" DataType="ReceivedData" Timestamp="2019-11-17T18:56:53.3535413-08:00" PortNumber="2">
+      <CompiledLine>OK.
+[4F-4B-0D]
+..
+[0D-0A]
+</CompiledLine>
+      <Data>T0sNDQo=</Data>
+    </LogDataItem>
+    <LogDataItem ID="14" DataType="ReceivedData" Timestamp="2019-11-17T18:56:53.9534628-08:00" PortNumber="1">
+      <CompiledLine>AT+NAME..
+[41-54-2B-4E-41-4D-45-0D-0A]
+</CompiledLine>
+      <Data>QVQrTkFNRQ0K</Data>
+    </LogDataItem>
+    <LogDataItem ID="15" DataType="ReceivedData" Timestamp="2019-11-17T18:56:53.9534628-08:00" PortNumber="2">
+      <CompiledLine>.
+[00]
+</CompiledLine>
+      <Data>AA==</Data>
+    </LogDataItem>
+    <LogDataItem ID="16" DataType="ReceivedData" Timestamp="2019-11-17T18:56:54.2537111-08:00" PortNumber="2">
+      <CompiledLine>.
+[FE]
+</CompiledLine>
+      <Data>/g==</Data>
+    </LogDataItem>
+    <LogDataItem ID="17" DataType="ReceivedData" Timestamp="2019-11-17T18:56:54.5536324-08:00" PortNumber="1">
+      <CompiledLine>AT..
+[41-54-0D-0A]
+</CompiledLine>
+      <Data>QVQNCg==</Data>
+    </LogDataItem>
+    <LogDataItem ID="18" DataType="ReceivedData" Timestamp="2019-11-17T18:56:54.5536324-08:00" PortNumber="2">
+      <CompiledLine>OK.
+[4F-4B-0D]
+..
+[0D-0A]
+</CompiledLine>
+      <Data>T0sNDQo=</Data>
+    </LogDataItem>
+  </LogDataItems>
+</LogCollection>
