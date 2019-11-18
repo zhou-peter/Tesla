@@ -4,7 +4,7 @@
 UART_HandleTypeDef* uart;
 DMA_HandleTypeDef* dma_usart_tx;
 TaskHandle_t commHandle;
-TIM_HandleTypeDef* communicationTimer;
+
 
 //333ms Timer
 #define AT_TIMEOUT 1
@@ -25,10 +25,10 @@ const u8 textATSpeed[] = { "AT+UART=115200,0,0" };
 extern void HC_Configure();
 
 void COMM_Configure_Driver(UART_HandleTypeDef* uart_,
-		DMA_HandleTypeDef* hdma_usart_, TIM_HandleTypeDef* timer,
+		DMA_HandleTypeDef* hdma_usart_,
 		TaskHandle_t taskHandle) {
 
-	communicationTimer = timer;
+
 	commHandle = taskHandle;
 	uart = uart_;
 	dma_usart_tx = hdma_usart_;
@@ -44,23 +44,15 @@ void COMM_SendData(u16 size) {
 			== HAL_OK) {
 		CommState.TxState = TxSending;
 	} else {
-		if (CommState.CommDriverReady) {
-			//notify communication manager
 
-		} else {
-			HCState.ATState = ATInitFail;
-		}
 	}
 
 }
 
 void COMM_ResumeTaskFromISR() {
-	BaseType_t taskYieldRequired = xTaskResumeFromISR(commHandle);
-	// If the taskYield is reuiqred then trigger the same.
-	if(taskYieldRequired == pdTRUE)
-	{
-		taskYIELD();
-	}
+	BaseType_t false = pdFALSE;
+	vTaskNotifyGiveFromISR(commHandle, &false);
+	taskYIELD();
 }
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
@@ -78,17 +70,21 @@ void COMM_RxCallback() {
 }
 
 void COMM_DRIVER_PeriodElapsedCallback() {
-	HCState.ATState = ATInitFail;
+	HCState.ATTimeout = TRUE;
+	HCState.softTimer=0;
 	COMM_ResumeTaskFromISR();
 }
 
 void HC_StartTimer() {
-	HAL_TIM_Base_Start_IT(communicationTimer);
+	HCState.softTimer = addTimer(1000, FALSE,
+			&COMM_DRIVER_PeriodElapsedCallback);
 }
 
 void HC_StopTimer() {
-	HAL_TIM_Base_Stop(communicationTimer);
-	communicationTimer->Instance->CNT = 1;
+	if (HCState.softTimer>0){
+		removeTimer(HCState.softTimer);
+		HCState.softTimer = 0;
+	}
 }
 
 //delay between commands
@@ -99,7 +95,8 @@ void HC_Delay() {
 //as a rule not enough amount of bytes received
 //await rest
 void HC_Suspend() {
-	vTaskSuspend(NULL);
+	const TickType_t xBlockTime = pdMS_TO_TICKS( 5000 );
+	ulTaskNotifyTake(pdFALSE, xBlockTime);
 }
 
 bool hasText(const u8* searchText, u8 length) {
@@ -274,16 +271,14 @@ void configModuleAT() {
 				HCState.ATState = ATWaitStream;
 			} else {
 				//no text
-				HCState.ATState = ATInitFail;
+				HCState.ATState = AT;
 			}
 		} else {
 			HC_Suspend();
 		}
 	}
 
-	if (HCState.ATState == ATWaitStream || HCState.ATState == ATInitFail) {
-		osDelay(1);
-	}
+
 
 }
 
@@ -293,9 +288,6 @@ void HC_Configure() {
 	while (CommState.CommDriverReady == FALSE) {
 
 		HC_StopTimer();
-		TimerConf_t result = calculatePeriodAndPrescaler(AT_TIMEOUT);
-		communicationTimer->Instance->PSC = result.Prescaler;
-		communicationTimer->Instance->ARR = result.Period;
 
 		//reset bluetooth
 		HAL_GPIO_WritePin(BT_PORT, BT_DISABLE, GPIO_PIN_SET);
@@ -309,8 +301,10 @@ void HC_Configure() {
 			if (HCState.ATState == ATWaitStream) {
 				CommState.CommDriverReady = TRUE;
 				break;
-			} else if (HCState.ATState == ATInitFail) {
+			} else if (HCState.ATTimeout == TRUE) {
 				CommState.CommDriverReady = FALSE;
+				HCState.ATTimeout = FALSE;
+				break;
 			}
 		}
 	}

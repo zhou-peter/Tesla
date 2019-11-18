@@ -14,8 +14,8 @@ typedef enum
 {
 	AT = 0,
 	ATAnswerWait,
-	//ATNameGet,
-	//ATNameGetAnswerWait,
+	ATNameGet,
+	ATNameGetAnswerWait,
 	ATNameSet,
 	ATNameSetAnswerWait,
 	ATPinGet,
@@ -25,21 +25,21 @@ typedef enum
 	ATSpeed,
 	ATSpeedAT2, //again send AT command
 	ATSpeedAT2AnswerWait,
-	ATWaitStream,
-	ATInitFail
+	ATWaitStream
 }ATStates;
 
 
 typedef struct
 {
-	//indicate that answer from previous command
-	//came as expected
-	ATStates ATState:8;
+	bool	ATTimeout:1;
+	ATStates ATState:7;
+	u8		softTimer:8;
+	u16		tmp4:16;
 }HCModule_t;
 
 
 extern void COMM_Configure_Driver(UART_HandleTypeDef* uart_,
-		DMA_HandleTypeDef* hdma_usart_, TIM_HandleTypeDef* timer,
+		DMA_HandleTypeDef* hdma_usart_,
 		TaskHandle_t taskHandle);
 extern void COMM_RxCallback();
 

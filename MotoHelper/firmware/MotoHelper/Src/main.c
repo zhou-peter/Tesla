@@ -28,6 +28,7 @@
 #include "accelerometer_manager.h"
 #include "communication_manager.h"
 #include "kernel.h"
+#include "soft_timer.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -156,7 +157,10 @@ int main(void)
   btTaskHandle = osThreadCreate(osThread(btTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
+	TimerConf_t result = calculatePeriodAndPrescaler(1000/SOFT_TIMER_MS_PER_TICK);
+	htim16.Instance->PSC = result.Prescaler;
+	htim16.Instance->ARR = result.Period;
+	HAL_TIM_Base_Start_IT(&htim16);
   /* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */
@@ -500,7 +504,7 @@ void StartTaskAccel(void const * argument)
 void StartTaskBt(void const * argument)
 {
   /* USER CODE BEGIN StartTaskBt */
-	COMM_Configure_Driver(&huart2, &hdma_usart2_tx, &htim16, btTaskHandle);
+	COMM_Configure_Driver(&huart2, &hdma_usart2_tx, btTaskHandle);
 	//COMM_Init(&htim16, btTaskHandle);
   /* Infinite loop */
   for(;;)
@@ -522,12 +526,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
   if (htim->Instance == TIM16) {
-	if (CommState.CommDriverReady){
-		COMM_PeriodElapsedCallback();
-	}else{
-		COMM_DRIVER_PeriodElapsedCallback();
-	}
-
+	  hardwareTimerInvoke();
   }
   if (htim->Instance == TIM17) {
 	ACCEL_PeriodElapsedCallback();
