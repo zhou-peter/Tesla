@@ -5,7 +5,7 @@
  *      Author: User
  */
 #include "communication_manager.h"
-
+#include "soft_timer.h"
 
 #define PACKET_START 0xCC
 //100ms Timer
@@ -22,26 +22,38 @@ volatile u16 rxIndex;
 TaskHandle_t commHandle;
 
 
-
-
 void COMM_Init(TaskHandle_t taskHandle)
 {
-
 	commHandle = taskHandle;
+}
 
-
+void COMM_PeriodElapsedCallback()
+{
+	switch (CommState.RxState){
+		case ReceivingSize:
+		case ReceivingPacket:
+			CommState.RxState=ReceivingTimeout;
+			break;
+		default:
+			break;
+	}
+	BaseType_t false = pdFALSE;
+	vTaskNotifyGiveFromISR(commHandle, &false);
+	taskYIELD();
 }
 
 
-
 void startTimer(){
-	//HAL_TIM_Base_Start_IT(communicationTimer);
+	CommState.softTimer = addTimer(500, FALSE,
+			&COMM_PeriodElapsedCallback);
 }
 
 
 void stopTimer(){
-	//HAL_TIM_Base_Stop(communicationTimer);
-	//communicationTimer->Instance->CNT=0;
+	if(CommState.softTimer>0){
+		removeTimer(CommState.softTimer);
+		CommState.softTimer = 0;
+	}
 }
 
 void restartTimer(){
@@ -50,15 +62,27 @@ void restartTimer(){
 }
 
 void commSleep(){
-	vTaskSuspend(commHandle);
+	const TickType_t xBlockTime = pdMS_TO_TICKS(5000);
+	ulTaskNotifyTake(pdFALSE, xBlockTime);
 }
 
+
+void notifyPacketProcessed()
+{
+	CommState.RxState=RxProcessed;
+	xTaskNotifyGive(commHandle);
+	taskYIELD();
+}
+
+
+
 void create_rx_err(u8 err){
-	rxIndex=0;
+	CommState.rxIndex=0;
 	CommState.RxState=WaitingStart;
 	stopTimer();
-	if (CommState.TxState==TxIdle){
-		createOutPacketAndSend(0x03,1,&err);
+	if (CommState.TxState==TxIdle)
+	{
+		//createOutPacketAndSend(0x03,1,&err);
 	}
 }
 
@@ -83,6 +107,7 @@ void COMM_Task(){
 			//статус может изменить таймер таймаута
 			if (CommState.rxIndex==0){
 				//получили первый байт, ждем еще 7-8
+				stopTimer();
 				commSleep();
 				continue;
 			}
@@ -162,11 +187,6 @@ void processPacket(){
 
 }
 
-void notifyPacketProcessed()
-{
-	CommState.RxState=RxProcessed;
-	vTaskResume(commHandle);
-}
 
 void createOutPacketAndSend(u8 command, u16 bodySize, u8* bodyData){
 
@@ -199,15 +219,4 @@ void createOutPacketAndSend(u8 command, u16 bodySize, u8* bodyData){
 	COMM_SendData(txBufSize);
 }
 
-void COMM_PeriodElapsedCallback()
-{
-	switch (CommState.RxState){
-		case ReceivingSize:
-		case ReceivingPacket:
-			CommState.RxState=ReceivingTimeout;
-			break;
-		default:
-			break;
-	}
-	xTaskResumeFromISR(commHandle);
-}
+

@@ -56,8 +56,7 @@ void COMM_SendData(u16 size) {
 void COMM_ResumeTaskFromISR() {
 	BaseType_t false = pdFALSE;
 	vTaskNotifyGiveFromISR(commHandle, &false);
-	taskYIELD()
-	;
+	taskYIELD();
 }
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
