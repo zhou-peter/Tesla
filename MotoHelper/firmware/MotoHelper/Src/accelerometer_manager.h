@@ -9,6 +9,8 @@
 #ifndef ACCELEROMETER_MANAGER_H_
 #define ACCELEROMETER_MANAGER_H_
 
+//Hz
+#define ACCELEROMETER_FREQ	100
 
 typedef enum
 {
@@ -42,11 +44,12 @@ typedef struct
 
 extern TaskHandle_t gHandle;
 extern volatile AccelState_t 	AccelState;
-extern volatile AccelData_t 	AccelData;
+extern AccelData_t 	AccelData;
+extern QueueHandle_t	accelQueue;
 
-extern void ACCEL_Init(TIM_HandleTypeDef *htim, I2C_HandleTypeDef *hi2c, TaskHandle_t taskHandle);
+extern void ACCEL_Init(I2C_HandleTypeDef *hi2c, TaskHandle_t taskHandle, QueueHandle_t queue);
 extern void ACCEL_Task();
-extern void Accelerometer_Config(I2C_HandleTypeDef *hi2c, TaskHandle_t taskHandle);
+extern void ACCEL_NotifyTaskFromISR();
 extern void ACCEL_PeriodElapsedCallback();
 extern void ACCEL_buildStruct();
 extern void ACCEL_readData();

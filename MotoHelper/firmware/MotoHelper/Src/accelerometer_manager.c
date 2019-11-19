@@ -1,30 +1,24 @@
 #include "common.h"
 #include "accelerometer_manager.h"
 
-//Hz
-#define ACCELEROMETER_FREQ	100
 
-TIM_HandleTypeDef *accelerationTimer;
+
 TaskHandle_t gaHandle;
 volatile AccelState_t 	AccelState;
-volatile AccelData_t 	AccelData;
-
+AccelData_t 	AccelData;
+QueueHandle_t	accelQueue;
 
 /*
 	Timer 16 everty 10ms invoking
 */
-void ACCEL_Init(TIM_HandleTypeDef *htim, I2C_HandleTypeDef *hi2c, TaskHandle_t taskHandle){
-	accelerationTimer = htim;
-	gHandle = taskHandle;
+void ACCEL_Init(I2C_HandleTypeDef *hi2c, TaskHandle_t taskHandle, QueueHandle_t queue){
 
-	TimerConf_t result=calculatePeriodAndPrescaler(ACCELEROMETER_FREQ);
-	accelerationTimer->Instance->PSC = result.Prescaler;
-	accelerationTimer->Instance->ARR = result.Period;
+	gHandle = taskHandle;
+	accelQueue = queue;
 
 
 	Accelerometer_Config(hi2c, taskHandle);
 
-	HAL_TIM_Base_Start_IT(accelerationTimer);
 }
 
 
@@ -38,11 +32,18 @@ void ACCEL_Task(){
 		  if (AccelState.State==AccelDataRetrived)
 		  {
 			  ACCEL_buildStruct();
+			  //put new data to the queue;
+			  xQueueSend(accelQueue, ( void * ) &AccelData,
+									 pdMS_TO_TICKS(50));
 			  AccelState.State=AccelDataReady;
-			  vTaskSuspend(gHandle);
+			  ACCEL_Wait();
+		  }else{
+			  osDelay(1);
+			  AccelState.State=AccelShouldRequest;
 		  }
+	  }else{
+		  osDelay(1);
 	  }
-	  osDelay(1);
   }
 }
 
@@ -65,12 +66,10 @@ void ACCEL_ToReadyState(){
 }
 
 void ACCEL_PeriodElapsedCallback() {
-	AccelState.ms++;
+	AccelState.ms+=10;
 	if (AccelState.State==AccelReady)
 	{
 		AccelState.State=AccelShouldRequest;
-		if (xTaskResumeFromISR(gHandle)) {
-			vTaskMissedYield();
-		}
+		ACCEL_NotifyTaskFromISR();
 	}
 }

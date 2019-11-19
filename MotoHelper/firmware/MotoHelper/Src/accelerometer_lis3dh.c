@@ -31,12 +31,17 @@ HAL_StatusTypeDef readDMA(u8 count){
 			&acc_buf, count);
 }
 
+void ACCEL_Wait() {
+	const TickType_t xBlockTime = pdMS_TO_TICKS(30);
+	ulTaskNotifyTake(pdFALSE, xBlockTime);
+}
+
 HAL_StatusTypeDef writeRegister(u8 reg, u8 value){
 	acc_buf[0] = reg;
 	acc_buf[1] = value;
 	HAL_StatusTypeDef ret = writeDMA(2);
 	if (ret == HAL_OK) {
-		vTaskSuspend(gHandle);
+		ACCEL_Wait();
 	}else{
 		Error_Handler();
 	}
@@ -51,11 +56,11 @@ HAL_StatusTypeDef readRegister(u8 reg, u8 count){
 	HAL_StatusTypeDef ret = writeDMA(1);
 
 	if (ret == HAL_OK) {
-		vTaskSuspend(gHandle);
+		ACCEL_Wait();
 
 		ret = readDMA(count);
 		if (ret == HAL_OK) {
-			vTaskSuspend(gHandle);
+			ACCEL_Wait();
 		}else{
 			Error_Handler();
 		}
@@ -115,21 +120,21 @@ void ACCEL_buildStruct(){
 	AccelData.z = getS16(&acc_buf, 4);
 }
 
+void ACCEL_NotifyTaskFromISR() {
+	BaseType_t false = pdFALSE;
+	vTaskNotifyGiveFromISR(gHandle, &false);
+	taskYIELD();
+}
+
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
 	if (hi2c == i2c) {
-		//vTaskResume(gHandle);
-		if (xTaskResumeFromISR(gHandle)) {
-			vTaskMissedYield();
-		}
+		ACCEL_NotifyTaskFromISR();
 	}
 }
 
 void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c) {
 	if (hi2c == i2c) {
-		//vTaskResume(gHandle);
-		if (xTaskResumeFromISR(gHandle)==pdTRUE) {
-			vTaskMissedYield();
-		}
+		ACCEL_NotifyTaskFromISR();
 	}
 }
 

@@ -62,6 +62,7 @@ DMA_HandleTypeDef hdma_usart2_tx;
 osThreadId defaultTaskHandle;
 osThreadId accelTaskHandle;
 osThreadId btTaskHandle;
+osMessageQId accelDataHandle;
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -139,6 +140,11 @@ int main(void)
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
 
+  /* Create the queue(s) */
+  /* definition and creation of accelData */
+  osMessageQDef(accelData, 16, 12);
+  accelDataHandle = osMessageCreate(osMessageQ(accelData), NULL);
+
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
@@ -161,6 +167,11 @@ int main(void)
 	htim16.Instance->PSC = result.Prescaler;
 	htim16.Instance->ARR = result.Period;
 	HAL_TIM_Base_Start_IT(&htim16);
+
+	result=calculatePeriodAndPrescaler(ACCELEROMETER_FREQ);
+	htim17.Instance->PSC = result.Prescaler;
+	htim17.Instance->ARR = result.Period;
+	HAL_TIM_Base_Start_IT(&htim17);
   /* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */
@@ -486,6 +497,8 @@ void StartDefaultTask(void const * argument)
 void StartTaskAccel(void const * argument)
 {
   /* USER CODE BEGIN StartTaskAccel */
+	ACCEL_Init(&hi2c2, accelTaskHandle, accelQueue);
+	ACCEL_Task();
   /* Infinite loop */
   for(;;)
   {

@@ -344,21 +344,10 @@ void TIM7_IRQHandler(void)
 
   /* USER CODE END TIM7_IRQn 1 */
 }
-/* These are volatile to try and prevent the compiler/linker optimising them
-away as the variables never actually get used.  If the debugger won't show the
-values of the variables, make them global my moving their declaration outside
-of this function. */
-volatile uint32_t r0;
-volatile uint32_t r1;
-volatile uint32_t r2;
-volatile uint32_t r3;
-volatile uint32_t r12;
-volatile uint32_t lr; /* Link register. */
-volatile uint32_t pc; /* Program counter. */
-volatile uint32_t psr;/* Program status register. */
+
 /* USER CODE BEGIN 1 */
 void prvGetRegistersFromStack( uint32_t *pulFaultStackAddress )
-{
+{/*
     r0 = pulFaultStackAddress[ 0 ];
     r1 = pulFaultStackAddress[ 1 ];
     r2 = pulFaultStackAddress[ 2 ];
@@ -368,7 +357,7 @@ void prvGetRegistersFromStack( uint32_t *pulFaultStackAddress )
     lr = pulFaultStackAddress[ 5 ];
     pc = pulFaultStackAddress[ 6 ];
     psr = pulFaultStackAddress[ 7 ];
-
+*/
     /* When the following line is hit, the variables contain the register values. */
     for( ;; );
 }
