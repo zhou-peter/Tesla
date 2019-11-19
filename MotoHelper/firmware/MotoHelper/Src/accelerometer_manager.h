@@ -20,8 +20,6 @@ typedef enum
 	AccelShouldRequest,
 	AccelDataRetriving,//reading data
 	AccelDataRetrived,//moved from I2C to tmp buf
-	AccelDataReady, //accelerometer manger will stay here until
-					//somebody will change state to AccelReady
 	AccelError
 } AccelStates_e;
 

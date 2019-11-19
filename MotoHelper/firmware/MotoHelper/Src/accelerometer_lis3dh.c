@@ -33,7 +33,15 @@ HAL_StatusTypeDef readDMA(u8 count){
 
 void ACCEL_Wait() {
 	const TickType_t xBlockTime = pdMS_TO_TICKS(30);
+	u32 ticks1 = xTaskGetTickCount();
 	ulTaskNotifyTake(pdFALSE, xBlockTime);
+	u32 ticks2 = xTaskGetTickCount();
+	ticks2-=ticks1;
+
+}
+
+void ACCEL_Error(){
+	AccelState.State=AccelError;
 }
 
 HAL_StatusTypeDef writeRegister(u8 reg, u8 value){
@@ -43,7 +51,7 @@ HAL_StatusTypeDef writeRegister(u8 reg, u8 value){
 	if (ret == HAL_OK) {
 		ACCEL_Wait();
 	}else{
-		Error_Handler();
+		ACCEL_Error();
 	}
 	return ret;
 }
@@ -59,16 +67,36 @@ HAL_StatusTypeDef readRegister(u8 reg, u8 count){
 		ACCEL_Wait();
 
 		ret = readDMA(count);
-		if (ret == HAL_OK) {
-			ACCEL_Wait();
-		}else{
-			Error_Handler();
+		ACCEL_Wait();
+		if (ret != HAL_OK) {
+			ACCEL_Error();
 		}
 	}else{
-		Error_Handler();
+		ACCEL_Error();
 	}
 	return ret;
 }
+
+
+
+
+
+
+void Accelerometer_ReConfig(){
+reconfigure:
+	readRegister(WHO_AM_I, 1);
+
+	if (acc_buf[0] == 0x33)
+	{
+		writeRegister(CTRL_REG1, CTRL_REG1_VALUE);
+		osDelay(2);
+		AccelState.State=AccelReady;
+
+	}else{
+		goto reconfigure;
+	}
+}
+
 
 void Accelerometer_Config(I2C_HandleTypeDef *hi2c, TaskHandle_t taskHandle) {
 
@@ -86,20 +114,7 @@ void Accelerometer_Config(I2C_HandleTypeDef *hi2c, TaskHandle_t taskHandle) {
 	 }
 
 	 */
-
-reconfigure:
-	readRegister(WHO_AM_I, 1);
-
-	if (acc_buf[0] == 0x33)
-	{
-		writeRegister(CTRL_REG1, CTRL_REG1_VALUE);
-		osDelay(2);
-		AccelState.State=AccelReady;
-
-	}else{
-		goto reconfigure;
-	}
-
+	Accelerometer_ReConfig();
 }
 
 void ACCEL_readData()
@@ -110,7 +125,7 @@ void ACCEL_readData()
 		AccelState.State=AccelDataRetrived;
 		return;
 	}
-	AccelState.State=AccelError;
+	ACCEL_Error();
 }
 
 void ACCEL_buildStruct(){

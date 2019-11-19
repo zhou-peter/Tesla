@@ -33,37 +33,29 @@ void ACCEL_Task(){
 		  {
 			  ACCEL_buildStruct();
 			  //put new data to the queue;
-			  xQueueSend(accelQueue, ( void * ) &AccelData,
+			  struct AccelData_t *pxMessage = &AccelData;
+			  xQueueSend(accelQueue, ( void * ) &pxMessage,
 									 pdMS_TO_TICKS(50));
-			  AccelState.State=AccelDataReady;
+			  AccelState.State=AccelShouldRequest;
 			  ACCEL_Wait();
 		  }else{
 			  osDelay(1);
-			  AccelState.State=AccelShouldRequest;
 		  }
-	  }else{
+	  }
+	  else if (AccelState.State==AccelReady){
+		  AccelState.State=AccelShouldRequest;
+		  ACCEL_Wait();
+	  }
+	  else if (AccelState.State==AccelError){
+		  Accelerometer_ReConfig();
+	  }
+	  else{
 		  osDelay(1);
 	  }
   }
 }
 
-void ACCEL_ToReadyState(){
-	switch (AccelState.State)
-	{
-		case AccelIdle:
-		case AccelError:
-		case AccelConfig:
-			Error_Handler();
-			break;
-		case AccelDataReady:
-			//normal switch
-			AccelState.State=AccelReady;
-			break;
-		default:
-			//should be inverstigated
-			AccelState.State=AccelReady;
-	}
-}
+
 
 void ACCEL_PeriodElapsedCallback() {
 	AccelState.ms+=10;

@@ -497,7 +497,7 @@ void StartDefaultTask(void const * argument)
 void StartTaskAccel(void const * argument)
 {
   /* USER CODE BEGIN StartTaskAccel */
-	ACCEL_Init(&hi2c2, accelTaskHandle, accelQueue);
+	ACCEL_Init(&hi2c2, accelTaskHandle, accelDataHandle);
 	ACCEL_Task();
   /* Infinite loop */
   for(;;)
