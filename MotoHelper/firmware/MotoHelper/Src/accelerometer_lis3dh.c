@@ -129,7 +129,6 @@ void ACCEL_readData()
 }
 
 void ACCEL_buildStruct(){
-	AccelData.ticks=AccelState.ms;
 	AccelData.x = getS16(&acc_buf, 0);
 	AccelData.y = getS16(&acc_buf, 2);
 	AccelData.z = getS16(&acc_buf, 4);

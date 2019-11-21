@@ -33,11 +33,10 @@ typedef struct
 
 typedef struct
 {
-	u32 	ticks:32;
-	u16		tmp5:16;
-	s16		x:16;
-	s16		y:16;
+	u16		tmp:16;
 	s16		z:16;
+	s16		y:16;
+	s16		x:16;
 } AccelData_t;
 
 extern TaskHandle_t gHandle;
