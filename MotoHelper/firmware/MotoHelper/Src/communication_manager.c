@@ -11,7 +11,7 @@
 //100ms Timer
 #define RECEIVE_TIMEOUT 1000/100
 #define BODY_OFFSET 4
-#define EMPTY_SIZE 6
+
 
 
 
@@ -130,7 +130,7 @@ void COMM_Task(){
 					create_rx_err(0x02);
 					continue;
 				}
-				if (inPacksize>COMM_IN_BUF_SIZE-EMPTY_SIZE){
+				if (inPacksize>COMM_OUT_MAX_BODY_SIZE){
 					create_rx_err(0x03);
 					continue;
 				}

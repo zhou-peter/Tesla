@@ -12,6 +12,9 @@
 #define COMM_IN_BUF_SIZE 20
 #define COMM_OUT_BUF_SIZE 80
 
+#define EMPTY_PACKET_SIZE 6
+#define COMM_OUT_MAX_BODY_SIZE (COMM_OUT_BUF_SIZE-EMPTY_PACKET_SIZE)
+
 typedef enum
 {
 	WaitingStart,

@@ -33,7 +33,6 @@ typedef struct
 
 typedef struct
 {
-	u16		tmp:16;
 	s16		z:16;
 	s16		y:16;
 	s16		x:16;
