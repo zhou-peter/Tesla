@@ -494,7 +494,7 @@ void StartTaskAccel(void const * argument)
 {
   /* USER CODE BEGIN StartTaskAccel */
 	ACCEL_Init(&hi2c2, accelTaskHandle);
-	//ACCEL_Task();
+	ACCEL_Task();
   /* Infinite loop */
   for(;;)
   {

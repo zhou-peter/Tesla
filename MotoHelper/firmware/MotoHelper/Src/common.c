@@ -25,3 +25,12 @@ TimerConf_t calculatePeriodAndPrescaler(u32 freq){
 s16 getS16(volatile u8* buf, u8 offset){
 	return (s16)(*(buf+offset) | (*(buf+offset+1))<<8);
 }
+
+
+void copy(void* src, void* dst, u16 count){
+	int j=0;
+	for (j = 0; j < count; j++) {
+		*(char *) (dst +  j) =
+				*(char *) (src + j);
+	}
+}

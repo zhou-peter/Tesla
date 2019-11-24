@@ -6,7 +6,7 @@
 TaskHandle_t gaHandle;
 volatile AccelState_t 	AccelState;
 AccelData_t 	AccelData;
-QueueHandle_t	accelQueue;
+
 
 /*
 	Timer 16 everty 10ms invoking
@@ -32,9 +32,7 @@ void ACCEL_Task(){
 		  {
 			  ACCEL_buildStruct();
 			  //put new data to the queue;
-			  struct AccelData_t *pxMessage = &AccelData;
-			  /*xQueueSend(accelQueue, ( void * ) &pxMessage,
-									 pdMS_TO_TICKS(50));*/
+			  osDelay(30);
 			  AccelState.State=AccelShouldRequest;
 			  ACCEL_Wait();
 		  }else{

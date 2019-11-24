@@ -10,13 +10,14 @@
 #define PACKET_START 0xCC
 //100ms Timer
 #define RECEIVE_TIMEOUT 1000/100
-#define BODY_OFFSET 4
+
 
 
 
 
 volatile u8 commInBuf[COMM_IN_BUF_SIZE];
 volatile u8 commOutBuf[COMM_OUT_BUF_SIZE];
+
 volatile CommState_t CommState;
 volatile u16 rxIndex;
 TaskHandle_t commHandle;
@@ -202,9 +203,9 @@ void createOutPacketAndSend(u8 command, u16 bodySize, u8* bodyData){
 	commOutBuf[2]=(u8)(txBufSize>>8);
 	commOutBuf[3]=command;
 
-	if (bodySize>0){
+	if (bodySize>0 && bodyData !=NULL){
 		for (i=0;i<bodySize;i++){
-			commOutBuf[4+i]=*(bodyData+i);
+			commOutBuf[COMM_OUT_BODY_OFFSET+i]=*(bodyData+i);
 		}
 	}
 
