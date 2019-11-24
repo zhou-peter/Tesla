@@ -5,7 +5,7 @@
 #ifndef __KERNEL_H
 #define __KERNEL_H
 
-extern void KERNEL_Init(QueueHandle_t queue);
+extern void KERNEL_Init();
 extern void KERNEL_Task();
 
 

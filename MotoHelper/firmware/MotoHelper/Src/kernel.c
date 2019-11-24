@@ -1,41 +1,48 @@
 #include "common.h"
 #include "kernel.h"
 #include "soft_timer.h"
+#include "circle_buffer.h"
 #include "communication_manager.h"
 #include "accelerometer_manager.h"
 
+volatile u8 dataBuffer[sizeof(AccelData_t)*10];
+CircleBuffer_t data;
 
-GenericList_t list;
+void KERNEL_Init() {
 
-void KERNEL_Init(QueueHandle_t queue) {
-	list.maxCount = 100;
-	list.itemSize = sizeof(AccelData_t);
-
+	initCircleBuffer(&data, &dataBuffer, sizeof(dataBuffer), sizeof(AccelData_t));
 }
 
+
+//ПОТРЕБЛЕНИЕ листо 8 + 8 на один элемент
+//1 секунда при 100Гц 16*100 = полтора килобайта
 void KERNEL_AddToList(AccelData_t* newData){
-	addToList(&list, newData);
+
 }
 
 void KERNEL_Task() {
 	AccelData_t a;
 
-	a.x = 1;
-	a.y = 1;
-	a.z = 1;
 
-	KERNEL_AddToList(&a);
+int i=0;
+for (i=0;i<13;i++){
+	a.x = i;
+	a.y = i;
+	a.z = i;
+	addItem(&data, &a);
+}
 
-		a.x = 2;
-		a.y = 2;
-		a.z = 2;
-
-		KERNEL_AddToList(&a);
+for (i=0;i<data.itemsCount;i++){
+	AccelData_t* d = (AccelData_t*)getItem(&data, i);
+	if (d->x==0){
+		d->x=1;
+	}
+}
 
 	while (TRUE) {
 
 		//every time send something
-
+/*
 		if (CommState.CommDriverReady == TRUE && CommState.TxState==TxIdle
 				&& list.count > 0) {
 
@@ -50,6 +57,7 @@ void KERNEL_Task() {
 			//createOutPacketAndSend(0x11, itemsCount, &accelDataBuffer);
 			taskEXIT_CRITICAL();
 		}
+		*/
 		osDelay(1);
 	}
 }

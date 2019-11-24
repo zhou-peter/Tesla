@@ -8,16 +8,15 @@ void addToList(GenericList_t* list, void* newItem) {
 
 	//clear first alement
 	if (list->count == list->maxCount) {
-		struct ListNode_t* newHead = list->head->next;
+		ListNode_t* newHead = list->head->next;
 		vPortFree(list->head->data);
 		vPortFree(list->head);
 		list->head = newHead;
 	}
 
 	// Allocate memory for node
-	struct ListNode_t* newNode = (struct ListNode_t*) pvPortMalloc(
-			sizeof(struct ListNode_t));
-	newNode->data = pvPortMalloc(list->itemSize);
+	ListNode_t* newNode = (ListNode_t*) pvPortMalloc(sizeof(ListNode_t));
+	newNode->data = (void *) pvPortMalloc(list->itemSize);
 
 
 	if (list->head == NULL || list->tail == NULL) {

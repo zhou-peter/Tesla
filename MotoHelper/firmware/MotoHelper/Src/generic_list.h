@@ -8,8 +8,8 @@
 typedef struct
 {
     // Any data type can be stored in this node
-    void  *data;
-    struct Node *next;
+    void* data;
+    struct Node* next;
 } ListNode_t;
 
 

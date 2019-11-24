@@ -43,7 +43,7 @@ extern volatile AccelState_t 	AccelState;
 extern AccelData_t 	AccelData;
 extern QueueHandle_t	accelQueue;
 
-extern void ACCEL_Init(I2C_HandleTypeDef *hi2c, TaskHandle_t taskHandle, QueueHandle_t queue);
+extern void ACCEL_Init(I2C_HandleTypeDef *hi2c, TaskHandle_t taskHandle);
 extern void ACCEL_Task();
 extern void ACCEL_NotifyTaskFromISR();
 extern void ACCEL_PeriodElapsedCallback();

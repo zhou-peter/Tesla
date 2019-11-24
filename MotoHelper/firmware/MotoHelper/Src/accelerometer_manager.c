@@ -11,10 +11,9 @@ QueueHandle_t	accelQueue;
 /*
 	Timer 16 everty 10ms invoking
 */
-void ACCEL_Init(I2C_HandleTypeDef *hi2c, TaskHandle_t taskHandle, QueueHandle_t queue){
+void ACCEL_Init(I2C_HandleTypeDef *hi2c, TaskHandle_t taskHandle){
 
 	gHandle = taskHandle;
-	accelQueue = queue;
 
 
 	Accelerometer_Config(hi2c, taskHandle);
@@ -34,8 +33,8 @@ void ACCEL_Task(){
 			  ACCEL_buildStruct();
 			  //put new data to the queue;
 			  struct AccelData_t *pxMessage = &AccelData;
-			  xQueueSend(accelQueue, ( void * ) &pxMessage,
-									 pdMS_TO_TICKS(50));
+			  /*xQueueSend(accelQueue, ( void * ) &pxMessage,
+									 pdMS_TO_TICKS(50));*/
 			  AccelState.State=AccelShouldRequest;
 			  ACCEL_Wait();
 		  }else{

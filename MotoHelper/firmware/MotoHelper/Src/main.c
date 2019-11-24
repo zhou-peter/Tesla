@@ -62,9 +62,6 @@ DMA_HandleTypeDef hdma_usart2_tx;
 osThreadId defaultTaskHandle;
 osThreadId accelTaskHandle;
 osThreadId btTaskHandle;
-osMessageQId accelDataHandle;
-uint8_t accelDataBuffer[ 104 * 8 ];
-osStaticMessageQDef_t accelDataControlBlock;
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -141,11 +138,6 @@ int main(void)
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
-
-  /* Create the queue(s) */
-  /* definition and creation of accelData */
-  osMessageQStaticDef(accelData, 104, 8, accelDataBuffer, &accelDataControlBlock);
-  accelDataHandle = osMessageCreate(osMessageQ(accelData), NULL);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
@@ -481,7 +473,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 void StartDefaultTask(void const * argument)
 {
   /* USER CODE BEGIN 5 */
-	KERNEL_Init(accelDataHandle);
+	KERNEL_Init();
 	KERNEL_Task();
   /* Infinite loop */
   for(;;)
@@ -501,7 +493,7 @@ void StartDefaultTask(void const * argument)
 void StartTaskAccel(void const * argument)
 {
   /* USER CODE BEGIN StartTaskAccel */
-	ACCEL_Init(&hi2c2, accelTaskHandle, accelDataHandle);
+	ACCEL_Init(&hi2c2, accelTaskHandle);
 	//ACCEL_Task();
   /* Infinite loop */
   for(;;)
