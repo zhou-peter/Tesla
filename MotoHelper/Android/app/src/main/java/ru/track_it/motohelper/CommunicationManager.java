@@ -3,7 +3,6 @@ package ru.track_it.motohelper;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.os.Message;
 import android.util.Log;
 
 import java.io.IOException;
@@ -15,67 +14,73 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 final class CommunicationManager {
+    private final static UUID SERIAL_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    private final static String LOG_TAG = "CommunicationManager";
+    BluetoothAdapter btAdapter = null;
+    BluetoothSocket socket = null;
+    InputStream btInputStream = null;
+    OutputStream btOutputStream = null;
+    boolean socketConnected = false;
 
-    private final static String LOG_TAG="CommunicationManager";
-    private final static UUID sppUuid = UUID.fromString("02001101-0000-1020-8000-00805F9B34FB");
-    BluetoothAdapter btAdapter=null;
-    BluetoothSocket btSocket=null;
-    InputStream btInputStream=null;
-    OutputStream btOutputStream=null;
-    boolean socketClosed=false;
 
-    static void LogDebug(String text){
+    public CommunicationManager() {
+
+    }
+
+    static void LogDebug(String text) {
         Log.d(LOG_TAG, text);
     }
 
 
-    public boolean isReady(){
-        if (btSocket==null
-                || btInputStream==null
-                || btOutputStream==null)return false;
-        //if (!btSocket.isConnected())return false;
+    public boolean isReady() {
+        if (socket == null
+                || btInputStream == null
+                || btOutputStream == null) return false;
+        //if (!socket.isConnected())return false;
         /*By the way, I found that on some android devices isConnected()
         always returns false. In such case just try to write something to socket
         and check if there is no exception.*/
-        if (socketClosed)return false;
-        return true;
+        return socketConnected;
     }
 
-    void closeSocket(){
-        try{
-            socketClosed=true;
-            if (btInputStream!=null)btInputStream.close();
-            if(btOutputStream!=null)btOutputStream.close();
-            if (btSocket!=null)btSocket.close();
-        }catch(Exception e){
+    void closeSocket() {
+        try {
+            socketConnected = false;
+            if (btInputStream != null) btInputStream.close();
+            if (btOutputStream != null) btOutputStream.close();
+            if (socket != null) socket.close();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-    public void Connect(){
-        btAdapter=BluetoothAdapter.getDefaultAdapter();
+    public void Connect() {
+        //close existing connection
+        closeSocket();
+
+        btAdapter = BluetoothAdapter.getDefaultAdapter();
         if (btAdapter == null) {
             LogDebug("Bluetooth adapter is not available.");
             return;
         }
-        Log.d(LOG_TAG,"Bluetooth adapter is found.");
+        Log.d(LOG_TAG, "Bluetooth adapter is found.");
 
         if (!btAdapter.isEnabled()) {
             LogDebug("Bluetooth is disabled. Check configuration.");
             return;
         }
-        Log.d(LOG_TAG,"Bluetooth is enabled.");
+        Log.d(LOG_TAG, "Bluetooth is enabled.");
 
-        if (!btAdapter.isDiscovering())btAdapter.startDiscovery();
+        if (!btAdapter.isDiscovering()) btAdapter.startDiscovery();
         BluetoothDevice btDevice = null;
         Set<BluetoothDevice> bondedDevices = btAdapter.getBondedDevices();
 
-        Pattern namePattern=Pattern.compile("MotoHelpeR");
-        if (btDevice==null){
+        Pattern namePattern = Pattern.compile("MotoHelpeR");
+        if (btDevice == null) {
             for (BluetoothDevice dev : bondedDevices) {
-                String name=dev.getName();
-                Log.d(LOG_TAG,"Paired device: " + name+ " (" + dev.getAddress() + ")");
+                String name = dev.getName();
+                Log.d(LOG_TAG, "Paired device: " + name + " (" + dev.getAddress() + ")");
                 Matcher m = namePattern.matcher(name);
                 if (m.matches()) {
                     btDevice = dev;
@@ -90,52 +95,44 @@ final class CommunicationManager {
         LogDebug("Target Bluetooth device is found.");
 
 
+        btAdapter.cancelDiscovery();
+
         try {
-
-            btAdapter.cancelDiscovery();
-            btSocket = btDevice.createRfcommSocketToServiceRecord(sppUuid);
-            btSocket.connect();
-
-            Thread.sleep(200);
-        } catch (IOException ex) {
-            LogDebug("Failed to create RfComm socket: " + ex.toString());
-            return;
-        }catch (Exception ex){
-            ex.printStackTrace();
-            Log.e(LOG_TAG, "bluetooth socket", ex);
-            return;
-        }
-        Log.d(LOG_TAG,"Created a bluetooth socket.");
-
-
-        for (int i = 0; i < 5 ; i++) {
-            try {
-                if (btSocket==null)
-                {
-                    LogDebug("Bluetooth socket connect fail.");
-                    return;
-                }
-                btInputStream=btSocket.getInputStream();
-                btOutputStream=btSocket.getOutputStream();
-                break;
-            } catch (IOException ex) {
-                LogDebug("Failed to connect. Retrying: " + ex.toString());
-            }
-            try {
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if (i<4)continue;
-            LogDebug("Failed to connect to " + btDevice.getName());
-            return;
+            socket = btDevice.createRfcommSocketToServiceRecord(SERIAL_UUID);
+            socketConnected = true;
+        } catch (Exception e) {
+            Log.e("", "Error creating socket");
         }
 
-        socketClosed=false;
-        LogDebug("Connected to the bluetooth socket.");
+        try {
+            socket.connect();
+            socketConnected = true;
+            Log.e("", "Connected");
+        } catch (IOException e) {
+            Log.e("", e.getMessage());
+            try {
+                Log.e("", "trying fallback...");
+
+                socket = (BluetoothSocket) btDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class}).invoke(btDevice, 1);
+                socket.connect();
+                socketConnected = true;
+                Log.e("", "Connected");
+            } catch (Exception e2) {
+                Log.e("", "Couldn't establish Bluetooth connection!");
+            }
+        }
+
+        try {
+            if (socketConnected) {
+                btInputStream = socket.getInputStream();
+                btOutputStream = socket.getOutputStream();
+                btOutputStream.write(0);
+            }
+        } catch (Exception ex) {
+            socketConnected = false;
+        }
+
     }
-
-
 
 
 }

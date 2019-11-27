@@ -39,7 +39,7 @@ public class BluetoothSPPClient
         if (btSocket==null
             || btInputStream==null
             || btOutputStream==null)return false;
-        //if (!btSocket.isConnected())return false;
+        //if (!socket.isConnected())return false;
         /*By the way, I found that on some android devices isConnected()
         always returns false. In such case just try to write something to socket
         and check if there is no exception.*/
