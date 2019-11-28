@@ -10,21 +10,26 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 final class CommunicationManager {
     private final static UUID SERIAL_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private final static String LOG_TAG = "CommunicationManager";
-    BluetoothAdapter btAdapter = null;
-    BluetoothSocket socket = null;
-    InputStream btInputStream = null;
-    OutputStream btOutputStream = null;
-    boolean socketConnected = false;
+    private BluetoothAdapter btAdapter = null;
+    private BluetoothSocket socket = null;
+    private InputStream btInputStream = null;
+    private OutputStream btOutputStream = null;
+    private boolean socketConnected = false;
+    private static final CommunicationManager instance = new CommunicationManager();
 
+    private CommunicationManager() {
 
-    public CommunicationManager() {
+    }
 
+    public static CommunicationManager getInstance() {
+        return instance;
     }
 
     static void LogDebug(String text) {
@@ -43,7 +48,7 @@ final class CommunicationManager {
         return socketConnected;
     }
 
-    void closeSocket() {
+    private void closeSocket() {
         try {
             socketConnected = false;
             if (btInputStream != null) btInputStream.close();
@@ -55,7 +60,7 @@ final class CommunicationManager {
     }
 
 
-    public void Connect() {
+    public synchronized void Connect() {
         //close existing connection
         closeSocket();
 
@@ -101,24 +106,24 @@ final class CommunicationManager {
             socket = btDevice.createRfcommSocketToServiceRecord(SERIAL_UUID);
             socketConnected = true;
         } catch (Exception e) {
-            Log.e("", "Error creating socket");
+            LogDebug("Error creating socket");
         }
 
         try {
             socket.connect();
             socketConnected = true;
-            Log.e("", "Connected");
+            LogDebug("Connected");
         } catch (IOException e) {
-            Log.e("", e.getMessage());
+            LogDebug(e.getMessage());
             try {
-                Log.e("", "trying fallback...");
+                LogDebug("trying fallback...");
 
                 socket = (BluetoothSocket) btDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class}).invoke(btDevice, 1);
                 socket.connect();
                 socketConnected = true;
-                Log.e("", "Connected");
+                LogDebug("Connected");
             } catch (Exception e2) {
-                Log.e("", "Couldn't establish Bluetooth connection!");
+                LogDebug("Couldn't establish Bluetooth connection!");
             }
         }
 
@@ -135,4 +140,11 @@ final class CommunicationManager {
     }
 
 
+    public InputStream getInputStream() {
+        return btInputStream;
+    }
+
+    public OutputStream getOutputStream() {
+        return btOutputStream;
+    }
 }

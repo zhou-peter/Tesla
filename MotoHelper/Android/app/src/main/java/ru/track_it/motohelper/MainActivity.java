@@ -9,21 +9,15 @@ import com.google.android.material.tabs.TabLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
+import ru.track_it.motohelper.Packets.PacketsManager;
 import ru.track_it.motohelper.ui.main.SectionsPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
-    CommunicationManager communicationManager=new CommunicationManager();
-
+    CommunicationManager communicationManager=CommunicationManager.getInstance();
+    PacketsManager packetsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +43,13 @@ public class MainActivity extends AppCompatActivity {
         Executors.BackGroundThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                communicationManager.Connect();
+                if (!communicationManager.isReady()){
+                    communicationManager.Connect();
+                    packetsManager=new PacketsManager(
+                    communicationManager.getInputStream(),
+                    communicationManager.getOutputStream());
+                }
+
             }
         });
     }
