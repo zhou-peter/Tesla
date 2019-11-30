@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
 
+import ru.track_it.motohelper.Packets.AbstractInPacket;
+import ru.track_it.motohelper.Packets.PacketsListener;
 import ru.track_it.motohelper.Packets.PacketsManager;
 import ru.track_it.motohelper.ui.main.SectionsPagerAdapter;
 
@@ -45,12 +47,17 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 if (!communicationManager.isReady()){
                     communicationManager.Connect();
-                    packetsManager=new PacketsManager(
-                    communicationManager.getInputStream(),
-                    communicationManager.getOutputStream());
+                    packetsManager=new PacketsManager(communicationManager.getInputStream(),
+                    communicationManager.getOutputStream(), pl);
                 }
-
             }
         });
     }
+
+    PacketsListener pl=new PacketsListener() {
+        @Override
+        public void onNewPacketsCame() {
+            AbstractInPacket packet = packetsManager.receivedPackets.poll();
+        }
+    };
 }

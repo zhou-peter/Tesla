@@ -8,5 +8,5 @@ public abstract class AbstractInPacket {
 
     public abstract void ApplyBody(byte[] buf, int offset, int size);
 
-    public abstract void Process();
+
 }

@@ -7,7 +7,7 @@
 #include "communication_manager.h"
 #include "soft_timer.h"
 
-#define PACKET_START 0xCC
+#define PACKET_START 0x7C
 //100ms Timer
 #define RECEIVE_TIMEOUT 1000/100
 

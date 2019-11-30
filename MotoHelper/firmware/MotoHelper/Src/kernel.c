@@ -31,12 +31,16 @@ void KERNEL_Task() {
 			//send as much as possable
 
 			//available data size
-			u16 bytesCount = data.itemsCount * data.itemSize;
-			while (bytesCount > COMM_OUT_MAX_BODY_SIZE) {
-				bytesCount -= data.itemSize;
+			u16 bodySize = data.itemsCount * data.itemSize;
+			bodySize+=4;
+			while (bodySize > COMM_OUT_MAX_BODY_SIZE) {
+				bodySize -= data.itemSize;
 			}
 
 			volatile u8* bodyPtr = &commOutBuf[COMM_OUT_BODY_OFFSET];
+			//ms
+			copy(AccelState.ms, bodyPtr, 4);
+			bodyPtr+=4;
 
 			int i = 0;
 			for (i = data.itemsCount - 1; i >= 0; i--) {
@@ -45,7 +49,7 @@ void KERNEL_Task() {
 				bodyPtr+=data.itemSize;
 			}
 
-			createOutPacketAndSend(0x11, bytesCount, NULL);
+			createOutPacketAndSend(0x11, bodySize, NULL);
 
 		}
 

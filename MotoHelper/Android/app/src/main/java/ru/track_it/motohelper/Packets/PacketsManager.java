@@ -25,11 +25,12 @@ public class PacketsManager implements Runnable, Closeable {
     private static final String LOG_TAG = "PacketManager";
     private static final Object[] constructorArgs=new Object[]{};
     private static final Map<Integer, Constructor> inPacketsConstructors=new HashMap<>();
-    public static final ConcurrentLinkedQueue<AbstractInPacket> receivedPackets = new ConcurrentLinkedQueue<>();
-    public static final ConcurrentLinkedQueue<AbstractOutPacket> packetsToSend = new ConcurrentLinkedQueue<>();
+    public final ConcurrentLinkedQueue<AbstractInPacket> receivedPackets = new ConcurrentLinkedQueue<>();
+    public final ConcurrentLinkedQueue<AbstractOutPacket> packetsToSend = new ConcurrentLinkedQueue<>();
 
     private InputStream inputStream;
     private OutputStream outputStream;
+    private PacketsListener packetsListener;
 
     private Thread thread = new Thread(this);
     private Boolean canRun=true;
@@ -40,11 +41,10 @@ public class PacketsManager implements Runnable, Closeable {
     int rxIndex=0;
     int rxPackSize = 0;
 
-    public PacketsManager(InputStream inputStream, OutputStream outputStream) {
+    public PacketsManager(InputStream inputStream, OutputStream outputStream, PacketsListener packetsListener) {
         this.inputStream=inputStream;
         this.outputStream=outputStream;
-
-
+        this.packetsListener = packetsListener;
         thread.start();
     }
 
@@ -62,7 +62,7 @@ public class PacketsManager implements Runnable, Closeable {
         public void run() {
             CommState = ReceiverStates.ReceivingTimeout;
         }
-    }
+    };
 
     @Override
     public void run() {
@@ -254,6 +254,7 @@ public class PacketsManager implements Runnable, Closeable {
                     pack.ApplyBody(rxBuf, BODY_OFFSET, bodySize);
                 }
                 receivedPackets.add(pack);
+                packetsListener.onNewPacketsCame();
             }
         }
         catch (Exception ex)

@@ -159,7 +159,8 @@ void configModuleAT() {
 				HC_Delay();
 			} else {
 				//no text
-				HCState.ATState = AT;
+				HCState.ATTimeout = TRUE;
+				HC_StopTimer();
 			}
 		} else {
 			HC_Suspend();
@@ -287,7 +288,7 @@ void HC_Configure() {
 
 		//reset bluetooth
 		HAL_GPIO_WritePin(BT_PORT, BT_DISABLE, GPIO_PIN_SET);
-		osDelay(300);
+		osDelay(700);
 
 		//reset speed
 		COMM_UartConfig(9600);
