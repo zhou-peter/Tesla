@@ -16,7 +16,6 @@ void KERNEL_Init() {
 void sendAccelData()
 {
 	//send as much as possable
-
 	//available data size
 	u16 bodySize = data.itemsCount * data.itemSize;
 	bodySize+=4;
@@ -25,13 +24,15 @@ void sendAccelData()
 	}
 
 	volatile u8* bodyPtr = &commOutBuf[COMM_OUT_BODY_OFFSET];
-	//ms
-	copy(AccelState.ms, bodyPtr, 4);
+	u32 ms = AccelState.ms;
+
+	copy(&ms, bodyPtr, 4);
 	bodyPtr+=4;
 
 	int i = 0;
 	for (i = data.itemsCount - 1; i >= 0; i--) {
 		volatile u8* accelDataPtr = getItem(&data, i);
+		//AccelData_t accelData = (AccelData_t)(*accelDataPtr);
 		copy(accelDataPtr, bodyPtr, data.itemSize);
 		bodyPtr+=data.itemSize;
 	}
@@ -55,9 +56,9 @@ void KERNEL_Task() {
 		if (CommState.CommDriverReady == TRUE && CommState.TxState == TxIdle
 				&& data.itemsCount > 0) {
 
-			//sendAccelData();
+			sendAccelData();
 
-			createOutPacketAndSend(0x01, 0, NULL);
+			//createOutPacketAndSend(0x01, 0, NULL);
 			osDelay(1000);
 		}
 

@@ -1,5 +1,7 @@
 package ru.track_it.motohelper.Packets;
 
+import java.nio.ByteBuffer;
+
 import static ru.track_it.motohelper.Packets.PacketsManager.PACKET_START;
 
 public class Utils {
@@ -36,4 +38,20 @@ public class Utils {
         return txBuf;
     }
 
+
+    public static final short getInt16(byte[] buf, int offset){
+        ByteBuffer byteBuffer = ByteBuffer.wrap(buf, offset, 2);
+        return byteBuffer.getShort();
+    }
+
+
+    public static final int getInt32(byte[] buf, int offset){
+        ByteBuffer byteBuffer = ByteBuffer.wrap(buf, offset, 4);
+        return byteBuffer.getInt();
+    }
+
+    public static final long getUInt32(byte[] buf, int offset){
+        ByteBuffer byteBuffer = ByteBuffer.wrap(buf, offset, 4);
+        return byteBuffer.getLong();
+    }
 }

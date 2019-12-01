@@ -94,7 +94,14 @@ public class PacketsManager implements Runnable, Closeable {
             Log.e("packet run problem", ex.toString());
             ex.printStackTrace();
             canRun = false;
+        }finally {
+            try {
+                close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
     }
 
     private void sendOutPackets() throws IOException {

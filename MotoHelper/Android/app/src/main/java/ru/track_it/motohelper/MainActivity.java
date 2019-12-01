@@ -58,6 +58,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onNewPacketsCame() {
             AbstractInPacket packet = packetsManager.receivedPackets.poll();
+            switch (packet.Command){
+                case 0x01:
+                    break;
+                default:
+                    packet.DefaultProcess();
+            }
         }
     };
 }
