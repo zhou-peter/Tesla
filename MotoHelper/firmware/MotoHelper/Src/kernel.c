@@ -13,6 +13,33 @@ void KERNEL_Init() {
 			sizeof(AccelData_t));
 }
 
+void sendAccelData()
+{
+	//send as much as possable
+
+	//available data size
+	u16 bodySize = data.itemsCount * data.itemSize;
+	bodySize+=4;
+	while (bodySize > COMM_OUT_MAX_BODY_SIZE) {
+		bodySize -= data.itemSize;
+	}
+
+	volatile u8* bodyPtr = &commOutBuf[COMM_OUT_BODY_OFFSET];
+	//ms
+	copy(AccelState.ms, bodyPtr, 4);
+	bodyPtr+=4;
+
+	int i = 0;
+	for (i = data.itemsCount - 1; i >= 0; i--) {
+		volatile u8* accelDataPtr = getItem(&data, i);
+		copy(accelDataPtr, bodyPtr, data.itemSize);
+		bodyPtr+=data.itemSize;
+	}
+
+	createOutPacketAndSend(0x11, bodySize, NULL);
+}
+
+
 void KERNEL_Task() {
 
 	while (TRUE) {
@@ -28,29 +55,10 @@ void KERNEL_Task() {
 		if (CommState.CommDriverReady == TRUE && CommState.TxState == TxIdle
 				&& data.itemsCount > 0) {
 
-			//send as much as possable
+			//sendAccelData();
 
-			//available data size
-			u16 bodySize = data.itemsCount * data.itemSize;
-			bodySize+=4;
-			while (bodySize > COMM_OUT_MAX_BODY_SIZE) {
-				bodySize -= data.itemSize;
-			}
-
-			volatile u8* bodyPtr = &commOutBuf[COMM_OUT_BODY_OFFSET];
-			//ms
-			copy(AccelState.ms, bodyPtr, 4);
-			bodyPtr+=4;
-
-			int i = 0;
-			for (i = data.itemsCount - 1; i >= 0; i--) {
-				volatile u8* accelDataPtr = getItem(&data, i);
-				copy(accelDataPtr, bodyPtr, data.itemSize);
-				bodyPtr+=data.itemSize;
-			}
-
-			createOutPacketAndSend(0x11, bodySize, NULL);
-
+			createOutPacketAndSend(0x01, 0, NULL);
+			osDelay(1000);
 		}
 
 		osDelay(1);
