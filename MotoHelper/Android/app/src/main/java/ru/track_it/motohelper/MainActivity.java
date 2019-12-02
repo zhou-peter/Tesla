@@ -14,11 +14,12 @@ import android.view.View;
 import ru.track_it.motohelper.Packets.AbstractInPacket;
 import ru.track_it.motohelper.Packets.PacketsListener;
 import ru.track_it.motohelper.Packets.PacketsManager;
+import ru.track_it.motohelper.Packets.Utils;
 import ru.track_it.motohelper.ui.main.SectionsPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
-    CommunicationManager communicationManager=CommunicationManager.getInstance();
+    CommunicationManager communicationManager = CommunicationManager.getInstance();
     PacketsManager packetsManager;
 
     @Override
@@ -45,20 +46,30 @@ public class MainActivity extends AppCompatActivity {
         Executors.BackGroundThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                if (!communicationManager.isReady()){
+                if (!communicationManager.isReady()) {
                     communicationManager.Connect();
-                    packetsManager=new PacketsManager(communicationManager.getInputStream(),
-                    communicationManager.getOutputStream(), pl);
+
+                }
+                if (communicationManager.isReady()) {
+                    packetsManager = new PacketsManager(communicationManager.getInputStream(),
+                            communicationManager.getOutputStream(), pl);
                 }
             }
         });
+
     }
 
-    PacketsListener pl=new PacketsListener() {
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        communicationManager.closeSocket();
+    }
+
+    PacketsListener pl = new PacketsListener() {
         @Override
         public void onNewPacketsCame() {
             AbstractInPacket packet = packetsManager.receivedPackets.poll();
-            switch (packet.Command){
+            switch (packet.Command) {
                 case 0x01:
                     break;
                 default:

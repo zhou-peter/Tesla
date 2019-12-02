@@ -68,12 +68,18 @@ public class PacketsManager implements Runnable, Closeable {
     TimerTask timerTask = new TimerTask() {
         @Override
         public void run() {
+            if (!canRun){
+                timer.purge();
+                return;;
+            }
+
             timerCounter += TIMER_PERIOD;
 
             if (timerCounter>timerKeepAlive){
+
                 if (packetsToSend.size()==0){
                     packetsToSend.add(new PacketOut_01());
-                    sendOutPackets();
+                        sendOutPackets();
                 }
                 timerKeepAlive=timerCounter+KEEP_ALIVE_PERIOD;
             }
@@ -112,16 +118,18 @@ public class PacketsManager implements Runnable, Closeable {
     }
 
     private void sendOutPackets()  {
-        if (packetsToSend.size() > 0) {
+        if (packetsToSend.size() > 0 && canRun) {
+            final OutputStream stream = outputStream;
             Executors.BackGroundThreadPool.execute(new Runnable() {
                 @Override
                 public void run() {
-                    while (packetsToSend.size() > 0) {
+                    while (packetsToSend.size() > 0 && stream!=null) {
                         AbstractOutPacket pack = packetsToSend.poll();
                         try {
-                            outputStream.write(pack.ToArray());
-                            outputStream.flush();
-                        } catch (IOException e) {
+                            stream.write(pack.ToArray());
+                            stream.flush();
+                            Thread.sleep(100);
+                        } catch (Exception e) {
                             e.printStackTrace();
                             break;
                         }

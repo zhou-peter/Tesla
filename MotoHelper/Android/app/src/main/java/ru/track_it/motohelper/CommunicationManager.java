@@ -48,7 +48,7 @@ final class CommunicationManager {
         return socketConnected;
     }
 
-    private void closeSocket() {
+    public void closeSocket() {
         try {
             socketConnected = false;
             if (btInputStream != null) btInputStream.close();
