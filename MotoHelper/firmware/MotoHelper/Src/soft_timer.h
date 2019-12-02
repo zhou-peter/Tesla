@@ -17,4 +17,7 @@ extern u8 addTimer(u32 period, bool unstop, void (*funcPtr));
 //удаляет таймер.
 extern void removeTimer(u8 timer_number);
 
+//рестарт таймера с текущего момента
+extern void restartTimer(u8 timer_number);
+
 extern void hardwareTimerInvoke();

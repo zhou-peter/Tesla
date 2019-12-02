@@ -53,8 +53,8 @@ void KERNEL_Task() {
 
 		//every time send something
 
-		if (CommState.CommDriverReady == TRUE && CommState.TxState == TxIdle
-				&& data.itemsCount > 0) {
+		if (CommState.CommDriverReady == TRUE && CommState.AtLeastOnePacketReceived==TRUE
+				&& CommState.TxState == TxIdle && data.itemsCount > 0) {
 
 			sendAccelData();
 

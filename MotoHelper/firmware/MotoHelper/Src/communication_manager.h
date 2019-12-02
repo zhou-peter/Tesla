@@ -33,15 +33,25 @@ typedef enum
 	TxSending
 }TxStates;
 
+/*
+typedef enum
+{
+	AwaitingConnection,
+	Connected,
+	NoKeepAlive
+}ProtocolStates_t;
+*/
 //структура должна быть выравнена по 32 бита по модулю
 typedef struct
 {
 	RxStates RxState:4;
-	TxStates TxState:3;
+	TxStates TxState:2;
+	bool	AtLeastOnePacketReceived:1;
 	bool	CommDriverReady:1;
 	u16 rxPacketSize:12;
 	u16 rxIndex:12;
-	u8 softTimer:8;
+	u8 receivingTimeoutTimer:8;//receiving timeout
+	u8 keepAliveTimer:8;//no keep-alive timeout
 } CommState_t;
 
 
@@ -54,6 +64,8 @@ extern volatile u8 commOutBuf[COMM_OUT_BUF_SIZE];
 
 extern void COMM_Init(TaskHandle_t taskHandle);
 extern void COMM_Task();
+extern void COMM_ResumeTaskFromISR();
+
 extern void createOutPacketAndSend(u8 command, u16 bodySize, u8* bodyData);
 extern void notifyPacketProcessed();
 #endif /* COMMUNICATION_H_ */

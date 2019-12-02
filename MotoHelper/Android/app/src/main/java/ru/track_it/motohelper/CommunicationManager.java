@@ -15,7 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 final class CommunicationManager {
-    private final static UUID SERIAL_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    //private final static UUID SERIAL_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private final static String LOG_TAG = "CommunicationManager";
     private BluetoothAdapter btAdapter = null;
     private BluetoothSocket socket = null;
@@ -103,8 +103,7 @@ final class CommunicationManager {
         btAdapter.cancelDiscovery();
 
         try {
-            socket = btDevice.createRfcommSocketToServiceRecord(SERIAL_UUID);
-            socketConnected = true;
+            socket = btDevice.createRfcommSocketToServiceRecord(UUID.randomUUID());
         } catch (Exception e) {
             LogDebug("Error creating socket");
         }

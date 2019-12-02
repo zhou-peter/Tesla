@@ -23,16 +23,16 @@ const u8 textATSpeed[] = { "AT+BAUD6" };//115200
 const u8 textATSpeedOK[] = { "+BAUD=6" };
 const u8 textVersion[] = { "AT+VERSION" };
 
-extern void HC_Configure();
 
-void COMM_Configure_Driver(UART_HandleTypeDef* uart_,
+
+void COMM_Driver_Init(UART_HandleTypeDef* uart_,
 		DMA_HandleTypeDef* hdma_usart_, TaskHandle_t taskHandle) {
 
 	commHandle = taskHandle;
 	uart = uart_;
 	dma_usart_tx = hdma_usart_;
 
-	HC_Configure();
+	COMM_Driver_Configure();
 
 }
 
@@ -53,11 +53,7 @@ void COMM_SendData(u16 size) {
 
 }
 
-void COMM_ResumeTaskFromISR() {
-	BaseType_t false = pdFALSE;
-	vTaskNotifyGiveFromISR(commHandle, &false);
-	taskYIELD();
-}
+
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 	CommState.TxState = TxIdle;
@@ -280,7 +276,7 @@ void configModuleAT() {
 }
 
 //setup pin, speed, etc
-void HC_Configure() {
+void COMM_Driver_Configure() {
 
 	while (CommState.CommDriverReady == FALSE) {
 

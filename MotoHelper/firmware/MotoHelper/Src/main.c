@@ -513,7 +513,7 @@ void StartTaskAccel(void const * argument)
 void StartTaskBt(void const * argument)
 {
   /* USER CODE BEGIN StartTaskBt */
-	COMM_Configure_Driver(&huart2, &hdma_usart2_tx, btTaskHandle);
+	COMM_Driver_Init(&huart2, &hdma_usart2_tx, btTaskHandle);
 	COMM_Init(btTaskHandle);
 	COMM_Task();
   /* Infinite loop */

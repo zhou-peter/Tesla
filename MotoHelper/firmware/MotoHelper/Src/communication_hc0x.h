@@ -37,9 +37,10 @@ typedef struct
 }HCModule_t;
 
 
-extern void COMM_Configure_Driver(UART_HandleTypeDef* uart_,
+extern void COMM_Driver_Init(UART_HandleTypeDef* uart_,
 		DMA_HandleTypeDef* hdma_usart_,
 		TaskHandle_t taskHandle);
+extern void COMM_Driver_Configure();
 extern void COMM_RxCallback();
 
 

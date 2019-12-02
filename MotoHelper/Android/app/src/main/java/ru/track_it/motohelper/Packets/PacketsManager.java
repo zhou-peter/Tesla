@@ -20,6 +20,7 @@ public class PacketsManager implements Runnable, Closeable {
     public static final byte PACKET_START = 0x7C;
     private static final int RECEIVE_TIMEOUT = 500;
     private static final int TIMER_PERIOD = 10;
+    private static final int KEEP_ALIVE_PERIOD = 500;
     private static final int BUF_SIZE_RX = 1024;
     private static final int BODY_OFFSET = 4;
     private static final int EMPTY_SIZE = 6;
@@ -39,6 +40,7 @@ public class PacketsManager implements Runnable, Closeable {
     private Timer timer = new Timer();
     private boolean timerEnabled = false;
     private long timerTarget = 0;
+    private long timerKeepAlive = 0;
     private long timerCounter = 0;
 
     ReceiverStates CommState = ReceiverStates.WaitingStart;
@@ -67,6 +69,15 @@ public class PacketsManager implements Runnable, Closeable {
         @Override
         public void run() {
             timerCounter += TIMER_PERIOD;
+
+            if (timerCounter>timerKeepAlive){
+                if (packetsToSend.size()==0){
+                    packetsToSend.add(new PacketOut_01());
+                    sendOutPackets();
+                }
+                timerKeepAlive=timerCounter+KEEP_ALIVE_PERIOD;
+            }
+
             if (timerEnabled && timerTarget >= timerTarget) {
                 CommState = ReceiverStates.ReceivingTimeout;
                 timerEnabled = false;
@@ -78,10 +89,6 @@ public class PacketsManager implements Runnable, Closeable {
     public void run() {
         try {
             while (canRun) {
-                if (packetsToSend.size() > 0) {
-                    sendOutPackets();
-                }
-
                 //blocking method
                 int availableLength = BUF_SIZE_RX - rxIndex;
                 int rxBytesNow = inputStream.read(rxBuf, rxIndex, availableLength);
@@ -104,11 +111,23 @@ public class PacketsManager implements Runnable, Closeable {
 
     }
 
-    private void sendOutPackets() throws IOException {
-        while (packetsToSend.size() > 0) {
-            AbstractOutPacket pack = packetsToSend.poll();
-            outputStream.write(pack.ToArray());
-            outputStream.flush();
+    private void sendOutPackets()  {
+        if (packetsToSend.size() > 0) {
+            Executors.BackGroundThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    while (packetsToSend.size() > 0) {
+                        AbstractOutPacket pack = packetsToSend.poll();
+                        try {
+                            outputStream.write(pack.ToArray());
+                            outputStream.flush();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            break;
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -252,7 +271,8 @@ public class PacketsManager implements Runnable, Closeable {
                 });
             }
         } catch (Exception ex) {
-            Log.e(LOG_TAG, "Error instantiate packet " + packetNumber);
+            Log.e(LOG_TAG, "Error instantiate packet " + String.format("%02X", packetNumber));
+            ex.printStackTrace();
         }
     }
 

@@ -19,13 +19,19 @@ volatile u8 commInBuf[COMM_IN_BUF_SIZE];
 volatile u8 commOutBuf[COMM_OUT_BUF_SIZE];
 
 volatile CommState_t CommState;
-volatile u16 rxIndex;
+
 TaskHandle_t commHandle;
 
 
 void COMM_Init(TaskHandle_t taskHandle)
 {
 	commHandle = taskHandle;
+}
+
+void COMM_ResumeTaskFromISR() {
+	BaseType_t false = pdFALSE;
+	vTaskNotifyGiveFromISR(commHandle, &false);
+	taskYIELD();
 }
 
 void COMM_PeriodElapsedCallback()
@@ -44,22 +50,29 @@ void COMM_PeriodElapsedCallback()
 }
 
 
-void startTimer(){
-	CommState.softTimer = addTimer(500, FALSE,
+void startTimeoutTimer(){
+	CommState.receivingTimeoutTimer = addTimer(500, FALSE,
 			&COMM_PeriodElapsedCallback);
 }
 
 
-void stopTimer(){
-	if(CommState.softTimer>0){
-		removeTimer(CommState.softTimer);
-		CommState.softTimer = 0;
+void stopTimeoutTimer(){
+	if(CommState.receivingTimeoutTimer>0){
+		removeTimer(CommState.receivingTimeoutTimer);
+		CommState.receivingTimeoutTimer = 0;
 	}
 }
 
-void restartTimer(){
-	stopTimer();
-	startTimer();
+void stopKeppAliveTimer(){
+	if(CommState.keepAliveTimer>0){
+		removeTimer(CommState.keepAliveTimer);
+		CommState.keepAliveTimer = 0;
+	}
+}
+
+void restartTimeoutTimer(){
+	stopTimeoutTimer();
+	startTimeoutTimer();
 }
 
 void commSleep(){
@@ -77,10 +90,11 @@ void notifyPacketProcessed()
 
 
 
+
 void create_rx_err(u8 err){
 	CommState.rxIndex=0;
 	CommState.RxState=WaitingStart;
-	stopTimer();
+	stopTimeoutTimer();
 	if (CommState.TxState==TxIdle)
 	{
 		//createOutPacketAndSend(0x03,1,&err);
@@ -102,13 +116,26 @@ void COMM_Task(){
 
 	while(1){
 
+		//no keep alive packet
+		if (CommState.CommDriverReady==FALSE){
+			stopTimeoutTimer();
+			stopKeppAliveTimer();
+			CommState.rxIndex=0;
+			CommState.RxState=WaitingStart;
+			CommState.TxState=TxIdle;
+			CommState.AtLeastOnePacketReceived=FALSE;
+			COMM_Driver_Configure();
+			continue;
+		}
+
+
 		i=0;
 		if (CommState.RxState==WaitingStart){
 			//ждем новый пакет
 			//статус может изменить таймер таймаута
 			if (CommState.rxIndex==0){
 				//получили первый байт, ждем еще 7-8
-				stopTimer();
+				stopTimeoutTimer();
 				commSleep();
 				continue;
 			}
@@ -120,7 +147,7 @@ void COMM_Task(){
 				}else{
 					CommState.RxState=ReceivingSize;
 					CommState.rxPacketSize=0;
-					restartTimer();
+					restartTimeoutTimer();
 				}
 			}
 		}else if (CommState.RxState==ReceivingSize){
@@ -143,17 +170,17 @@ void COMM_Task(){
 		}else if (CommState.RxState==ReceivingPacket){
 			if (CommState.rxIndex>=CommState.rxPacketSize){
 				//Пакет пришел. останавливаем таймер и проверяем его
-				stopTimer();
+				stopTimeoutTimer();
 				CommState.RxState=RxChecking;
 			}else{
 				commSleep();
 			}
 		}else if (CommState.RxState==ReceivingTimeout){
-			stopTimer();
+			stopTimeoutTimer();
 			create_rx_err(0x06);
 		}else if(CommState.RxState==RxChecking){
 			//останавливаем таймер таймаута так как пришел весь пакет
-			stopTimer();
+			stopTimeoutTimer();
 			//check CRC
 			u8 crc=0;
 			//265-2=263
@@ -165,7 +192,7 @@ void COMM_Task(){
 			if (crc==commInBuf[CommState.rxPacketSize-2]&&
 					xorCRC==commInBuf[CommState.rxPacketSize-1]){
 				CommState.RxState=RxProcessing;
-				stopTimer();
+				stopTimeoutTimer();
 				processPacket();
 
 			}else{//crc error
@@ -173,20 +200,14 @@ void COMM_Task(){
 			}
 		}else if(CommState.RxState==RxProcessing){
 			commSleep();
-		}else if(CommState.RxState==RxProcessed){
+		}
+		if(CommState.RxState==RxProcessed){
 			CommState.rxIndex=0;
 			CommState.RxState=WaitingStart;
 		}
 	}
 }
 
-
-
-void processPacket(){
-	CommState.RxState=RxProcessing;
-	commSleep();
-
-}
 
 
 void createOutPacketAndSend(u8 command, u16 bodySize, u8* bodyData){
@@ -219,5 +240,32 @@ void createOutPacketAndSend(u8 command, u16 bodySize, u8* bodyData){
 
 	COMM_SendData(txBufSize);
 }
+
+
+void COMM_KeepAlivePeriodElapsedCallback(){
+	CommState.CommDriverReady = FALSE;
+	COMM_ResumeTaskFromISR();
+}
+
+
+void resetKeepAliveWatchDog(){
+	if(CommState.keepAliveTimer>0){
+		restartTimer(CommState.keepAliveTimer);
+	}else{
+		CommState.keepAliveTimer = addTimer(2000, FALSE,
+					&COMM_KeepAlivePeriodElapsedCallback);
+	}
+}
+
+void processPacket(){
+	CommState.AtLeastOnePacketReceived=TRUE;
+	resetKeepAliveWatchDog();
+
+	if (commInBuf[3]==0x01){
+		CommState.RxState=RxProcessed;
+	}
+
+}
+
 
 

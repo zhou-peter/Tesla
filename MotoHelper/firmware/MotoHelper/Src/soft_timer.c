@@ -30,6 +30,14 @@ void removeTimer(u8 timer_number) {
 	timer->used = FALSE;
 }
 
+
+void restartTimer(u8 timer_number)
+{
+	volatile struct soft_timer_t *timer = &soft_timers[timer_number-1];
+	timer->next = ts + timer->period;
+	timer->used = TRUE;
+}
+
 void hardwareTimerInvoke() {
 	ts+=SOFT_TIMER_MS_PER_TICK;
 
