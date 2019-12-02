@@ -8,6 +8,7 @@ TaskHandle_t commHandle;
 //333ms Timer
 #define AT_TIMEOUT 1
 #define BT_DISABLE GPIO_PIN_4
+#define BT_TX GPIO_PIN_2
 #define BT_PORT GPIOA
 
 volatile u8 rxByte;
@@ -19,14 +20,12 @@ const u8 textATName[] = { "AT+NAMEMotoHelpeR" }; //
 const u8 textATNameOK[] = { "+NAME=MotoHelpeR" };
 const u8 textATPin[] = { "AT+PIN2020" };
 const u8 textATPinOK[] = { "+PIN=2020" };
-const u8 textATSpeed[] = { "AT+BAUD6" };//115200
+const u8 textATSpeed[] = { "AT+BAUD6" }; //115200
 const u8 textATSpeedOK[] = { "+BAUD=6" };
 const u8 textVersion[] = { "AT+VERSION" };
 
-
-
-void COMM_Driver_Init(UART_HandleTypeDef* uart_,
-		DMA_HandleTypeDef* hdma_usart_, TaskHandle_t taskHandle) {
+void COMM_Driver_Init(UART_HandleTypeDef* uart_, DMA_HandleTypeDef* hdma_usart_,
+		TaskHandle_t taskHandle) {
 
 	commHandle = taskHandle;
 	uart = uart_;
@@ -52,8 +51,6 @@ void COMM_SendData(u16 size) {
 	}
 
 }
-
-
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 	CommState.TxState = TxIdle;
@@ -121,7 +118,7 @@ bool configSendCommand(const u8* text, u8 length) {
 			}
 			commOutBuf[i] = 0x0D;
 			commOutBuf[i + 1] = 0x0A;
-			COMM_SendData(length+2);
+			COMM_SendData(length + 2);
 		}
 
 		HC_StartTimer();
@@ -284,6 +281,15 @@ void COMM_Driver_Configure() {
 
 		//reset bluetooth
 		HAL_GPIO_WritePin(BT_PORT, BT_DISABLE, GPIO_PIN_SET);
+		HAL_UART_DeInit(uart);
+		//pull down uart tx
+		GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+		GPIO_InitStruct.Pin = GPIO_PIN_2;
+		GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+		GPIO_InitStruct.Pull = GPIO_NOPULL;
+		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+		HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+		HAL_GPIO_WritePin(BT_PORT, BT_TX, GPIO_PIN_RESET);
 		osDelay(700);
 
 		//reset speed

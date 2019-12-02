@@ -70,7 +70,7 @@ public class PacketsManager implements Runnable, Closeable {
         public void run() {
             if (!canRun){
                 timer.purge();
-                return;;
+                return;
             }
 
             timerCounter += TIMER_PERIOD;
