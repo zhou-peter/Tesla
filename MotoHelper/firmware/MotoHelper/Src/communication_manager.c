@@ -8,8 +8,7 @@
 #include "soft_timer.h"
 
 #define PACKET_START 0x7C
-//100ms Timer
-#define RECEIVE_TIMEOUT 1000/100
+
 
 
 
@@ -51,7 +50,7 @@ void COMM_PeriodElapsedCallback()
 
 
 void startTimeoutTimer(){
-	CommState.receivingTimeoutTimer = addTimer(500, FALSE,
+	CommState.receivingTimeoutTimer = addTimer(100, FALSE,
 			&COMM_PeriodElapsedCallback);
 }
 
@@ -252,7 +251,7 @@ void resetKeepAliveWatchDog(){
 	if(CommState.keepAliveTimer>0){
 		restartTimer(CommState.keepAliveTimer);
 	}else{
-		CommState.keepAliveTimer = addTimer(2000, FALSE,
+		CommState.keepAliveTimer = addTimer(4000, FALSE,
 					&COMM_KeepAlivePeriodElapsedCallback);
 	}
 }

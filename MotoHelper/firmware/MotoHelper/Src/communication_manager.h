@@ -33,14 +33,7 @@ typedef enum
 	TxSending
 }TxStates;
 
-/*
-typedef enum
-{
-	AwaitingConnection,
-	Connected,
-	NoKeepAlive
-}ProtocolStates_t;
-*/
+
 //структура должна быть выравнена по 32 бита по модулю
 typedef struct
 {

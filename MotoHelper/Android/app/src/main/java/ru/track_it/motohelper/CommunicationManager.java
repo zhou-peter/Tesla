@@ -14,6 +14,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ru.track_it.motohelper.Packets.PacketOut_01;
+
 final class CommunicationManager {
     //private final static UUID SERIAL_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private final static String LOG_TAG = "CommunicationManager";
@@ -130,7 +132,7 @@ final class CommunicationManager {
             if (socketConnected) {
                 btInputStream = socket.getInputStream();
                 btOutputStream = socket.getOutputStream();
-                btOutputStream.write(0);
+                btOutputStream.write( new PacketOut_01().ToArray());
             }
         } catch (Exception ex) {
             socketConnected = false;
