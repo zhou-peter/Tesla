@@ -251,7 +251,7 @@ void resetKeepAliveWatchDog(){
 	if(CommState.keepAliveTimer>0){
 		restartTimer(CommState.keepAliveTimer);
 	}else{
-		CommState.keepAliveTimer = addTimer(4000, FALSE,
+		CommState.keepAliveTimer = addTimer(8000, FALSE,
 					&COMM_KeepAlivePeriodElapsedCallback);
 	}
 }

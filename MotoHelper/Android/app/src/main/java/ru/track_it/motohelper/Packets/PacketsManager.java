@@ -35,6 +35,7 @@ public class PacketsManager implements Runnable, Closeable {
     private PacketsListener packetsListener;
 
     private Thread thread = new Thread(this);
+    private Thread threadSender;
     private Boolean canRun = true;
 
     private Timer timer = new Timer();
@@ -52,6 +53,9 @@ public class PacketsManager implements Runnable, Closeable {
         this.inputStream = inputStream;
         this.outputStream = outputStream;
         this.packetsListener = packetsListener;
+
+        threadSender = new Thread(packetSender);
+        threadSender.start();
         thread.start();
         timer.scheduleAtFixedRate(timerTask, 0, TIMER_PERIOD);
     }
@@ -68,25 +72,49 @@ public class PacketsManager implements Runnable, Closeable {
     TimerTask timerTask = new TimerTask() {
         @Override
         public void run() {
-            if (!canRun){
+            if (!canRun) {
                 timer.purge();
                 return;
             }
 
             timerCounter += TIMER_PERIOD;
 
-            if (timerCounter>timerKeepAlive){
-
-                if (packetsToSend.size()==0){
+            if (timerCounter > timerKeepAlive) {
+                if (packetsToSend.size() == 0) {
                     packetsToSend.add(new PacketOut_01());
-                        sendOutPackets();
                 }
-                timerKeepAlive=timerCounter+KEEP_ALIVE_PERIOD;
+                timerKeepAlive = timerCounter + KEEP_ALIVE_PERIOD;
             }
 
             if (timerEnabled && timerTarget >= timerTarget) {
                 CommState = ReceiverStates.ReceivingTimeout;
                 timerEnabled = false;
+            }
+        }
+    };
+
+    private Runnable packetSender = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                while (canRun) {
+                    if (packetsToSend.size() > 0) {
+                        AbstractOutPacket pack = packetsToSend.poll();
+                        outputStream.write(pack.ToArray());
+                        outputStream.flush();
+                    }
+                    Thread.sleep(10);
+                }
+            } catch (Exception ex) {
+                Log.e("packet run problem", ex.toString());
+                ex.printStackTrace();
+                canRun = false;
+            } finally {
+                try {
+                    close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     };
@@ -107,7 +135,7 @@ public class PacketsManager implements Runnable, Closeable {
             Log.e("packet run problem", ex.toString());
             ex.printStackTrace();
             canRun = false;
-        }finally {
+        } finally {
             try {
                 close();
             } catch (IOException e) {
@@ -117,27 +145,6 @@ public class PacketsManager implements Runnable, Closeable {
 
     }
 
-    private void sendOutPackets()  {
-        if (packetsToSend.size() > 0 && canRun) {
-            final OutputStream stream = outputStream;
-            Executors.BackGroundThreadPool.execute(new Runnable() {
-                @Override
-                public void run() {
-                    while (packetsToSend.size() > 0 && stream!=null) {
-                        AbstractOutPacket pack = packetsToSend.poll();
-                        try {
-                            stream.write(pack.ToArray());
-                            stream.flush();
-                            Thread.sleep(100);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            break;
-                        }
-                    }
-                }
-            });
-        }
-    }
 
     @Override
     public void close() throws IOException {
