@@ -82,6 +82,7 @@ public class PacketsManager implements Runnable, Closeable {
             if (timerCounter > timerKeepAlive) {
                 if (packetsToSend.size() == 0) {
                     packetsToSend.add(new PacketOut_01());
+                    Log.d(LOG_TAG, "Keep alive added");
                 }
                 timerKeepAlive = timerCounter + KEEP_ALIVE_PERIOD;
             }
@@ -101,7 +102,9 @@ public class PacketsManager implements Runnable, Closeable {
                     if (packetsToSend.size() > 0) {
                         AbstractOutPacket pack = packetsToSend.poll();
                         outputStream.write(pack.ToArray());
+                        Log.d(LOG_TAG, "Packet send");
                         outputStream.flush();
+                        Log.d(LOG_TAG, "Output stream flush");
                     }
                     Thread.sleep(10);
                 }

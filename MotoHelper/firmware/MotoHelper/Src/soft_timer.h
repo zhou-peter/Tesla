@@ -1,6 +1,8 @@
 #include "common.h"
 
 #define SOFT_TIMER_MS_PER_TICK 5
+#define SOFT_TIMERS 7
+
 struct soft_timer_t
 {
 	u32 period;

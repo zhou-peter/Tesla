@@ -1,7 +1,7 @@
 #include "common.h"
 #include "soft_timer.h"
 
-#define SOFT_TIMERS 5
+
 
 volatile struct soft_timer_t soft_timers[SOFT_TIMERS];
 
