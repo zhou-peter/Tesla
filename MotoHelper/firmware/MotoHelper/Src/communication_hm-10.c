@@ -1,4 +1,4 @@
-#include "communication_hc0x.h"
+#include "communication_hm-10.h"
 #include "communication_manager.h"
 
 UART_HandleTypeDef* uart;
