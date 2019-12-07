@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Protocol ver="1.0">
+  <Down>
+    <Cmd No="1" Type="DSDSoft.Protocol.Test.MainParser.Down.CAtCmd" Name="AT" />
+    <Cmd No="2" Type="DSDSoft.Protocol.Test.MainParser.Down.CSms" Name="SMS" />
+    <Cmd No="3" Type="DSDSoft.Protocol.Test.MainParser.Down.CTcp" Name="TCP" />
+    <Cmd No="4" Type="DSDSoft.Protocol.Test.MainParser.Down.CPhone" Name="Phone" />
+
+    <Cmd No="5" Type="DSDSoft.Protocol.Test.MainParser.Down.CInit" Name="INIT" />
+
+    <Cmd No="6" Type="DSDSoft.Protocol.Test.MainParser.Down.CPara" Name="Para" />
+
+    <Cmd No="7" Type="DSDSoft.Protocol.Test.MainParser.Down.CGps" Name="GPS" />
+
+  </Down>
+  <Up>
+    <Cmd Flag="V1" Type="DSDSoft.Protocol.TQSMSParser.D2P.CV1" Name="" />
+    <Cmd Flag="V2" Type="DSDSoft.Protocol.TQSMSParser.D2P.CV2" Name="" />
+  </Up>
+
+</Protocol>

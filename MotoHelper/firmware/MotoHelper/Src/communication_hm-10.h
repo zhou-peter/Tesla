@@ -14,6 +14,7 @@ typedef enum
 {
 	AT = 0,
 	ATAnswerWait,
+	ATVersion,
 	ATNameGet,
 	ATNameGetAnswerWait,
 	ATNameSet,

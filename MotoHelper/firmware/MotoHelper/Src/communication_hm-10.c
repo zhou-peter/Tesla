@@ -16,13 +16,16 @@ volatile HCModule_t HCState;
 
 const u8 textAT[] = { "AT" };
 const u8 textATOK[] = { "OK" };
-const u8 textATName[] = { "AT+NAMEMotoHelpeR" }; //
-const u8 textATNameOK[] = { "+NAME=MotoHelpeR" };
-const u8 textATPin[] = { "AT+PIN2020" };
-const u8 textATPinOK[] = { "+PIN=2020" };
-const u8 textATSpeed[] = { "AT+BAUD6" }; //115200
-const u8 textATSpeedOK[] = { "+BAUD=6" };
-const u8 textVersion[] = { "AT+VERSION" };
+const u8 textATNameGET[] = { "AT+NAME?" };
+const u8 textATNameSET[] = { "AT+NAMEMotoHelpeR" };
+const u8 textATNameOK[] = { "OK+NAMEMotoHelpeR" };
+const u8 textATPinGET[] = { "AT+PASS?" };
+const u8 textATPinSET[] = { "AT+PIN2020" };
+const u8 textATPinOK[] = { "OK+PIN:2020" };
+const u8 textATSpeed[] = { "AT+BAUD4" }; //115200
+const u8 textATSpeedOK[] = { "OK+Set:4" };
+const u8 textVersion[] = { "AT+VERR?" };
+
 
 void COMM_Driver_Init(UART_HandleTypeDef* uart_, DMA_HandleTypeDef* hdma_usart_,
 		TaskHandle_t taskHandle) {
@@ -86,7 +89,7 @@ void HC_StopTimer() {
 
 //delay between commands
 void HC_Delay() {
-	osDelay(300);
+	osDelay(500);
 }
 
 //as a rule not enough amount of bytes received
@@ -116,9 +119,9 @@ bool configSendCommand(const u8* text, u8 length) {
 			for (i = 0; i < length; i++) {
 				commOutBuf[i] = *(text + i);
 			}
-			commOutBuf[i] = 0x0D;
-			commOutBuf[i + 1] = 0x0A;
-			COMM_SendData(length + 2);
+			//commOutBuf[i] = 0x0D;
+			//commOutBuf[i + 1] = 0x0A;
+			COMM_SendData(length);// + 2);
 		}
 
 		HC_StartTimer();
@@ -144,9 +147,15 @@ void configModuleAT() {
 			HCState.ATState = ATAnswerWait;
 		}
 	} else if (HCState.ATState == ATAnswerWait && CommState.TxState == TxIdle) { //Tx Idle means everything sent
-		if (CommState.rxIndex > 2) {
+		if (CommState.rxIndex >= 2) {
 			if (hasText(&textATOK[0], 2) == TRUE) {
 				HC_StopTimer();
+
+				HCState.ATState = ATVersion;
+				configSendCommand(&textVersion[0], sizeof(textVersion));
+				HC_StopTimer();
+				HC_Delay();
+
 				HCState.ATState = ATNameGet;
 				//между командами паузу делать надо
 				HC_Delay();
@@ -162,7 +171,7 @@ void configModuleAT() {
 
 	//Name check
 	if (HCState.ATState == ATNameGet) {
-		if (configSendCommand(&textATName[0], 7) == TRUE) {
+		if (configSendCommand(&textATNameGET[0], sizeof(textATNameGET)) == TRUE) {
 			resetRxBuf();
 			HCState.ATState = ATNameGetAnswerWait;
 		}
@@ -184,7 +193,7 @@ void configModuleAT() {
 
 	//Name set
 	if (HCState.ATState == ATNameSet) {
-		if (configSendCommand(&textATName[0], sizeof(textATName)) == TRUE) {
+		if (configSendCommand(&textATNameSET[0], sizeof(textATNameSET)) == TRUE) {
 			resetRxBuf();
 			HCState.ATState = ATNameSetAnswerWait;
 		}
@@ -205,7 +214,7 @@ void configModuleAT() {
 	}
 
 	if (HCState.ATState == ATPinGet) {
-		if (configSendCommand(&textATPin[0], 6) == TRUE) {
+		if (configSendCommand(&textATPinGET[0], sizeof(textATPinGET)) == TRUE) {
 			resetRxBuf();
 			HCState.ATState = ATPinGetAnswerWait;
 		}
@@ -226,7 +235,7 @@ void configModuleAT() {
 
 	//Set pin
 	if (HCState.ATState == ATPin) {
-		if (configSendCommand(&textATPin[0], sizeof(textATPin)) == TRUE) {
+		if (configSendCommand(&textATPinSET[0], sizeof(textATPinSET)) == TRUE) {
 			resetRxBuf();
 			HCState.ATState = ATPinAnswerWait;
 		}
@@ -254,7 +263,7 @@ void configModuleAT() {
 	} else if (HCState.ATState == ATSpeedAnswerWait
 			&& CommState.TxState == TxIdle) {
 		if (CommState.rxIndex > 2) {
-			if (hasText(&textATSpeedOK[0], 7) == TRUE) {
+			if (hasText(&textATSpeedOK[0], sizeof(textATSpeedOK)) == TRUE) {
 				HC_StopTimer();
 				HCState.ATState = ATWaitStream;
 				COMM_UartConfig(115200);
