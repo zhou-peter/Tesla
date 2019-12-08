@@ -28,14 +28,13 @@ const u8 textATSpeed[] = { "AT+BAUD4" }; //115200
 const u8 textATSpeedOK[] = { "OK+Set:4" };
 const u8 textVersion[] = { "AT+VERS?" };
 
-
 void COMM_Driver_Init(UART_HandleTypeDef* uart_, DMA_HandleTypeDef* hdma_usart_,
 		TaskHandle_t taskHandle) {
 
 	commHandle = taskHandle;
 	uart = uart_;
 	dma_usart_tx = hdma_usart_;
-
+	CommState.HighSpeed = TRUE;
 	COMM_Driver_Configure();
 
 }
@@ -67,6 +66,12 @@ void COMM_RxCallback() {
 		commInBuf[CommState.rxIndex] = rxByte;
 		CommState.rxIndex++;
 	}
+/*
+	if (HCState.ATState == ATPinGetAnswerWait && CommState.rxIndex>13){
+		CommState.rxIndex++;
+		CommState.rxIndex--;
+	}
+*/
 	HAL_UART_Receive_IT(uart, &rxByte, 1);
 	COMM_ResumeTaskFromISR();
 }
@@ -78,7 +83,7 @@ void COMM_DRIVER_PeriodElapsedCallback() {
 }
 
 void HC_StartTimer() {
-	HCState.softTimer = addTimer(1000, FALSE,
+	HCState.softTimer = addTimer(2000, FALSE,
 			&COMM_DRIVER_PeriodElapsedCallback);
 }
 
@@ -91,7 +96,7 @@ void HC_StopTimer() {
 
 //delay between commands
 void HC_Delay() {
-	osDelay(500);
+	osDelay(300);
 }
 
 //as a rule not enough amount of bytes received
@@ -121,9 +126,7 @@ bool configSendCommand(const u8* text, u8 length) {
 			for (i = 0; i < length; i++) {
 				commOutBuf[i] = *(text + i);
 			}
-			//commOutBuf[i] = 0x0D;
-			//commOutBuf[i + 1] = 0x0A;
-			COMM_SendData(length);// + 2);
+			COMM_SendData(length);
 		}
 
 		HC_StartTimer();
@@ -154,7 +157,7 @@ void configModuleAT() {
 				HC_StopTimer();
 
 				HCState.ATState = ATVersion;
-				configSendCommand(&textVersion[0], sizeof(textVersion)-1);
+				configSendCommand(&textVersion[0], sizeof(textVersion) - 1);
 				HC_StopTimer();
 				HC_Delay();
 
@@ -173,14 +176,16 @@ void configModuleAT() {
 
 	//Name check
 	if (HCState.ATState == ATNameGet) {
-		if (configSendCommand(&textATNameGET[0], sizeof(textATNameGET)-1) == TRUE) {
+		if (configSendCommand(&textATNameGET[0], sizeof(textATNameGET) - 1)
+				== TRUE) {
 			resetRxBuf();
 			HCState.ATState = ATNameGetAnswerWait;
 		}
 	} else if (HCState.ATState == ATNameGetAnswerWait
 			&& CommState.TxState == TxIdle) {
-		if (CommState.rxIndex > sizeof(textATNameGETOK)-1) {
-			if (hasText(&textATNameGETOK[0], sizeof(textATNameGETOK)-1) == TRUE) {
+		if (CommState.rxIndex >= sizeof(textATNameGETOK) - 1) {
+			if (hasText(&textATNameGETOK[0], sizeof(textATNameGETOK) - 1)
+					== TRUE) {
 				//имя было установлено уже
 				HCState.ATState = ATPinGet;
 			} else {
@@ -195,14 +200,16 @@ void configModuleAT() {
 
 	//Name set
 	if (HCState.ATState == ATNameSet) {
-		if (configSendCommand(&textATNameSET[0], sizeof(textATNameSET)-1) == TRUE) {
+		if (configSendCommand(&textATNameSET[0], sizeof(textATNameSET) - 1)
+				== TRUE) {
 			resetRxBuf();
 			HCState.ATState = ATNameSetAnswerWait;
 		}
 	} else if (HCState.ATState == ATNameSetAnswerWait
 			&& CommState.TxState == TxIdle) {
-		if (CommState.rxIndex > sizeof(textATNameSETOK)-1) {
-			if (hasText(&textATNameSETOK[0], sizeof(textATNameSETOK)-1) == TRUE) {
+		if (CommState.rxIndex >= sizeof(textATNameSETOK) - 1) {
+			if (hasText(&textATNameSETOK[0], sizeof(textATNameSETOK) - 1)
+					== TRUE) {
 				HCState.ATState = ATPinGet;
 			} else {
 				//no text
@@ -216,14 +223,16 @@ void configModuleAT() {
 	}
 
 	if (HCState.ATState == ATPinGet) {
-		if (configSendCommand(&textATPinGET[0], sizeof(textATPinGET)-1) == TRUE) {
+		if (configSendCommand(&textATPinGET[0], sizeof(textATPinGET) - 1)
+				== TRUE) {
 			resetRxBuf();
 			HCState.ATState = ATPinGetAnswerWait;
 		}
 	} else if (HCState.ATState == ATPinGetAnswerWait
 			&& CommState.TxState == TxIdle) {
-		if (CommState.rxIndex > sizeof(textATPinGETOK)-1) {
-			if (hasText(&textATPinGETOK[0], sizeof(textATPinGETOK)-1) == TRUE) {
+		if (CommState.rxIndex >= sizeof(textATPinGETOK) - 1) {
+			if (hasText(&textATPinGETOK[0], sizeof(textATPinGETOK) - 1)
+					== TRUE) {
 				HCState.ATState = ATSpeed;
 			} else {
 				HCState.ATState = ATPin;
@@ -237,15 +246,17 @@ void configModuleAT() {
 
 	//Set pin
 	if (HCState.ATState == ATPin) {
-		if (configSendCommand(&textATPinSET[0], sizeof(textATPinSET)-1) == TRUE) {
+		if (configSendCommand(&textATPinSET[0], sizeof(textATPinSET) - 1)
+				== TRUE) {
 			resetRxBuf();
 			HCState.ATState = ATPinAnswerWait;
 		}
 	} else if (HCState.ATState == ATPinAnswerWait
 			&& CommState.TxState == TxIdle) {
-		if (CommState.rxIndex > sizeof(textATPinSETOK)-1) {
-			if (hasText(&textATPinSETOK[0], sizeof(textATPinSETOK)-1) == TRUE) {
-				HCState.ATState = ATWaitStream;//ATSpeed;
+		if (CommState.rxIndex >= sizeof(textATPinSETOK) - 1) {
+			if (hasText(&textATPinSETOK[0], sizeof(textATPinSETOK) - 1)
+					== TRUE) {
+				HCState.ATState = ATWaitStream; //ATSpeed;
 			} else {
 				HCState.ATState = ATPin;
 			}
@@ -257,22 +268,29 @@ void configModuleAT() {
 	}
 
 	if (HCState.ATState == ATSpeed) {
-		if (configSendCommand(&textATSpeed[0], sizeof(textATSpeed)-1) == TRUE) {
+		//if it is already high speed
+		if (CommState.HighSpeed == TRUE) {
+			HCState.ATState = ATWaitStream;
+			return;
+		}
+		if (configSendCommand(&textATSpeed[0], sizeof(textATSpeed) - 1)
+				== TRUE) {
 			resetRxBuf();
 			HCState.ATState = ATSpeedAnswerWait;
 			HC_Delay();
 		}
 	} else if (HCState.ATState == ATSpeedAnswerWait
 			&& CommState.TxState == TxIdle) {
-		if (CommState.rxIndex > sizeof(textATSpeedOK)-1) {
-			if (hasText(&textATSpeedOK[0], sizeof(textATSpeedOK)-1) == TRUE) {
+		if (CommState.rxIndex >= sizeof(textATSpeedOK) - 1) {
+			if (hasText(&textATSpeedOK[0], sizeof(textATSpeedOK) - 1) == TRUE) {
 				HC_StopTimer();
+				CommState.HighSpeed = TRUE;
 				COMM_UartConfig(115200);
 				HCState.ATState = ATWaitStream;
 			} else {
 				//no text
 				HCState.ATState = AT;
-				configSendCommand(&textVersion[0], sizeof(textVersion)-1);
+				configSendCommand(&textVersion[0], sizeof(textVersion) - 1);
 				HC_Delay();
 			}
 		} else {
@@ -302,12 +320,17 @@ void COMM_Driver_Configure() {
 		HAL_GPIO_WritePin(BT_PORT, BT_TX, GPIO_PIN_RESET);
 		osDelay(1000);
 
-		//reset speed
-		COMM_UartConfig(9600);
+		//set speed
+		if (CommState.HighSpeed == TRUE) {
+			COMM_UartConfig(115200);
+		} else {
+			COMM_UartConfig(9600);
+		}
 
 		//enable bluetooth;
 		HAL_GPIO_WritePin(BT_PORT, BT_DISABLE, GPIO_PIN_SET);
-		osDelay(3000);
+		osDelay(1000);
+
 		HCState.ATState = AT;
 
 		while (TRUE) {
@@ -318,6 +341,16 @@ void COMM_Driver_Configure() {
 			} else if (HCState.ATTimeout == TRUE) {
 				CommState.CommDriverReady = FALSE;
 				HCState.ATTimeout = FALSE;
+
+				//no OK even for AT
+				//switch speed
+				if (HCState.ATState == ATAnswerWait) {
+					if (CommState.HighSpeed == TRUE) {
+						CommState.HighSpeed = FALSE;
+					} else {
+						CommState.HighSpeed = TRUE;
+					}
+				}
 				break;
 			}
 		}

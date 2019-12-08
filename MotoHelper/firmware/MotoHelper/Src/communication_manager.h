@@ -41,10 +41,12 @@ typedef struct
 	TxStates TxState:2;
 	bool	AtLeastOnePacketReceived:1;
 	bool	CommDriverReady:1;
-	u16 rxPacketSize:12;
-	u16 rxIndex:12;
+	bool	HighSpeed:1;	//9600/115200
+	u32		tmp3:7;
 	u8 receivingTimeoutTimer:8;//receiving timeout
 	u8 keepAliveTimer:8;//no keep-alive timeout
+	u16 rxPacketSize:16;
+	u16 rxIndex:16;
 } CommState_t;
 
 
