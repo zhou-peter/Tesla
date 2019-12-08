@@ -1,0 +1,176 @@
+<?xml version="1.0"?>
+<LogCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://haascnc.com">
+  <LogDataItems>
+    <LogDataItem ID="1" DataType="Comment" Timestamp="2019-12-07T17:55:31.577278-08:00" PortNumber="0">
+      <CompiledLine>Script started at 2019-12-07 17:55:31</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="2" DataType="SentData" Timestamp="2019-12-07T17:55:31.6007708-08:00" PortNumber="1">
+      <CompiledLine>AT</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="3" DataType="InternalScriptControl" Timestamp="2019-12-07T17:55:31.6027693-08:00" PortNumber="0">
+      <CompiledLine>#DELAY 100</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="4" DataType="SentData" Timestamp="2019-12-07T17:55:31.7038892-08:00" PortNumber="1">
+      <CompiledLine>AT+VERS?</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="5" DataType="InternalScriptControl" Timestamp="2019-12-07T17:55:31.7038892-08:00" PortNumber="0">
+      <CompiledLine>#DELAY 100</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="6" DataType="SentData" Timestamp="2019-12-07T17:55:31.8106488-08:00" PortNumber="1">
+      <CompiledLine>AT+NAME?</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="7" DataType="InternalScriptControl" Timestamp="2019-12-07T17:55:31.8115668-08:00" PortNumber="0">
+      <CompiledLine>#DELAY 100</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="8" DataType="SentData" Timestamp="2019-12-07T17:55:31.9126395-08:00" PortNumber="1">
+      <CompiledLine>AT+PASS?</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="9" DataType="InternalScriptControl" Timestamp="2019-12-07T17:55:31.9126395-08:00" PortNumber="0">
+      <CompiledLine>#DELAY 100</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="10" DataType="SentData" Timestamp="2019-12-07T17:55:32.0137066-08:00" PortNumber="1">
+      <CompiledLine>AT+BAUD?</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="11" DataType="InternalScriptControl" Timestamp="2019-12-07T17:55:32.0137066-08:00" PortNumber="0">
+      <CompiledLine>#DELAY 100</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="12" DataType="Comment" Timestamp="2019-12-07T17:55:32.8146506-08:00" PortNumber="0">
+      <CompiledLine>Script stopped at 2019-12-07 17:55:32</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="13" DataType="SentData" Timestamp="2019-12-07T17:56:04.6286638-08:00" PortNumber="3">
+      <CompiledLine>AT</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="14" DataType="ReceivedData" Timestamp="2019-12-07T17:56:04.643693-08:00" PortNumber="1">
+      <CompiledLine>AT
+[41-54]
+</CompiledLine>
+      <Data>QVQ=</Data>
+    </LogDataItem>
+    <LogDataItem ID="15" DataType="ReceivedData" Timestamp="2019-12-07T17:56:04.6556857-08:00" PortNumber="2">
+      <CompiledLine>OK
+[4F-4B]
+</CompiledLine>
+      <Data>T0s=</Data>
+    </LogDataItem>
+    <LogDataItem ID="16" DataType="ReceivedData" Timestamp="2019-12-07T17:56:04.6556857-08:00" PortNumber="3">
+      <CompiledLine />
+      <Data>T0s=</Data>
+    </LogDataItem>
+    <LogDataItem ID="17" DataType="Comment" Timestamp="2019-12-07T17:56:12.0395453-08:00" PortNumber="0">
+      <CompiledLine>Script started at 2019-12-07 17:56:12</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="18" DataType="SentData" Timestamp="2019-12-07T17:56:12.0649183-08:00" PortNumber="3">
+      <CompiledLine>AT</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="19" DataType="InternalScriptControl" Timestamp="2019-12-07T17:56:12.0649183-08:00" PortNumber="0">
+      <CompiledLine>#DELAY 100</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="20" DataType="ReceivedData" Timestamp="2019-12-07T17:56:12.0816264-08:00" PortNumber="1">
+      <CompiledLine>AT
+[41-54]
+</CompiledLine>
+      <Data>QVQ=</Data>
+    </LogDataItem>
+    <LogDataItem ID="21" DataType="ReceivedData" Timestamp="2019-12-07T17:56:12.0917028-08:00" PortNumber="2">
+      <CompiledLine>OK
+[4F-4B]
+</CompiledLine>
+      <Data>T0s=</Data>
+    </LogDataItem>
+    <LogDataItem ID="22" DataType="ReceivedData" Timestamp="2019-12-07T17:56:12.0917028-08:00" PortNumber="3">
+      <CompiledLine />
+      <Data>T0s=</Data>
+    </LogDataItem>
+    <LogDataItem ID="23" DataType="SentData" Timestamp="2019-12-07T17:56:12.1666855-08:00" PortNumber="3">
+      <CompiledLine>AT+VERS?</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="24" DataType="InternalScriptControl" Timestamp="2019-12-07T17:56:12.1672044-08:00" PortNumber="0">
+      <CompiledLine>#DELAY 100</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="25" DataType="ReceivedData" Timestamp="2019-12-07T17:56:12.1949788-08:00" PortNumber="1">
+      <CompiledLine>AT+VERS?
+[41-54-2B-56-45-52-53-3F]
+</CompiledLine>
+      <Data>QVQrVkVSUz8=</Data>
+    </LogDataItem>
+    <LogDataItem ID="26" DataType="ReceivedData" Timestamp="2019-12-07T17:56:12.2123201-08:00" PortNumber="2">
+      <CompiledLine>DSD TECH V551
+[44-53-44-20-54-45-43-48-20-56-35-35-31]
+</CompiledLine>
+      <Data>RFNEIFRFQ0ggVjU1MQ==</Data>
+    </LogDataItem>
+    <LogDataItem ID="27" DataType="ReceivedData" Timestamp="2019-12-07T17:56:12.2123201-08:00" PortNumber="3">
+      <CompiledLine />
+      <Data>RFNEIFRFQ0ggVjU1MQ==</Data>
+    </LogDataItem>
+    <LogDataItem ID="28" DataType="SentData" Timestamp="2019-12-07T17:56:12.2672746-08:00" PortNumber="3">
+      <CompiledLine>AT+NAME?</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="29" DataType="InternalScriptControl" Timestamp="2019-12-07T17:56:12.2672746-08:00" PortNumber="0">
+      <CompiledLine>#DELAY 100</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="30" DataType="ReceivedData" Timestamp="2019-12-07T17:56:12.292322-08:00" PortNumber="1">
+      <CompiledLine>AT+NAME?
+[41-54-2B-4E-41-4D-45-3F]
+</CompiledLine>
+      <Data>QVQrTkFNRT8=</Data>
+    </LogDataItem>
+    <LogDataItem ID="31" DataType="ReceivedData" Timestamp="2019-12-07T17:56:12.3192449-08:00" PortNumber="2">
+      <CompiledLine>OK+NAME:DSD TECH.
+[4F-4B-2B-4E-41-4D-45-3A-44-53-44-20-54-45-43-48-00]
+</CompiledLine>
+      <Data>T0srTkFNRTpEU0QgVEVDSAA=</Data>
+    </LogDataItem>
+    <LogDataItem ID="32" DataType="ReceivedData" Timestamp="2019-12-07T17:56:12.3192449-08:00" PortNumber="3">
+      <CompiledLine />
+      <Data>T0srTkFNRTpEU0QgVEVDSAA=</Data>
+    </LogDataItem>
+    <LogDataItem ID="33" DataType="SentData" Timestamp="2019-12-07T17:56:12.3677817-08:00" PortNumber="3">
+      <CompiledLine>AT+PASS?</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="34" DataType="InternalScriptControl" Timestamp="2019-12-07T17:56:12.3677817-08:00" PortNumber="0">
+      <CompiledLine>#DELAY 100</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="35" DataType="ReceivedData" Timestamp="2019-12-07T17:56:12.3936252-08:00" PortNumber="1">
+      <CompiledLine>AT+PASS?
+[41-54-2B-50-41-53-53-3F]
+</CompiledLine>
+      <Data>QVQrUEFTUz8=</Data>
+    </LogDataItem>
+    <LogDataItem ID="36" DataType="ReceivedData" Timestamp="2019-12-07T17:56:12.4157716-08:00" PortNumber="2">
+      <CompiledLine>OK+Get:000000
+[4F-4B-2B-47-65-74-3A-30-30-30-30-30-30]
+</CompiledLine>
+      <Data>T0srR2V0OjAwMDAwMA==</Data>
+    </LogDataItem>
+    <LogDataItem ID="37" DataType="ReceivedData" Timestamp="2019-12-07T17:56:12.4157716-08:00" PortNumber="3">
+      <CompiledLine />
+      <Data>T0srR2V0OjAwMDAwMA==</Data>
+    </LogDataItem>
+    <LogDataItem ID="38" DataType="SentData" Timestamp="2019-12-07T17:56:12.4683896-08:00" PortNumber="3">
+      <CompiledLine>AT+BAUD?</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="39" DataType="InternalScriptControl" Timestamp="2019-12-07T17:56:12.4686768-08:00" PortNumber="0">
+      <CompiledLine>#DELAY 100</CompiledLine>
+    </LogDataItem>
+    <LogDataItem ID="40" DataType="ReceivedData" Timestamp="2019-12-07T17:56:12.4896464-08:00" PortNumber="1">
+      <CompiledLine>AT+BAUD?
+[41-54-2B-42-41-55-44-3F]
+</CompiledLine>
+      <Data>QVQrQkFVRD8=</Data>
+    </LogDataItem>
+    <LogDataItem ID="41" DataType="ReceivedData" Timestamp="2019-12-07T17:56:12.5066635-08:00" PortNumber="2">
+      <CompiledLine>OK+Get:0
+[4F-4B-2B-47-65-74-3A-30]
+</CompiledLine>
+      <Data>T0srR2V0OjA=</Data>
+    </LogDataItem>
+    <LogDataItem ID="42" DataType="ReceivedData" Timestamp="2019-12-07T17:56:12.5124239-08:00" PortNumber="3">
+      <CompiledLine />
+      <Data>T0srR2V0OjA=</Data>
+    </LogDataItem>
+    <LogDataItem ID="43" DataType="Comment" Timestamp="2019-12-07T17:56:13.2690248-08:00" PortNumber="0">
+      <CompiledLine>Script stopped at 2019-12-07 17:56:12</CompiledLine>
+    </LogDataItem>
+  </LogDataItems>
+</LogCollection>

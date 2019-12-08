@@ -280,7 +280,7 @@ void COMM_Driver_Configure() {
 		HC_StopTimer();
 
 		//reset bluetooth
-		HAL_GPIO_WritePin(BT_PORT, BT_DISABLE, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(BT_PORT, BT_DISABLE, GPIO_PIN_RESET);
 		HAL_UART_DeInit(uart);
 		//pull down uart tx
 		GPIO_InitTypeDef GPIO_InitStruct = { 0 };
@@ -296,7 +296,7 @@ void COMM_Driver_Configure() {
 		COMM_UartConfig(9600);
 
 		//enable bluetooth;
-		HAL_GPIO_WritePin(BT_PORT, BT_DISABLE, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(BT_PORT, BT_DISABLE, GPIO_PIN_SET);
 		osDelay(300);
 		HCState.ATState = AT;
 
