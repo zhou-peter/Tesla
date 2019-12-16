@@ -19,7 +19,7 @@ import ru.track_it.motohelper.ui.main.SectionsPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
-    CommunicationManager communicationManager = CommunicationManager.getInstance();
+    CommunicationManagerBLE communicationManager = new CommunicationManagerBLE(this);
     PacketsManager packetsManager;
 
     @Override
@@ -46,9 +46,14 @@ public class MainActivity extends AppCompatActivity {
         Executors.BackGroundThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                if (!communicationManager.isReady()) {
-                    communicationManager.Connect();
 
+                    communicationManager.Connect();
+                while (!communicationManager.isReady()) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
                 if (communicationManager.isReady()) {
                     packetsManager = new PacketsManager(communicationManager.getInputStream(),

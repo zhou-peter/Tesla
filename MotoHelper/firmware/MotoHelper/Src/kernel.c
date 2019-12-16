@@ -52,7 +52,7 @@ void KERNEL_Task() {
 		}
 
 		//every time send something
-
+/*
 		if (CommState.CommDriverReady == TRUE && CommState.AtLeastOnePacketReceived==TRUE
 				&& CommState.TxState == TxIdle && data.itemsCount > 0) {
 
@@ -61,7 +61,16 @@ void KERNEL_Task() {
 			//createOutPacketAndSend(0x01, 0, NULL);
 			osDelay(1000);
 		}
+*/
 
+		if (CommState.CommDriverReady == TRUE
+				&& CommState.TxState == TxIdle && data.itemsCount > 0) {
+
+			sendAccelData();
+
+			//createOutPacketAndSend(0x01, 0, NULL);
+			osDelay(1000);
+		}
 		osDelay(1);
 	}
 }
