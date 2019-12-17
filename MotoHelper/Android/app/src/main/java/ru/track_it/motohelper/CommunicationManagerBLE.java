@@ -16,39 +16,35 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ru.track_it.motohelper.Packets.AbstractInPacket;
 import ru.track_it.motohelper.Packets.PacketOut_01;
 
 final class CommunicationManagerBLE extends BluetoothGattCallback implements BluetoothAdapter.LeScanCallback {
-    //private final static UUID SERIAL_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
     private final static String LOG_TAG = "CommunicationManager";
-    private static HashMap<String, String> attributes = new HashMap();
     public static String HM_10_Service = "0000ffe0-0000-1000-8000-00805f9b34fb";
     public static String HM_10_Module = "0000ffe1-0000-1000-8000-00805f9b34fb";
     public static final UUID NOTIFY_DESCRIPTOR = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
-    static {
-        attributes.put(HM_10_Service, "HM-10 Service");
-        attributes.put(HM_10_Module, "HM-10 Module");
-    }
 
-    public static String lookup(String uuid, String defaultName) {
-        String name = attributes.get(uuid);
-        return name == null ? defaultName : name;
-    }
 
-    private BluetoothAdapter btAdapter = null;
+    private BluetoothAdapter btAdapter;
     private BluetoothDevice btDevice;
     private BluetoothGatt mBluetoothGatt;
     private BluetoothGattService service;
     private BluetoothGattCharacteristic gattCharacterc;
-    private BluetoothSocket socket = null;
-    private InputStream btInputStream = null;
-    private OutputStream btOutputStream = null;
+
+    private InputStreamBLE btInputStream = new InputStreamBLE();
+    private OutputStream btOutputStream = new OutputStreamBLE();
     private boolean socketConnected = false;
     private Context context;
 
@@ -63,22 +59,13 @@ final class CommunicationManagerBLE extends BluetoothGattCallback implements Blu
 
 
     public boolean isReady() {
-        if (socket == null
-                || btInputStream == null
-                || btOutputStream == null) return false;
-        //if (!socket.isConnected())return false;
-        /*By the way, I found that on some android devices isConnected()
-        always returns false. In such case just try to write something to socket
-        and check if there is no exception.*/
         return socketConnected;
     }
 
     public void closeSocket() {
         try {
             socketConnected = false;
-            if (btInputStream != null) btInputStream.close();
-            if (btOutputStream != null) btOutputStream.close();
-            if (socket != null) socket.close();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -150,6 +137,7 @@ final class CommunicationManagerBLE extends BluetoothGattCallback implements Blu
                 BluetoothGattDescriptor descriptor = gattCharacterc.getDescriptor(NOTIFY_DESCRIPTOR);
                 descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
                 gatt.writeDescriptor(descriptor);
+                socketConnected = true;
                 gatt.readCharacteristic(gattCharacterc);
             }
         } else {
@@ -161,11 +149,7 @@ final class CommunicationManagerBLE extends BluetoothGattCallback implements Blu
     public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
         byte[] data = characteristic.getValue();
         if (data != null && data.length > 0) {
-            final StringBuilder stringBuilder = new StringBuilder(data.length);
-            for (byte byteChar : data) {
-                stringBuilder.append(String.format("%02X ", byteChar));
-            }
-            Log.d(LOG_TAG, stringBuilder.toString());
+            btInputStream.addBytes(data);
         }
     }
 
@@ -173,8 +157,6 @@ final class CommunicationManagerBLE extends BluetoothGattCallback implements Blu
     public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
 
     }
-
-
 
 
     public InputStream getInputStream() {
@@ -186,13 +168,64 @@ final class CommunicationManagerBLE extends BluetoothGattCallback implements Blu
     }
 
 
-    public static class InputStreamBLE extends InputStream {
+    private class InputStreamBLE extends InputStream {
+
+        private AtomicBoolean awaiting = new AtomicBoolean(true);
+        private ConcurrentLinkedQueue<Byte> buffer = new ConcurrentLinkedQueue<>();
+
+        public void addBytes(byte[] buf) {
+            for(byte b : buf){
+                buffer.add(b);
+            }
+            if (awaiting.get()) {
+                synchronized (this){
+                    notify();
+                }
+            }
+        }
+
 
         @Override
         public int read() throws IOException {
-            return 0;
+            if (buffer.isEmpty()) {
+                awaiting.set(true);
+                try {
+                    synchronized (this) {
+                        wait();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    socketConnected = false;
+                    return -1;
+                }finally {
+                    awaiting.set(false);
+                }
+            }
+            return buffer.poll();
         }
     }
 
+    private class OutputStreamBLE extends OutputStream
+    {
+        private ConcurrentLinkedQueue<Byte> buffer = new ConcurrentLinkedQueue<>();
 
+        @Override
+        public void write(int b) throws IOException {
+            buffer.add((byte)b);
+        }
+
+        @Override
+        public void flush() throws IOException {
+            int currentSize= buffer.size();
+            if (currentSize>0){
+                byte[] output =new byte[currentSize];
+                for (int i=0;i<currentSize;i++){
+                    output[i]=buffer.poll();
+                }
+                gattCharacterc.setValue(output);
+                mBluetoothGatt.writeCharacteristic(gattCharacterc);
+                mBluetoothGatt.setCharacteristicNotification(gattCharacterc, true);
+            }
+        }
+    }
 }

@@ -128,6 +128,10 @@ public class PacketsManager implements Runnable, Closeable {
             while (canRun) {
                 //blocking method
                 int availableLength = BUF_SIZE_RX - rxIndex;
+                if (availableLength==0){
+                    packetFormerCheck();
+                    continue;
+                }
                 int rxBytesNow = inputStream.read(rxBuf, rxIndex, availableLength);
                 if (rxBytesNow > 0) {
                     rxIndex += rxBytesNow;
