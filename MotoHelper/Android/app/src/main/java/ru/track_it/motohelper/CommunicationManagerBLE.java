@@ -158,6 +158,10 @@ final class CommunicationManagerBLE extends BluetoothGattCallback implements Blu
 
     }
 
+    @Override
+    public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+
+    }
 
     public InputStream getInputStream() {
         return btInputStream;
@@ -208,6 +212,7 @@ final class CommunicationManagerBLE extends BluetoothGattCallback implements Blu
     private class OutputStreamBLE extends OutputStream
     {
         private ConcurrentLinkedQueue<Byte> buffer = new ConcurrentLinkedQueue<>();
+        final int blePayloadLimit = 20;
 
         @Override
         public void write(int b) throws IOException {
@@ -217,7 +222,10 @@ final class CommunicationManagerBLE extends BluetoothGattCallback implements Blu
         @Override
         public void flush() throws IOException {
             int currentSize= buffer.size();
-            if (currentSize>0){
+            while (currentSize>0){
+                if (currentSize>blePayloadLimit){
+                    currentSize=blePayloadLimit;
+                }
                 byte[] output =new byte[currentSize];
                 for (int i=0;i<currentSize;i++){
                     output[i]=buffer.poll();
@@ -225,6 +233,8 @@ final class CommunicationManagerBLE extends BluetoothGattCallback implements Blu
                 gattCharacterc.setValue(output);
                 mBluetoothGatt.writeCharacteristic(gattCharacterc);
                 mBluetoothGatt.setCharacteristicNotification(gattCharacterc, true);
+
+                currentSize = buffer.size();
             }
         }
     }
