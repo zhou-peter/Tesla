@@ -178,30 +178,34 @@ final class CommunicationManagerBLE extends BluetoothGattCallback implements Blu
         private ConcurrentLinkedQueue<Byte> buffer = new ConcurrentLinkedQueue<>();
 
         public void addBytes(byte[] buf) {
-            for(byte b : buf){
+            for (byte b : buf) {
                 buffer.add(b);
             }
-            if (awaiting.get()) {
-                synchronized (this){
+            synchronized (this) {
+                if (awaiting.get()) {
                     notify();
                 }
             }
         }
 
+        @Override
+        public int available() throws IOException {
+            return buffer.size();
+        }
 
         @Override
         public int read() throws IOException {
-            if (buffer.isEmpty()) {
-                awaiting.set(true);
+            while (buffer.isEmpty()) {
                 try {
                     synchronized (this) {
+                        awaiting.set(true);
                         wait();
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     socketConnected = false;
                     return -1;
-                }finally {
+                } finally {
                     awaiting.set(false);
                 }
             }
@@ -209,26 +213,25 @@ final class CommunicationManagerBLE extends BluetoothGattCallback implements Blu
         }
     }
 
-    private class OutputStreamBLE extends OutputStream
-    {
+    private class OutputStreamBLE extends OutputStream {
         private ConcurrentLinkedQueue<Byte> buffer = new ConcurrentLinkedQueue<>();
         final int blePayloadLimit = 20;
 
         @Override
         public void write(int b) throws IOException {
-            buffer.add((byte)b);
+            buffer.add((byte) b);
         }
 
         @Override
         public void flush() throws IOException {
-            int currentSize= buffer.size();
-            while (currentSize>0){
-                if (currentSize>blePayloadLimit){
-                    currentSize=blePayloadLimit;
+            int currentSize = buffer.size();
+            while (currentSize > 0) {
+                if (currentSize > blePayloadLimit) {
+                    currentSize = blePayloadLimit;
                 }
-                byte[] output =new byte[currentSize];
-                for (int i=0;i<currentSize;i++){
-                    output[i]=buffer.poll();
+                byte[] output = new byte[currentSize];
+                for (int i = 0; i < currentSize; i++) {
+                    output[i] = buffer.poll();
                 }
                 gattCharacterc.setValue(output);
                 mBluetoothGatt.writeCharacteristic(gattCharacterc);

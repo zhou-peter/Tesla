@@ -39,10 +39,11 @@ public class PacketsManager implements Runnable, Closeable {
     private Boolean canRun = true;
 
     private Timer timer = new Timer();
-    private boolean timerEnabled = false;
-    private long timerTarget = 0;
+    private final Object timerLock=new Object();
+    private volatile boolean timerEnabled = false;
+    private volatile long timerTarget = 0;
     private long timerKeepAlive = 0;
-    private long timerCounter = 0;
+    private volatile long timerCounter = 0;
 
     ReceiverStates CommState = ReceiverStates.WaitingStart;
     byte[] rxBuf = new byte[BUF_SIZE_RX];
@@ -61,12 +62,16 @@ public class PacketsManager implements Runnable, Closeable {
     }
 
     private void startTimer() {
-        timerTarget = timerCounter + RECEIVE_TIMEOUT;
-        timerEnabled = true;
+        synchronized (timerLock) {
+            timerTarget = timerCounter + RECEIVE_TIMEOUT;
+            timerEnabled = true;
+        }
     }
 
     private void stopTimer() {
-        timerEnabled = false;
+        synchronized (timerLock){
+            timerEnabled = false;
+        }
     }
 
     TimerTask timerTask = new TimerTask() {
@@ -87,9 +92,13 @@ public class PacketsManager implements Runnable, Closeable {
                 timerKeepAlive = timerCounter + KEEP_ALIVE_PERIOD;
             }
 
-            if (timerEnabled && timerCounter >= timerTarget) {
-                CommState = ReceiverStates.ReceivingTimeout;
-                timerEnabled = false;
+            synchronized (timerLock){
+                long timespan = timerCounter - timerTarget;
+                if (timerEnabled && timespan>0) {
+                    Log.v(LOG_TAG, "Таймаут из "+ CommState.toString());
+                    CommState = ReceiverStates.ReceivingTimeout;
+                    timerEnabled = false;
+                }
             }
         }
     };
@@ -171,6 +180,7 @@ public class PacketsManager implements Runnable, Closeable {
     private void packetFormerCheck() {
         int offset = 0;
         while(true) {
+
             //ищем стартовый байт
             if (CommState == ReceiverStates.WaitingStart) {
                 if (rxIndex <= offset) {
@@ -184,6 +194,12 @@ public class PacketsManager implements Runnable, Closeable {
                 if (rxBuf[offset] == PACKET_START) {
                     CommState = ReceiverStates.ReceivingSize;
                     rxPackSize = 0;
+                    int delta = rxIndex - offset;
+                    if (offset>0 && delta>0){
+                        shift(offset, delta);
+                        offset = 0;
+                        rxIndex=delta;
+                    }
                     startTimer();
                 }else{
                     rxIndex=0;
@@ -214,12 +230,15 @@ public class PacketsManager implements Runnable, Closeable {
                 }
             }
             if (CommState == ReceiverStates.ReceivingPacket) {
-                if (rxIndex-offset >= rxPackSize) {
+                if (rxIndex-offset < rxPackSize) {
+                    //free - receive next bytes from the stream
+                    break;
+                }
+                else{
                     //Пакет пришел. останавливаем таймер и проверяем его
                     stopTimer();
                     CommState = ReceiverStates.Processing;
                 }
-
             }
             if (CommState == ReceiverStates.ReceivingTimeout) {
                 Log.v(LOG_TAG, "Таймаут получения пакета");
@@ -240,12 +259,9 @@ public class PacketsManager implements Runnable, Closeable {
                         crcXOR == rxBuf[offset+rxPackSize - 1]) {
                     enqeueIncomingPacket(offset);
                     //если получили 1.5-2 пакета за раз
-                    int delta = rxIndex - rxPackSize -offset;
+                    int delta = rxIndex - (rxPackSize + offset);
                     if (delta > 0) {
-                        //копируем буфер в начало
-                        for (int i = 0; i < delta; i++) {
-                            rxBuf[i] = rxBuf[offset+rxPackSize + i];
-                        }
+                        shift(offset+ rxPackSize, delta);
                     }
                     rxIndex = delta;
                     offset = 0;
@@ -261,6 +277,16 @@ public class PacketsManager implements Runnable, Closeable {
         }
     }
 
+    /**
+     * копируем буфер в начало
+     * @param offset
+     * @param count
+     */
+    private void shift(int offset, int count){
+        for (int i = 0; i < count; i++) {
+            rxBuf[i] = rxBuf[offset + i];
+        }
+    }
 
     private void enqeueIncomingPacket(int offset) {
         int inPacksize = rxBuf[offset+1] | rxBuf[offset+2] << 8;
@@ -287,7 +313,7 @@ public class PacketsManager implements Runnable, Closeable {
                     pack.ApplyBody(rxBuf, offset+BODY_OFFSET, bodySize);
                 }
                 receivedPackets.add(pack);
-
+                Log.d(LOG_TAG, "Packet enqueued " + pack.toString());
                 Executors.BackGroundThreadPool.execute(new Runnable() {
                     @Override
                     public void run() {
