@@ -183,6 +183,7 @@ final class CommunicationManagerBLE extends BluetoothGattCallback implements Blu
             }
             synchronized (this) {
                 if (awaiting.get()) {
+                    Log.v(LOG_TAG, "notify");
                     notify();
                 }
             }
@@ -199,7 +200,9 @@ final class CommunicationManagerBLE extends BluetoothGattCallback implements Blu
                 try {
                     synchronized (this) {
                         awaiting.set(true);
+                        Log.v(LOG_TAG, "go sleep");
                         wait();
+                        Log.v(LOG_TAG, "awaike");
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();

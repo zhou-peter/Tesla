@@ -18,7 +18,7 @@ import ru.track_it.motohelper.Executors;
 public class PacketsManager implements Runnable, Closeable {
 
     public static final byte PACKET_START = 0x7C;
-    private static final int RECEIVE_TIMEOUT = 500;
+    private static final int RECEIVE_TIMEOUT = 3500;
     private static final int TIMER_PERIOD = 10;
     private static final int KEEP_ALIVE_PERIOD = 500;
     private static final int BUF_SIZE_RX = 200;
@@ -143,6 +143,7 @@ public class PacketsManager implements Runnable, Closeable {
                 }
                 int rxBytesNow = inputStream.read(rxBuf, rxIndex, availableLength);
                 if (rxBytesNow > 0) {
+                    Log.v(LOG_TAG, "Добавлено данных "+ rxBytesNow);
                     rxIndex += rxBytesNow;
                     packetFormerCheck();
                 }
@@ -180,6 +181,8 @@ public class PacketsManager implements Runnable, Closeable {
     private void packetFormerCheck() {
         int offset = 0;
         while(true) {
+            Log.v(LOG_TAG, CommState.toString()+ " "+ offset + " " +rxIndex + " " +
+                    rxPackSize);
 
             //ищем стартовый байт
             if (CommState == ReceiverStates.WaitingStart) {
@@ -232,6 +235,7 @@ public class PacketsManager implements Runnable, Closeable {
             if (CommState == ReceiverStates.ReceivingPacket) {
                 if (rxIndex-offset < rxPackSize) {
                     //free - receive next bytes from the stream
+                    Log.v(LOG_TAG, "not enough data - exit");
                     break;
                 }
                 else{
@@ -313,7 +317,7 @@ public class PacketsManager implements Runnable, Closeable {
                     pack.ApplyBody(rxBuf, offset+BODY_OFFSET, bodySize);
                 }
                 receivedPackets.add(pack);
-                Log.d(LOG_TAG, "Packet enqueued " + pack.toString());
+                Log.v(LOG_TAG, "Packet enqueued " + pack.toString());
                 Executors.BackGroundThreadPool.execute(new Runnable() {
                     @Override
                     public void run() {
