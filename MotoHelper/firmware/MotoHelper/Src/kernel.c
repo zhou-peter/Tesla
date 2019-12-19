@@ -5,12 +5,20 @@
 #include "communication_manager.h"
 #include "accelerometer_manager.h"
 
+
+extern void KERNEL_TimeToSend();
+
 volatile u8 dataBuffer[sizeof(AccelData_t) * 10];
 CircleBuffer_t data;
+//soft timer to send data over communication channel
+//20ms
+u8 accelTimerToSend;
+bool timeToSend;
 
 void KERNEL_Init() {
 	initCircleBuffer(&data, &dataBuffer, sizeof(dataBuffer),
 			sizeof(AccelData_t));
+	accelTimerToSend = addTimer(20, TRUE, &KERNEL_TimeToSend);
 }
 
 void sendAccelData()
@@ -40,6 +48,11 @@ void sendAccelData()
 	createOutPacketAndSend(0x11, bodySize, NULL);
 }
 
+void KERNEL_TimeToSend()
+{
+	timeToSend = TRUE;
+}
+
 
 void KERNEL_Task() {
 
@@ -51,26 +64,16 @@ void KERNEL_Task() {
 			AccelState.State = AccelShouldRequest;
 		}
 
-		//every time send something
-/*
+		//every 20 ms send something
 		if (CommState.CommDriverReady == TRUE && CommState.AtLeastOnePacketReceived==TRUE
-				&& CommState.TxState == TxIdle && data.itemsCount > 0) {
-
+				&& CommState.TxState == TxIdle && data.itemsCount > 0 &&
+				timeToSend == TRUE) {
+			timeToSend = FALSE;
 			sendAccelData();
-
-			//createOutPacketAndSend(0x01, 0, NULL);
-			osDelay(1000);
 		}
-*/
 
-		if (CommState.CommDriverReady == TRUE
-				&& CommState.TxState == TxIdle && data.itemsCount > 0) {
 
-			sendAccelData();
 
-			//createOutPacketAndSend(0x01, 0, NULL);
-			osDelay(1000);
-		}
 		osDelay(1);
 	}
 }

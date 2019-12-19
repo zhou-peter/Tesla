@@ -73,12 +73,14 @@ public class MainActivity extends AppCompatActivity {
     PacketsListener pl = new PacketsListener() {
         @Override
         public void onNewPacketsCame() {
-            AbstractInPacket packet = packetsManager.receivedPackets.poll();
-            switch (packet.Command) {
-                case 0x01:
-                    break;
-                default:
-                    packet.DefaultProcess();
+            while (!packetsManager.receivedPackets.isEmpty()) {
+                AbstractInPacket packet = packetsManager.receivedPackets.poll();
+                switch (packet.Command) {
+                    case 0x01:
+                        break;
+                    default:
+                        packet.DefaultProcess();
+                }
             }
         }
     };

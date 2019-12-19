@@ -87,7 +87,7 @@ public class PacketsManager implements Runnable, Closeable {
             if (timerCounter > timerKeepAlive) {
                 if (packetsToSend.size() == 0) {
                     packetsToSend.add(new PacketOut_01());
-                    //Log.d(LOG_TAG, "Keep alive added");
+                    Log.v(LOG_TAG, "Keep alive added");
                 }
                 timerKeepAlive = timerCounter + KEEP_ALIVE_PERIOD;
             }
@@ -108,13 +108,13 @@ public class PacketsManager implements Runnable, Closeable {
         public void run() {
             try {
                 while (canRun) {
-                    /*if (packetsToSend.size() > 0) {
+                    if (packetsToSend.size() > 0) {
                         AbstractOutPacket pack = packetsToSend.poll();
                         outputStream.write(pack.ToArray());
-                        Log.d(LOG_TAG, "Packet send");
+                        Log.v(LOG_TAG, "Packet send");
                         outputStream.flush();
-                        Log.d(LOG_TAG, "Output stream flush");
-                    }*/
+                        Log.v(LOG_TAG, "Output stream flush");
+                    }
                     Thread.sleep(50);
                 }
             } catch (Exception ex) {
@@ -318,12 +318,18 @@ public class PacketsManager implements Runnable, Closeable {
                 }
                 receivedPackets.add(pack);
                 Log.v(LOG_TAG, "Packet enqueued " + pack.toString());
-                Executors.BackGroundThreadPool.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        packetsListener.onNewPacketsCame();
-                    }
-                });
+                if (packetsListener!=null){
+                    Executors.BackGroundThreadPool.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                packetsListener.onNewPacketsCame();
+                            }catch (Exception ex){
+                                ex.printStackTrace();
+                            }
+                        }
+                    });
+                }
             }
         } catch (Exception ex) {
             Log.e(LOG_TAG, "Error instantiate packet " + String.format("%02X", packetNumber));

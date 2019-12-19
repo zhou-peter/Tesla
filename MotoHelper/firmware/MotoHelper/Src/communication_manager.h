@@ -10,6 +10,8 @@
 #define COMMUNICATION_H_
 
 #define COMM_IN_BUF_SIZE 20
+//при скорости 115200 пакет из 80 байт будет предаваться
+//по юарту 7мс
 #define COMM_OUT_BUF_SIZE 80
 
 #define COMM_OUT_BODY_OFFSET 4
