@@ -10,7 +10,7 @@
 #define PACKET_START 0x7C
 
 
-
+#define KEEP_ALIVE_PERIOD 2000
 
 
 
@@ -100,13 +100,6 @@ void create_rx_err(u8 err){
 	}
 }
 
-void resetRxBuf(){
-	int i=0;
-	CommState.rxIndex=0;
-	for(i=0;i<COMM_IN_BUF_SIZE;i++){
-		commInBuf[i]=0;
-	}
-}
 
 void COMM_Task(){
 
@@ -251,7 +244,7 @@ void resetKeepAliveWatchDog(){
 	if(CommState.keepAliveTimer>0){
 		restartTimer(CommState.keepAliveTimer);
 	}else{
-		CommState.keepAliveTimer = addTimer(8000, FALSE,
+		CommState.keepAliveTimer = addTimer(KEEP_ALIVE_PERIOD, FALSE,
 					&COMM_KeepAlivePeriodElapsedCallback);
 	}
 }

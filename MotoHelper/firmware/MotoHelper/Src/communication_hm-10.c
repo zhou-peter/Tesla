@@ -88,10 +88,12 @@ void HC_StartTimer() {
 }
 
 void HC_StopTimer() {
+	taskENTER_CRITICAL();
 	if (HCState.softTimer > 0) {
 		removeTimer(HCState.softTimer);
 		HCState.softTimer = 0;
 	}
+	taskEXIT_CRITICAL();
 }
 
 //delay between commands
@@ -102,8 +104,16 @@ void HC_Delay() {
 //as a rule not enough amount of bytes received
 //await rest
 void HC_Suspend() {
-	const TickType_t xBlockTime = pdMS_TO_TICKS(5000);
+	const TickType_t xBlockTime = pdMS_TO_TICKS(500);
 	ulTaskNotifyTake(pdFALSE, xBlockTime);
+}
+
+void resetRxBuf(){
+	int i=0;
+	CommState.rxIndex=0;
+	for(i=0;i<COMM_IN_BUF_SIZE;i++){
+		commInBuf[i]=0;
+	}
 }
 
 bool hasText(const u8* searchText, u8 length) {
@@ -120,7 +130,7 @@ bool configSendCommand(const u8* text, u8 length) {
 	if (CommState.TxState == TxIdle) {
 
 		CommState.TxState = TxSending;
-
+		CommState.rxIndex = 0;
 		u8 i = 0;
 		if (length > 0) {
 			for (i = 0; i < length; i++) {
@@ -147,15 +157,13 @@ void configModuleAT() {
 	//AT-OK
 	if (HCState.ATState == AT) {
 		if (configSendCommand(&textAT[0], 2) == TRUE) {
-			resetRxBuf();
 			HC_Delay();
 			HCState.ATState = ATAnswerWait;
 		}
 	} else if (HCState.ATState == ATAnswerWait && CommState.TxState == TxIdle) { //Tx Idle means everything sent
 		if (CommState.rxIndex >= 2) {
+			HC_StopTimer();
 			if (hasText(&textATOK[0], 2) == TRUE) {
-				HC_StopTimer();
-
 				HCState.ATState = ATVersion;
 				configSendCommand(&textVersion[0], sizeof(textVersion) - 1);
 				HC_StopTimer();
@@ -184,6 +192,7 @@ void configModuleAT() {
 	} else if (HCState.ATState == ATNameGetAnswerWait
 			&& CommState.TxState == TxIdle) {
 		if (CommState.rxIndex >= sizeof(textATNameGETOK) - 1) {
+			HC_StopTimer();
 			if (hasText(&textATNameGETOK[0], sizeof(textATNameGETOK) - 1)
 					== TRUE) {
 				//имя было установлено уже
@@ -191,7 +200,6 @@ void configModuleAT() {
 			} else {
 				HCState.ATState = ATNameSet;
 			}
-			HC_StopTimer();
 			HC_Delay();
 		} else {
 			HC_Suspend();
@@ -208,6 +216,7 @@ void configModuleAT() {
 	} else if (HCState.ATState == ATNameSetAnswerWait
 			&& CommState.TxState == TxIdle) {
 		if (CommState.rxIndex >= sizeof(textATNameSETOK) - 1) {
+			HC_StopTimer();
 			if (hasText(&textATNameSETOK[0], sizeof(textATNameSETOK) - 1)
 					== TRUE) {
 				HCState.ATState = ATPinGet;
@@ -215,7 +224,6 @@ void configModuleAT() {
 				//no text
 				HCState.ATState = ATNameSet;
 			}
-			HC_StopTimer();
 			HC_Delay();
 		} else {
 			HC_Suspend();
@@ -231,13 +239,13 @@ void configModuleAT() {
 	} else if (HCState.ATState == ATPinGetAnswerWait
 			&& CommState.TxState == TxIdle) {
 		if (CommState.rxIndex >= sizeof(textATPinGETOK) - 1) {
+			HC_StopTimer();
 			if (hasText(&textATPinGETOK[0], sizeof(textATPinGETOK) - 1)
 					== TRUE) {
 				HCState.ATState = ATSpeed;
 			} else {
 				HCState.ATState = ATPin;
 			}
-			HC_StopTimer();
 			HC_Delay();
 		} else {
 			HC_Suspend();
@@ -254,13 +262,13 @@ void configModuleAT() {
 	} else if (HCState.ATState == ATPinAnswerWait
 			&& CommState.TxState == TxIdle) {
 		if (CommState.rxIndex >= sizeof(textATPinSETOK) - 1) {
+			HC_StopTimer();
 			if (hasText(&textATPinSETOK[0], sizeof(textATPinSETOK) - 1)
 					== TRUE) {
 				HCState.ATState = ATWaitStream; //ATSpeed;
 			} else {
 				HCState.ATState = ATPin;
 			}
-			HC_StopTimer();
 			HC_Delay();
 		} else {
 			HC_Suspend();
@@ -282,8 +290,8 @@ void configModuleAT() {
 	} else if (HCState.ATState == ATSpeedAnswerWait
 			&& CommState.TxState == TxIdle) {
 		if (CommState.rxIndex >= sizeof(textATSpeedOK) - 1) {
+			HC_StopTimer();
 			if (hasText(&textATSpeedOK[0], sizeof(textATSpeedOK) - 1) == TRUE) {
-				HC_StopTimer();
 				CommState.HighSpeed = TRUE;
 				COMM_UartConfig(115200);
 				HCState.ATState = ATWaitStream;
@@ -318,7 +326,8 @@ void COMM_Driver_Configure() {
 		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 		HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 		HAL_GPIO_WritePin(BT_PORT, BT_TX, GPIO_PIN_RESET);
-		osDelay(1000);
+		//discharge capacitors
+		osDelay(2000);
 
 		//set speed
 		if (CommState.HighSpeed == TRUE) {
