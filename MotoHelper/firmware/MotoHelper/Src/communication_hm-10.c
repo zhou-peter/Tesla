@@ -12,6 +12,7 @@ TaskHandle_t commHandle;
 #define BT_PORT GPIOA
 
 volatile u8 rxByte;
+volatile u32 lastAction;
 volatile HCModule_t HCState;
 
 const u8 textAT[] = { "AT" };
@@ -36,7 +37,6 @@ void COMM_Driver_Init(UART_HandleTypeDef* uart_, DMA_HandleTypeDef* hdma_usart_,
 	dma_usart_tx = hdma_usart_;
 	CommState.HighSpeed = TRUE;
 	COMM_Driver_Configure();
-
 }
 
 void COMM_UartConfig(u32 speed) {
@@ -50,10 +50,7 @@ void COMM_SendData(u16 size) {
 	if (HAL_UART_Transmit_DMA(uart, (uint8_t *) &commOutBuf[0], size)
 			== HAL_OK) {
 		CommState.TxState = TxSending;
-	} else {
-
 	}
-
 }
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
@@ -66,12 +63,6 @@ void COMM_RxCallback() {
 		commInBuf[CommState.rxIndex] = rxByte;
 		CommState.rxIndex++;
 	}
-/*
-	if (HCState.ATState == ATPinGetAnswerWait && CommState.rxIndex>13){
-		CommState.rxIndex++;
-		CommState.rxIndex--;
-	}
-*/
 	HAL_UART_Receive_IT(uart, &rxByte, 1);
 	COMM_ResumeTaskFromISR();
 }
@@ -83,32 +74,36 @@ void COMM_DRIVER_PeriodElapsedCallback() {
 }
 
 void HC_StartTimer() {
+	lastAction = 3;
 	HCState.softTimer = addTimer(2000, FALSE,
 			&COMM_DRIVER_PeriodElapsedCallback);
 }
 
 void HC_StopTimer() {
-	taskENTER_CRITICAL();
+	lastAction = 2;
 	if (HCState.softTimer > 0) {
+		lastAction = 7 | (HCState.softTimer<<8);
 		removeTimer(HCState.softTimer);
 		HCState.softTimer = 0;
 	}
-	taskEXIT_CRITICAL();
 }
 
 //delay between commands
 void HC_Delay() {
+	lastAction = 1;
 	osDelay(300);
 }
 
 //as a rule not enough amount of bytes received
 //await rest
 void HC_Suspend() {
+	lastAction = 4;
 	const TickType_t xBlockTime = pdMS_TO_TICKS(500);
 	ulTaskNotifyTake(pdFALSE, xBlockTime);
 }
 
 void resetRxBuf(){
+	lastAction = 5;
 	int i=0;
 	CommState.rxIndex=0;
 	for(i=0;i<COMM_IN_BUF_SIZE;i++){
@@ -117,6 +112,7 @@ void resetRxBuf(){
 }
 
 bool hasText(const u8* searchText, u8 length) {
+	lastAction = 6;
 	int iterator = 0;
 	volatile u8* bigBuf = &commInBuf[0];
 	for (iterator = 0; iterator < length; iterator++) {
@@ -128,7 +124,7 @@ bool hasText(const u8* searchText, u8 length) {
 
 bool configSendCommand(const u8* text, u8 length) {
 	if (CommState.TxState == TxIdle) {
-
+		lastAction = 14;
 		CommState.TxState = TxSending;
 		CommState.rxIndex = 0;
 		u8 i = 0;
@@ -138,11 +134,12 @@ bool configSendCommand(const u8* text, u8 length) {
 			}
 			COMM_SendData(length);
 		}
-
+		lastAction = 15;
 		HC_StartTimer();
+		lastAction = 16;
 		return TRUE;
 	} else {
-		osDelay(1);
+		lastAction = 17;
 		return FALSE;
 	}
 }
@@ -156,19 +153,24 @@ void configModuleAT() {
 
 	//AT-OK
 	if (HCState.ATState == AT) {
+		lastAction = 10;
 		if (configSendCommand(&textAT[0], 2) == TRUE) {
-			HC_Delay();
+			lastAction = 12;
+			resetRxBuf();
 			HCState.ATState = ATAnswerWait;
+		}else{
+			lastAction = 11;
 		}
+
 	} else if (HCState.ATState == ATAnswerWait && CommState.TxState == TxIdle) { //Tx Idle means everything sent
 		if (CommState.rxIndex >= 2) {
 			HC_StopTimer();
 			if (hasText(&textATOK[0], 2) == TRUE) {
-				HCState.ATState = ATVersion;
+				/*HCState.ATState = ATVersion;
 				configSendCommand(&textVersion[0], sizeof(textVersion) - 1);
 				HC_StopTimer();
 				HC_Delay();
-
+				 */
 				HCState.ATState = ATNameGet;
 				//между командами паузу делать надо
 				HC_Delay();
@@ -341,9 +343,11 @@ void COMM_Driver_Configure() {
 		osDelay(1000);
 
 		HCState.ATState = AT;
+		CommState.TxState = TxIdle;
 
 		while (TRUE) {
 			configModuleAT();
+			osDelay(1);
 			if (HCState.ATState == ATWaitStream) {
 				CommState.CommDriverReady = TRUE;
 				break;
