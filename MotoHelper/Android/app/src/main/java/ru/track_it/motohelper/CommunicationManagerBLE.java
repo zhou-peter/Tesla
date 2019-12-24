@@ -54,6 +54,9 @@ final class CommunicationManagerBLE extends BluetoothGattCallback {
     private BluetoothGatt mBluetoothGatt;
     private BluetoothGattService service;
     private BluetoothGattCharacteristic gattCharacterc;
+    private AtomicBoolean reading = new AtomicBoolean(false);
+    private AtomicBoolean writePending = new AtomicBoolean(false);
+    private Object readWriteLock=new Object();
 
     private InputStreamBLE btInputStream = new InputStreamBLE();
     private OutputStream btOutputStream = new OutputStreamBLE();
@@ -202,9 +205,16 @@ final class CommunicationManagerBLE extends BluetoothGattCallback {
 
     @Override
     public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+        reading.set(true);
         byte[] data = characteristic.getValue();
         if (data != null && data.length > 0) {
             btInputStream.addBytes(data);
+        }
+        reading.set(false);
+        if (writePending.get()){
+            synchronized (readWriteLock){
+                notify();
+            }
         }
     }
 
@@ -236,6 +246,7 @@ final class CommunicationManagerBLE extends BluetoothGattCallback {
             for (byte b : buf) {
                 buffer.add(b);
             }
+
             synchronized (this) {
                 if (awaiting.get()) {
                     Log.v(LOG_TAG, "notify");
@@ -292,9 +303,21 @@ final class CommunicationManagerBLE extends BluetoothGattCallback {
                     output[i] = buffer.poll();
                 }
 
+                if (reading.get()){
+                    synchronized (readWriteLock){
+                        writePending.set(true);
+                        try {
+                            wait(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        writePending.set(false);
+                    }
+                }
                 gattCharacterc.setValue(output);
                 mBluetoothGatt.writeCharacteristic(gattCharacterc);
                 mBluetoothGatt.setCharacteristicNotification(gattCharacterc, true);
+
 
                 currentSize = buffer.size();
             }
