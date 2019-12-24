@@ -64,12 +64,21 @@ void KERNEL_Task() {
 			AccelState.State = AccelShouldRequest;
 		}
 
-		//every 20 ms send something
-		if (CommState.CommDriverReady == TRUE && CommState.AtLeastOnePacketReceived==TRUE
-				&& CommState.TxState == TxIdle && data.itemsCount > 0 &&
-				timeToSend == TRUE) {
-			timeToSend = FALSE;
-			sendAccelData();
+
+		//if there is communication
+		if (CommState.CommDriverReady == TRUE && CommState.TxState == TxIdle)
+		{
+			//debug packet
+			if (debugPacket.pending==TRUE){
+				debugPacket.pending=FALSE;
+				createOutPacketAndSend(debugPacket.command, debugPacket.size, &debugPacket.body[0]);
+			}
+			//every 20 ms send something
+			else if (CommState.AtLeastOnePacketReceived==TRUE
+					&&  data.itemsCount > 0 && timeToSend == TRUE) {
+				timeToSend = FALSE;
+				sendAccelData();
+			}
 		}
 
 

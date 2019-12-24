@@ -13,10 +13,13 @@
 //при скорости 115200 пакет из 80 байт будет предаваться
 //по юарту 7мс
 #define COMM_OUT_BUF_SIZE 80
+//размер тела специального дебаг пакета
+#define DEBUG_BODY_SIZE 10
 
 #define COMM_OUT_BODY_OFFSET 4
 #define EMPTY_PACKET_SIZE 6
 #define COMM_OUT_MAX_BODY_SIZE (COMM_OUT_BUF_SIZE-EMPTY_PACKET_SIZE)
+#define COMM_IN_MAX_BODY_SIZE (COMM_IN_BUF_SIZE-EMPTY_PACKET_SIZE)
 
 typedef enum
 {
@@ -35,6 +38,13 @@ typedef enum
 	TxSending
 }TxStates;
 
+typedef struct
+{
+	bool pending:1;
+	u8 size:7;
+	u8 command;
+	u8 body[DEBUG_BODY_SIZE];
+}OutPacket;
 
 //структура должна быть выравнена по 32 бита по модулю
 typedef struct
@@ -58,6 +68,7 @@ extern volatile CommState_t CommState;
 
 extern volatile u8 commInBuf[COMM_IN_BUF_SIZE];
 extern volatile u8 commOutBuf[COMM_OUT_BUF_SIZE];
+extern volatile OutPacket debugPacket;
 
 extern void COMM_Init(TaskHandle_t taskHandle);
 extern void COMM_Task();

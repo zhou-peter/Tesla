@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 
 import java.io.IOException;
@@ -236,6 +237,7 @@ final class CommunicationManagerBLE extends BluetoothGattCallback implements Blu
                 for (int i = 0; i < currentSize; i++) {
                     output[i] = buffer.poll();
                 }
+
                 gattCharacterc.setValue(output);
                 mBluetoothGatt.writeCharacteristic(gattCharacterc);
                 mBluetoothGatt.setCharacteristicNotification(gattCharacterc, true);

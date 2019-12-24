@@ -1,5 +1,6 @@
 #include "communication_hm-10.h"
 #include "communication_manager.h"
+#include "soft_timer.h"
 
 UART_HandleTypeDef* uart;
 DMA_HandleTypeDef* dma_usart_tx;

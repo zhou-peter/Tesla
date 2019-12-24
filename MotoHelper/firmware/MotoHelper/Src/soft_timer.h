@@ -12,6 +12,7 @@ struct soft_timer_t
 	void (*funcPtr)(); //указатель на функцию
 };
 
+extern volatile u32 timeStampCounter;
 //добавляет таймер и сразу же запускает его
 //возвращает номер таймера для добавления (больше ноля)
 extern u8 addTimer(u32 period, bool unstop, void (*funcPtr));

@@ -153,7 +153,7 @@ int main(void)
   accelTaskHandle = osThreadCreate(osThread(accelTask), NULL);
 
   /* definition and creation of btTask */
-  osThreadDef(btTask, StartTaskBt, osPriorityBelowNormal, 0, 256);
+  osThreadDef(btTask, StartTaskBt, osPriorityBelowNormal, 0, 128);
   btTaskHandle = osThreadCreate(osThread(btTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
