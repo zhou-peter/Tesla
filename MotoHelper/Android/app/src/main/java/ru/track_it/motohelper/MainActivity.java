@@ -1,5 +1,6 @@
 package ru.track_it.motohelper;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -38,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
     CommunicationManagerBLE communicationManager = new CommunicationManagerBLE(this);
     PacketsManager packetsManager;
     private final static String LOG_TAG = "MainActivity";
+    private boolean bluetoothGranded = false;
+    private boolean bluetoothAdminGranded = false;
+    private boolean coarsetoothGranded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +58,35 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivityPermissionsDispatcher.createCommunicationInstanceWithPermissionCheck(MainActivity.this);
+                //MainActivityPermissionsDispatcher.createCommunicationInstanceWithPermissionCheck(MainActivity.this);
             }
         });
 
+        Executors.BackGroundThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                while(true){
+                    try {
+                        Thread.sleep(2000);
+                        if (!coarsetoothGranded){
+                            MainActivityPermissionsDispatcher.grantedCoarseLocationWithPermissionCheck(MainActivity.this);
+                        }else if (!bluetoothGranded){
+                            MainActivityPermissionsDispatcher.grantedBluetoothWithPermissionCheck(MainActivity.this);
+                        }else if (!bluetoothAdminGranded){
+                            MainActivityPermissionsDispatcher.grantedBluetoothAdminWithPermissionCheck(MainActivity.this);
+                        }
+                        if (coarsetoothGranded && bluetoothGranded && bluetoothAdminGranded){
+                            createCommunicationInstance();
+                            break;
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        break;
+                    }
+
+                }
+            }
+        });
 
 
     }
@@ -69,8 +98,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)
-    void showPermissionMessageForUser(final PermissionRequest request){
+    @OnShowRationale(Manifest.permission.ACCESS_COARSE_LOCATION)
+    void showPermissionMessageCOARSE(final PermissionRequest request){
         new AlertDialog.Builder(this)
                 .setTitle("Permission needed")
                 .setMessage("If you want to use this application, you must accept")
@@ -87,9 +116,59 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }).create().show();
     }
+    @NeedsPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+    void grantedCoarseLocation() {
+        coarsetoothGranded = true;
+    }
+
+    @OnShowRationale(Manifest.permission.BLUETOOTH)
+    void showPermissionMessageBluetooth(final PermissionRequest request){
+        new AlertDialog.Builder(this)
+                .setTitle("Permission needed")
+                .setMessage("If you want to use this application, you must accept")
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        request.proceed();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        request.cancel();
+                    }
+                }).create().show();
+    }
+    @NeedsPermission(Manifest.permission.BLUETOOTH)
+    void grantedBluetooth() {
+        bluetoothGranded = true;
+    }
+
+    @OnShowRationale(Manifest.permission.BLUETOOTH_ADMIN)
+    void showPermissionMessageBluetoothAdmin(final PermissionRequest request){
+        new AlertDialog.Builder(this)
+                .setTitle("Permission needed")
+                .setMessage("If you want to use this application, you must accept")
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        request.proceed();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        request.cancel();
+                    }
+                }).create().show();
+    }
+    @NeedsPermission(Manifest.permission.BLUETOOTH_ADMIN)
+    void grantedBluetoothAdmin() {
+        bluetoothAdminGranded = true;
+    }
 
 
-    @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+
     void createCommunicationInstance() {
 
         Executors.BackGroundThreadPool.execute(new Runnable() {

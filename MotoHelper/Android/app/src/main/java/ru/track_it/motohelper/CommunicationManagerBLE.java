@@ -1,5 +1,6 @@
 package ru.track_it.motohelper;
 
+import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -7,8 +8,14 @@ import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.bluetooth.BluetoothSocket;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanFilter;
+import android.bluetooth.le.ScanResult;
+import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
@@ -16,6 +23,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,14 +38,17 @@ import java.util.regex.Pattern;
 import ru.track_it.motohelper.Packets.AbstractInPacket;
 import ru.track_it.motohelper.Packets.PacketOut_01;
 
-final class CommunicationManagerBLE extends BluetoothGattCallback implements BluetoothAdapter.LeScanCallback {
+import static android.content.Context.BLUETOOTH_SERVICE;
+
+final class CommunicationManagerBLE extends BluetoothGattCallback {
 
     private final static String LOG_TAG = "CommunicationManager";
     public static String HM_10_Service = "0000ffe0-0000-1000-8000-00805f9b34fb";
     public static String HM_10_Module = "0000ffe1-0000-1000-8000-00805f9b34fb";
     public static final UUID NOTIFY_DESCRIPTOR = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
-
-
+    public static final String targetName = "MotoHelpeR";
+    final Pattern namePattern = Pattern.compile(targetName);
+    private BluetoothLeScanner bluetoothLeScannerAbove21;
     private BluetoothAdapter btAdapter;
     private BluetoothDevice btDevice;
     private BluetoothGatt mBluetoothGatt;
@@ -90,27 +101,62 @@ final class CommunicationManagerBLE extends BluetoothGattCallback implements Blu
         }
         Log.d(LOG_TAG, "Bluetooth is enabled.");
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ScanSettings scanSettings = new ScanSettings.Builder()
+                    .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                    .build();
 
-        btAdapter.startLeScan(this);
+
+            bluetoothLeScannerAbove21 = (((BluetoothManager) context.getSystemService(BLUETOOTH_SERVICE)).getAdapter()).getBluetoothLeScanner();
+            bluetoothLeScannerAbove21.startScan(null, scanSettings, above21Scanner);
+        } else {
+            btAdapter.startLeScan(below21Scanner);
+        }
 
 
     }
 
-    @Override
-    public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+    @TargetApi(21)
+    ScanCallback above21Scanner=new ScanCallback() {
+        @Override
+        public void onScanResult(int callbackType, ScanResult result) {
+            BluetoothDevice device = result.getDevice();
+            if (testDevice(device)){
+                bluetoothLeScannerAbove21.stopScan(new ScanCallback() {
+                    @Override
+                    public void onScanResult(int callbackType, ScanResult result) {
+                        super.onScanResult(callbackType, result);
+                    }
+                });
+                connectToDevice(device);
+            }
+        }
+    };
+
+    BluetoothAdapter.LeScanCallback below21Scanner = new BluetoothAdapter.LeScanCallback() {
+        @Override
+        public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+            if (testDevice(device)){
+                btAdapter.stopLeScan(this);
+                connectToDevice(device);
+            }
+        }
+    };
+
+
+    private boolean testDevice(BluetoothDevice device){
         if (btDevice == null) {
             String name = device.getName();
             Log.d(LOG_TAG, "Device: " + name + " (" + device.getAddress() + ")");
             if (name != null) {
-                final Pattern namePattern = Pattern.compile("MotoHelpeR");
                 Matcher m = namePattern.matcher(name);
                 if (m.matches()) {
                     btDevice = device;
-                    btAdapter.stopLeScan(this);
-                    connectToDevice(device);
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     private void connectToDevice(BluetoothDevice btDevice) {
