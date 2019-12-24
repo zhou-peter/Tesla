@@ -88,28 +88,36 @@ final class CommunicationManagerBLE extends BluetoothGattCallback {
         //close existing connection
         closeSocket();
 
-        btAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (btAdapter == null) {
-            LogDebug("Bluetooth adapter is not available.");
-            return;
-        }
-        Log.d(LOG_TAG, "Bluetooth adapter is found.");
 
-        if (!btAdapter.isEnabled()) {
-            LogDebug("Bluetooth is disabled. Check configuration.");
-            return;
-        }
-        Log.d(LOG_TAG, "Bluetooth is enabled.");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ScanSettings scanSettings = new ScanSettings.Builder()
-                    .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-                    .build();
+            Executors.MainThreadExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    ScanSettings scanSettings = new ScanSettings.Builder()
+                            .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                            .build();
+                    BluetoothManager btManager = (BluetoothManager) context.getSystemService(BLUETOOTH_SERVICE);
+                    btAdapter = btManager.getAdapter();
 
-
-            bluetoothLeScannerAbove21 = (((BluetoothManager) context.getSystemService(BLUETOOTH_SERVICE)).getAdapter()).getBluetoothLeScanner();
-            bluetoothLeScannerAbove21.startScan(null, scanSettings, above21Scanner);
+                    bluetoothLeScannerAbove21 = btAdapter.getBluetoothLeScanner();
+                    bluetoothLeScannerAbove21.startScan(null, scanSettings, above21Scanner);
+                }
+            });
         } else {
+            btAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (btAdapter == null) {
+                LogDebug("Bluetooth adapter is not available.");
+                return;
+            }
+            Log.d(LOG_TAG, "Bluetooth adapter is found.");
+
+            if (!btAdapter.isEnabled()) {
+                LogDebug("Bluetooth is disabled. Check configuration.");
+                return;
+            }
+            Log.d(LOG_TAG, "Bluetooth is enabled.");
+
             btAdapter.startLeScan(below21Scanner);
         }
 
