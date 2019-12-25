@@ -5,6 +5,7 @@
  *      Author: User
  */
 #include "communication_manager.h"
+#include "stm32f1xx_hal_uart.h"
 #include "soft_timer.h"
 
 #define PACKET_START 0x7C
@@ -110,6 +111,9 @@ void notifyPacketProcessed() {
 	taskYIELD();
 }
 
+
+
+
 void create_rx_err(u8 err) {
 
 	volatile u8* bodyPtr = &debugPacket.body[0];
@@ -134,6 +138,9 @@ void COMM_Task() {
 	int i = 0;
 
 	while (1) {
+
+		//if uart problem
+		COMM_Driver_HealthCheck();
 
 		//no keep alive packet
 		if (CommState.CommDriverReady == FALSE) {

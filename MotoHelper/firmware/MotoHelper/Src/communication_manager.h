@@ -55,7 +55,8 @@ typedef struct
 	bool	CommDriverReady:1;
 	bool	HighSpeed:1;	//9600/115200
 	bool	HalfKeepAliveFlag:1;
-	u32		tmp3:6;
+	bool	RxResetRequired:1;
+	u32		tmp3:5;
 	u8 receivingTimeoutTimer:8;//receiving timeout
 	u8 keepAliveTimer:8;//no keep-alive timeout
 	u8 halfKeepAliveTimer:8;//no keep-alive timeout
@@ -68,7 +69,7 @@ typedef struct
 extern TaskHandle_t commHandle;
 extern volatile CommState_t CommState;
 
-extern void checkOverRun();
+extern void COMM_Driver_HealthCheck();
 extern volatile u8 commInBuf[COMM_IN_BUF_SIZE];
 extern volatile u8 commOutBuf[COMM_OUT_BUF_SIZE];
 extern volatile OutPacket debugPacket;

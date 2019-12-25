@@ -1,5 +1,4 @@
 #include "communication_hm-10.h"
-#include "stm32f1xx_hal_uart.h"
 #include "communication_manager.h"
 #include "soft_timer.h"
 
@@ -65,7 +64,13 @@ void COMM_RxCallback() {
 		commInBuf[CommState.rxIndex] = rxByte;
 		CommState.rxIndex++;
 	}
-	HAL_UART_Receive_IT(uart, &rxByte, 1);
+
+	HAL_StatusTypeDef result = HAL_UART_Receive_IT(uart, &rxByte, 1);
+	if (result != HAL_OK)
+	{
+		CommState.RxResetRequired = TRUE;
+	}
+
 	COMM_ResumeTaskFromISR();
 }
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
@@ -108,6 +113,12 @@ void HC_Suspend() {
 }
 
 
+bool startRereiving(){
+	if (HAL_UART_Receive_IT(uart, &rxByte, 1) == HAL_OK){
+		return TRUE;
+	}
+	return FALSE;
+}
 
 void checkOverRun(){
 	FlagStatus tmp1 = __HAL_UART_GET_FLAG(uart, UART_FLAG_ORE);
@@ -120,7 +131,14 @@ void checkOverRun(){
 	}
 }
 
+void COMM_Driver_HealthCheck(){
+	if (CommState.RxResetRequired == TRUE){
+		checkOverRun();
+		__HAL_UART_FLUSH_DRREGISTER(uart);
+		CommState.RxResetRequired = !startRereiving();
+	}
 
+}
 void resetRxBuf(){
 	lastAction = 5;
 	int i=0;
