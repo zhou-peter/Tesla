@@ -56,7 +56,7 @@ final class CommunicationManagerBLE extends BluetoothGattCallback {
     private BluetoothGattCharacteristic gattCharacterc;
     private AtomicBoolean reading = new AtomicBoolean(false);
     private AtomicBoolean writePending = new AtomicBoolean(false);
-    private Object readWriteLock=new Object();
+    private Object readWriteLock = new Object();
 
     private InputStreamBLE btInputStream = new InputStreamBLE();
     private OutputStream btOutputStream = new OutputStreamBLE();
@@ -90,7 +90,6 @@ final class CommunicationManagerBLE extends BluetoothGattCallback {
     public synchronized void Connect() {
         //close existing connection
         closeSocket();
-
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -128,11 +127,11 @@ final class CommunicationManagerBLE extends BluetoothGattCallback {
     }
 
     @TargetApi(21)
-    ScanCallback above21Scanner=new ScanCallback() {
+    ScanCallback above21Scanner = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             BluetoothDevice device = result.getDevice();
-            if (testDevice(device)){
+            if (testDevice(device)) {
                 bluetoothLeScannerAbove21.stopScan(new ScanCallback() {
                     @Override
                     public void onScanResult(int callbackType, ScanResult result) {
@@ -147,7 +146,7 @@ final class CommunicationManagerBLE extends BluetoothGattCallback {
     BluetoothAdapter.LeScanCallback below21Scanner = new BluetoothAdapter.LeScanCallback() {
         @Override
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-            if (testDevice(device)){
+            if (testDevice(device)) {
                 btAdapter.stopLeScan(this);
                 connectToDevice(device);
             }
@@ -155,7 +154,7 @@ final class CommunicationManagerBLE extends BluetoothGattCallback {
     };
 
 
-    private boolean testDevice(BluetoothDevice device){
+    private boolean testDevice(BluetoothDevice device) {
         if (btDevice == null) {
             String name = device.getName();
             Log.d(LOG_TAG, "Device: " + name + " (" + device.getAddress() + ")");
@@ -211,9 +210,9 @@ final class CommunicationManagerBLE extends BluetoothGattCallback {
             btInputStream.addBytes(data);
         }
         reading.set(false);
-        if (writePending.get()){
-            synchronized (readWriteLock){
-                notify();
+        synchronized (readWriteLock) {
+            if (writePending.get()) {
+                readWriteLock.notify();
             }
         }
     }
@@ -303,11 +302,11 @@ final class CommunicationManagerBLE extends BluetoothGattCallback {
                     output[i] = buffer.poll();
                 }
 
-                if (reading.get()){
-                    synchronized (readWriteLock){
+                if (reading.get()) {
+                    synchronized (readWriteLock) {
                         writePending.set(true);
                         try {
-                            wait(1000);
+                            readWriteLock.wait();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }

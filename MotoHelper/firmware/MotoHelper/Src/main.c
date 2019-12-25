@@ -461,6 +461,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 		COMM_RxCallback();
 	}
 }
+
+
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_StartDefaultTask */

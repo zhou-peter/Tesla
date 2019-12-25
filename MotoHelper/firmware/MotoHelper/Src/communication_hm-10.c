@@ -1,4 +1,5 @@
 #include "communication_hm-10.h"
+#include "stm32f1xx_hal_uart.h"
 #include "communication_manager.h"
 #include "soft_timer.h"
 
@@ -67,7 +68,10 @@ void COMM_RxCallback() {
 	HAL_UART_Receive_IT(uart, &rxByte, 1);
 	COMM_ResumeTaskFromISR();
 }
-
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
+{
+	COMM_PeriodElapsedCallback();
+}
 void COMM_DRIVER_PeriodElapsedCallback() {
 	HCState.ATTimeout = TRUE;
 	HCState.softTimer = 0;
@@ -102,6 +106,20 @@ void HC_Suspend() {
 	const TickType_t xBlockTime = pdMS_TO_TICKS(500);
 	ulTaskNotifyTake(pdFALSE, xBlockTime);
 }
+
+
+
+void checkOverRun(){
+	FlagStatus tmp1 = __HAL_UART_GET_FLAG(uart, UART_FLAG_ORE);
+	FlagStatus tmp2 = __HAL_UART_GET_IT_SOURCE(uart, UART_IT_ERR);
+	/* UART Over-Run interrupt occurred ----------------------------------------*/
+	if((tmp1 != RESET) && (tmp2 != RESET))
+	{
+		__HAL_UART_CLEAR_OREFLAG(uart);
+		uart->ErrorCode |= HAL_UART_ERROR_ORE;
+	}
+}
+
 
 void resetRxBuf(){
 	lastAction = 5;
@@ -345,6 +363,7 @@ void COMM_Driver_Configure() {
 
 		HCState.ATState = AT;
 		CommState.TxState = TxIdle;
+		CommState.HalfKeepAliveFlag = FALSE;
 
 		while (TRUE) {
 			configModuleAT();

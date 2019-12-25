@@ -9,7 +9,7 @@
 
 #define PACKET_START 0x7C
 
-#define KEEP_ALIVE_PERIOD 3000
+#define KEEP_ALIVE_PERIOD 10000
 
 volatile u8 commInBuf[COMM_IN_BUF_SIZE];
 volatile u8 commOutBuf[COMM_OUT_BUF_SIZE];
@@ -26,8 +26,7 @@ void COMM_Init(TaskHandle_t taskHandle) {
 void COMM_ResumeTaskFromISR() {
 	BaseType_t false = pdFALSE;
 	vTaskNotifyGiveFromISR(commHandle, &false);
-	taskYIELD()
-	;
+	taskYIELD();
 }
 
 void COMM_PeriodElapsedCallback() {
@@ -67,6 +66,12 @@ void COMM_KeepAlivePeriodElapsedCallback() {
 	COMM_ResumeTaskFromISR();
 }
 
+void COMM_HalfKeepAlivePeriodElapsedCallback() {
+	CommState.HalfKeepAliveFlag = TRUE;
+	checkOverRun();
+	COMM_ResumeTaskFromISR();
+}
+
 void resetKeepAliveWatchDog() {
 	lastTimeStampReset = timeStampCounter;
 	if (CommState.keepAliveTimer > 0) {
@@ -75,12 +80,22 @@ void resetKeepAliveWatchDog() {
 		CommState.keepAliveTimer = addTimer(KEEP_ALIVE_PERIOD, FALSE,
 				&COMM_KeepAlivePeriodElapsedCallback);
 	}
+	if (CommState.halfKeepAliveTimer>0){
+		restartTimer(CommState.halfKeepAliveTimer);
+	}else{
+		CommState.halfKeepAliveTimer = addTimer(KEEP_ALIVE_PERIOD/2, FALSE,
+				&COMM_HalfKeepAlivePeriodElapsedCallback);
+	}
 }
 
 void stopKeppAliveTimer() {
 	if (CommState.keepAliveTimer > 0) {
 		removeTimer(CommState.keepAliveTimer);
 		CommState.keepAliveTimer = 0;
+	}
+	if (CommState.halfKeepAliveTimer>0){
+		removeTimer(CommState.halfKeepAliveTimer);
+		CommState.halfKeepAliveTimer = 0;
 	}
 }
 
@@ -213,7 +228,7 @@ void COMM_Task() {
 }
 
 void createOutPacketAndSend(u8 command, u16 bodySize, u8* bodyData) {
-
+	checkOverRun();
 	if (CommState.TxState == TxSending) {
 		return;
 	}

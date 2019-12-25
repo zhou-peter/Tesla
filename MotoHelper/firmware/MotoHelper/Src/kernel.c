@@ -75,6 +75,7 @@ void KERNEL_Task() {
 			}
 			//every 20 ms send something
 			else if (CommState.AtLeastOnePacketReceived==TRUE
+					&& CommState.HalfKeepAliveFlag == FALSE
 					&&  data.itemsCount > 0 && timeToSend == TRUE) {
 				timeToSend = FALSE;
 				sendAccelData();
