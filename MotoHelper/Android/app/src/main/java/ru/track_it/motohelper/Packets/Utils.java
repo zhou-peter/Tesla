@@ -52,6 +52,6 @@ public class Utils {
 
     public static final long getUInt32(byte[] buf, int offset){
         ByteBuffer byteBuffer = ByteBuffer.wrap(buf, offset, 4);
-        return ((long)byteBuffer.getInt())&0xFFFFFFFF;
+        return ((long)byteBuffer.getInt())&0x00000000FFFFFFFF;
     }
 }

@@ -5,12 +5,11 @@
  *      Author: User
  */
 #include "communication_manager.h"
-#include "stm32f1xx_hal_uart.h"
 #include "soft_timer.h"
 
 #define PACKET_START 0x7C
-
-#define KEEP_ALIVE_PERIOD 10000
+#define TIMEOUT_PERIOD 200
+#define KEEP_ALIVE_PERIOD 2000
 
 volatile u8 commInBuf[COMM_IN_BUF_SIZE];
 volatile u8 commOutBuf[COMM_OUT_BUF_SIZE];
@@ -46,7 +45,7 @@ void COMM_PeriodElapsedCallback() {
 }
 
 void startTimeoutTimer() {
-	CommState.receivingTimeoutTimer = addTimer(200, FALSE,
+	CommState.receivingTimeoutTimer = addTimer(TIMEOUT_PERIOD, FALSE,
 			&COMM_PeriodElapsedCallback);
 }
 
@@ -57,9 +56,13 @@ void stopTimeoutTimer() {
 	}
 }
 
-void restartTimeoutTimer() {
-	stopTimeoutTimer();
-	startTimeoutTimer();
+void resetTimeoutTimer() {
+	if (CommState.receivingTimeoutTimer > 0) {
+		restartTimer(CommState.receivingTimeoutTimer);
+	} else {
+		CommState.receivingTimeoutTimer = addTimer(TIMEOUT_PERIOD, FALSE,
+				&COMM_PeriodElapsedCallback);
+	}
 }
 
 void COMM_KeepAlivePeriodElapsedCallback() {
@@ -67,11 +70,7 @@ void COMM_KeepAlivePeriodElapsedCallback() {
 	COMM_ResumeTaskFromISR();
 }
 
-void COMM_HalfKeepAlivePeriodElapsedCallback() {
-	CommState.HalfKeepAliveFlag = TRUE;
-	checkOverRun();
-	COMM_ResumeTaskFromISR();
-}
+
 
 void resetKeepAliveWatchDog() {
 	lastTimeStampReset = timeStampCounter;
@@ -81,22 +80,12 @@ void resetKeepAliveWatchDog() {
 		CommState.keepAliveTimer = addTimer(KEEP_ALIVE_PERIOD, FALSE,
 				&COMM_KeepAlivePeriodElapsedCallback);
 	}
-	if (CommState.halfKeepAliveTimer>0){
-		restartTimer(CommState.halfKeepAliveTimer);
-	}else{
-		CommState.halfKeepAliveTimer = addTimer(KEEP_ALIVE_PERIOD/2, FALSE,
-				&COMM_HalfKeepAlivePeriodElapsedCallback);
-	}
 }
 
 void stopKeppAliveTimer() {
 	if (CommState.keepAliveTimer > 0) {
 		removeTimer(CommState.keepAliveTimer);
 		CommState.keepAliveTimer = 0;
-	}
-	if (CommState.halfKeepAliveTimer>0){
-		removeTimer(CommState.halfKeepAliveTimer);
-		CommState.halfKeepAliveTimer = 0;
 	}
 }
 
@@ -173,7 +162,7 @@ void COMM_Task() {
 				} else {
 					CommState.RxState = ReceivingSize;
 					CommState.rxPacketSize = 0;
-					restartTimeoutTimer();
+					resetTimeoutTimer();
 				}
 			}
 		} else if (CommState.RxState == ReceivingSize) {

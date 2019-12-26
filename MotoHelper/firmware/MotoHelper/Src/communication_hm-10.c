@@ -381,7 +381,6 @@ void COMM_Driver_Configure() {
 
 		HCState.ATState = AT;
 		CommState.TxState = TxIdle;
-		CommState.HalfKeepAliveFlag = FALSE;
 
 		while (TRUE) {
 			configModuleAT();

@@ -23,6 +23,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
@@ -39,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     CommunicationManagerBLE communicationManager = new CommunicationManagerBLE(this);
     PacketsManager packetsManager;
     private final static String LOG_TAG = "MainActivity";
+    AtomicBoolean packetsProcessing = new AtomicBoolean(false);
+
     private boolean bluetoothGranded = false;
     private boolean bluetoothAdminGranded = false;
     private boolean coarsetoothGranded = false;
@@ -54,32 +58,27 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
-        FloatingActionButton fab = findViewById(R.id.fab);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //MainActivityPermissionsDispatcher.createCommunicationInstanceWithPermissionCheck(MainActivity.this);
-            }
-        });
+        //FloatingActionButton fab = findViewById(R.id.fab);
+
 
         Executors.BackGroundThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                while(true){
+                while (true) {
                     try {
                         Thread.sleep(2000);
-                        if (!coarsetoothGranded){
+                        if (!coarsetoothGranded) {
                             MainActivityPermissionsDispatcher.grantedCoarseLocationWithPermissionCheck(MainActivity.this);
-                        }else if (!bluetoothGranded){
+                        } else if (!bluetoothGranded) {
                             MainActivityPermissionsDispatcher.grantedBluetoothWithPermissionCheck(MainActivity.this);
-                        }else if (!bluetoothAdminGranded){
+                        } else if (!bluetoothAdminGranded) {
                             MainActivityPermissionsDispatcher.grantedBluetoothAdminWithPermissionCheck(MainActivity.this);
-                        }else if (!fineLocationGranded){
+                        } else if (!fineLocationGranded) {
                             MainActivityPermissionsDispatcher.grantedFineLocationWithPermissionCheck(MainActivity.this);
                         }
                         if (coarsetoothGranded && fineLocationGranded &&
-                                bluetoothGranded && bluetoothAdminGranded && BluetoothAdapter.getDefaultAdapter().isEnabled()){
+                                bluetoothGranded && bluetoothAdminGranded && BluetoothAdapter.getDefaultAdapter().isEnabled()) {
                             createCommunicationInstance();
                             break;
                         }
@@ -102,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)
-    void showPermissionMessageFINE(final PermissionRequest request){
+    void showPermissionMessageFINE(final PermissionRequest request) {
         new AlertDialog.Builder(this)
                 .setTitle("Permission needed")
                 .setMessage("If you want to use this application, you must accept")
@@ -119,13 +118,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }).create().show();
     }
+
     @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     void grantedFineLocation() {
         fineLocationGranded = true;
     }
 
     @OnShowRationale(Manifest.permission.ACCESS_COARSE_LOCATION)
-    void showPermissionMessageCOARSE(final PermissionRequest request){
+    void showPermissionMessageCOARSE(final PermissionRequest request) {
         new AlertDialog.Builder(this)
                 .setTitle("Permission needed")
                 .setMessage("If you want to use this application, you must accept")
@@ -142,13 +142,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }).create().show();
     }
+
     @NeedsPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
     void grantedCoarseLocation() {
         coarsetoothGranded = true;
     }
 
     @OnShowRationale(Manifest.permission.BLUETOOTH)
-    void showPermissionMessageBluetooth(final PermissionRequest request){
+    void showPermissionMessageBluetooth(final PermissionRequest request) {
         new AlertDialog.Builder(this)
                 .setTitle("Permission needed")
                 .setMessage("If you want to use this application, you must accept")
@@ -165,13 +166,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }).create().show();
     }
+
     @NeedsPermission(Manifest.permission.BLUETOOTH)
     void grantedBluetooth() {
         bluetoothGranded = true;
     }
 
     @OnShowRationale(Manifest.permission.BLUETOOTH_ADMIN)
-    void showPermissionMessageBluetoothAdmin(final PermissionRequest request){
+    void showPermissionMessageBluetoothAdmin(final PermissionRequest request) {
         new AlertDialog.Builder(this)
                 .setTitle("Permission needed")
                 .setMessage("If you want to use this application, you must accept")
@@ -188,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }).create().show();
     }
+
     @NeedsPermission(Manifest.permission.BLUETOOTH_ADMIN)
     void grantedBluetoothAdmin() {
         bluetoothAdminGranded = true;
@@ -196,7 +199,6 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(enableBtIntent, 1);
         }
     }
-
 
 
     void createCommunicationInstance() {
@@ -233,13 +235,19 @@ public class MainActivity extends AppCompatActivity {
     PacketsListener pl = new PacketsListener() {
         @Override
         public void onNewPacketsCame() {
-            while (!packetsManager.receivedPackets.isEmpty()) {
-                AbstractInPacket packet = packetsManager.receivedPackets.poll();
-                switch (packet.Command) {
-                    case 0x01:
-                        break;
-                    default:
-                        packet.DefaultProcess();
+            if (packetsProcessing.compareAndSet(false, true)) {
+                try {
+                    while (!packetsManager.receivedPackets.isEmpty()) {
+                        AbstractInPacket packet = packetsManager.receivedPackets.poll();
+                        switch (packet.Command) {
+                            case 0x01:
+                                break;
+                            default:
+                                packet.DefaultProcess();
+                        }
+                    }
+                } finally {
+                    packetsProcessing.set(false);
                 }
             }
         }
