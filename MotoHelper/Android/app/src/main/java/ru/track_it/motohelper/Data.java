@@ -9,7 +9,8 @@ import java.util.Map;
 public class Data {
 
     public static final int samplePeriod = 10;
-    public static final int accelDataPointsLimit = 1000;
+    public static final int accelDataPointsLimit = 1000;    //10s
+    public static final int pointsCountToShowOnGraph = 200; //2s
 
     public static final Object accelLock=new Object();
     public static final Map<Long, AccelData> accelData = new HashMap<>();

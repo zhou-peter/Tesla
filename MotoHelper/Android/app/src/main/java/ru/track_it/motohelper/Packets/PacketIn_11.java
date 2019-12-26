@@ -37,22 +37,28 @@ public class PacketIn_11 extends AbstractInPacket {
 
     @Override
     public void DefaultProcess() {
+        //add/replace new data
         accelData.putAll(tmpData);
 
+        //create temprory sorted list
+        List<AccelData> tmpList = new ArrayList<>(accelData.size());
+        tmpList.addAll(accelData.values());
+        Collections.sort(tmpList, Data.accelDataSorter);
+
+        //trim
+        if (tmpList.size() > accelDataPointsLimit) {
+            int delta = tmpList.size() - accelDataPointsLimit;
+            while (--delta > 0) {
+                AccelData oldData = tmpList.get(0);
+                tmpList.remove(oldData);
+                accelData.remove(oldData.ms);
+            }
+        }
+
+        //replace datasource for a View
         synchronized (accelLock) {
             accelArray.clear();
-            accelArray.addAll(accelData.values());
-            Collections.sort(accelArray, Data.accelDataSorter);
-
-            //trim
-            if (accelArray.size() > accelDataPointsLimit) {
-                int delta = accelArray.size() - accelDataPointsLimit;
-                while (--delta > 0) {
-                    AccelData oldData = accelArray.get(0);
-                    accelArray.remove(oldData);
-                    accelData.remove(oldData.ms);
-                }
-            }
+            accelArray.addAll(tmpData.values());
         }
     }
 }
