@@ -40,18 +40,23 @@ public class Utils {
 
 
     public static final short getInt16(byte[] buf, int offset){
-        ByteBuffer byteBuffer = ByteBuffer.wrap(buf, offset, 2);
-        return byteBuffer.getShort();
+        short value = buf[offset];
+        value |=buf[offset+1]<<8;
+        return value;
     }
 
-
+/*
     public static final int getInt32(byte[] buf, int offset){
         ByteBuffer byteBuffer = ByteBuffer.wrap(buf, offset, 4);
         return byteBuffer.getInt();
-    }
+    }*/
 
     public static final long getUInt32(byte[] buf, int offset){
-        ByteBuffer byteBuffer = ByteBuffer.wrap(buf, offset, 4);
-        return ((long)byteBuffer.getInt())&0x00000000FFFFFFFF;
+        int value = buf[offset];
+        value |=buf[offset+1]<<8;
+        value |=buf[offset+2]<<16;
+        value |=buf[offset+3]<<24;
+        long value2 = value & 0xFFFFFFFFl;
+        return value2;
     }
 }

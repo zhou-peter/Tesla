@@ -10,7 +10,10 @@ public class Data {
 
     public static final int samplePeriod = 10;
     public static final int accelDataPointsLimit = 1000;
-    public static final List<AccelData> accelData = new ArrayList<>();
+
+    public static final Object accelLock=new Object();
+    public static final Map<Long, AccelData> accelData = new HashMap<>();
+    public static final List<AccelData> accelArray=new ArrayList<>();
 
     public static Comparator<AccelData> accelDataSorter = new Comparator<AccelData>() {
         @Override

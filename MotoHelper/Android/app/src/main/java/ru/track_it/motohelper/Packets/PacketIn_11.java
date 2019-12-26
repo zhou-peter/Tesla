@@ -3,17 +3,22 @@ package ru.track_it.motohelper.Packets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import ru.track_it.motohelper.AccelData;
 import ru.track_it.motohelper.Data;
 
+import static ru.track_it.motohelper.Data.accelArray;
 import static ru.track_it.motohelper.Data.accelData;
 import static ru.track_it.motohelper.Data.accelDataPointsLimit;
+import static ru.track_it.motohelper.Data.accelLock;
 
 public class PacketIn_11 extends AbstractInPacket {
 
-    private List<AccelData> tmpData = new ArrayList<>();
+    private Map<Long, AccelData> tmpData = new HashMap<>();
 
     @Override
     public void ApplyBody(byte[] buf, int offset, int size) {
@@ -25,20 +30,28 @@ public class PacketIn_11 extends AbstractInPacket {
             newAccelData.x = Utils.getInt16(buf, j);
             newAccelData.y = Utils.getInt16(buf, j + 2);
             newAccelData.z = Utils.getInt16(buf, j + 4);
-            tmpData.add(newAccelData);
+            tmpData.put(newAccelData.ms, newAccelData);
             timestamp -= Data.samplePeriod;
         }
     }
 
     @Override
     public void DefaultProcess() {
-        accelData.addAll(tmpData);
-        Collections.sort(accelData, Data.accelDataSorter);
-        //trim
-        if (accelData.size() > accelDataPointsLimit) {
-            int delta = accelData.size() - accelDataPointsLimit;
-            while (--delta > 0) {
-                accelData.remove(0);
+        accelData.putAll(tmpData);
+
+        synchronized (accelLock) {
+            accelArray.clear();
+            accelArray.addAll(accelData.values());
+            Collections.sort(accelArray, Data.accelDataSorter);
+
+            //trim
+            if (accelArray.size() > accelDataPointsLimit) {
+                int delta = accelArray.size() - accelDataPointsLimit;
+                while (--delta > 0) {
+                    AccelData oldData = accelArray.get(0);
+                    accelArray.remove(oldData);
+                    accelData.remove(oldData.ms);
+                }
             }
         }
     }
