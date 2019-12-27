@@ -49,6 +49,6 @@ public class CalibrationViewModel extends ViewModel {
     }
 
     public void updateData(List<AccelData> newData){
-        graphDataSource.setValue(newData);
+        graphDataSource.postValue(newData);
     }
 }

@@ -30,8 +30,12 @@ public class Calibration extends Fragment {
 
         root = inflater.inflate(R.layout.calibration_fragment, container, false);
         graph = (GraphView) root.findViewById(R.id.graph);
+        graph.getViewport().setMinX(0);
+        graph.getViewport().setMaxX(200);
+        graph.getViewport().setMinY(Short.MIN_VALUE);
+        graph.getViewport().setMaxY(Short.MAX_VALUE);
+        graph.getViewport().setXAxisBoundsManual(true);
         //graph.addSeries(series);
-        //graph.getViewport().setXAxisBoundsManual(true);
         //graph.getGridLabelRenderer().setLabelFormatter(this);
         return inflater.inflate(R.layout.calibration_fragment, container, false);
     }
@@ -47,8 +51,13 @@ public class Calibration extends Fragment {
                 graph.addSeries(threeAxisData.xAxisData);
                 graph.addSeries(threeAxisData.yAxisData);
                 graph.addSeries(threeAxisData.zAxisData);
+
             }
         });
+    }
+
+    public CalibrationViewModel getModel(){
+        return mViewModel;
     }
 
 }

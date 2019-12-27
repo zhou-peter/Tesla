@@ -58,7 +58,7 @@ public class PacketIn_11 extends AbstractInPacket {
         //replace datasource for a View
         synchronized (accelLock) {
             accelArray.clear();
-            accelArray.addAll(tmpData.values());
+            accelArray.addAll(tmpList);
         }
     }
 }

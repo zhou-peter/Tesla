@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     PacketsManager packetsManager;
     private final static String LOG_TAG = "MainActivity";
     AtomicBoolean packetsProcessing = new AtomicBoolean(false);
+    SectionsPagerAdapter sectionsPagerAdapter;
 
     private boolean bluetoothGranded = false;
     private boolean bluetoothAdminGranded = false;
@@ -52,12 +53,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this,
+        sectionsPagerAdapter = new SectionsPagerAdapter(this,
                 getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
+
 
         //FloatingActionButton fab = findViewById(R.id.fab);
 
@@ -246,9 +248,18 @@ public class MainActivity extends AppCompatActivity {
                                 packet.DefaultProcess();
                         }
                     }
+
                 } finally {
                     packetsProcessing.set(false);
                 }
+                final Calibration calibrationFragment = (Calibration) sectionsPagerAdapter.getItem(0);
+                Executors.MainThreadExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        calibrationFragment.getModel().updateData(Data.accelArray);
+                    }
+                });
+
             }
         }
     };
