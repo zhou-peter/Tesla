@@ -23,6 +23,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import permissions.dispatcher.NeedsPermission;
@@ -253,10 +255,11 @@ public class MainActivity extends AppCompatActivity {
                     packetsProcessing.set(false);
                 }
                 final Calibration calibrationFragment = (Calibration) sectionsPagerAdapter.getItem(0);
+                final List<AccelData> newData = Collections.unmodifiableList(Data.accelArray);
                 Executors.MainThreadExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
-                        calibrationFragment.getModel().updateData(Data.accelArray);
+                        calibrationFragment.getModel().updateData(newData);
                     }
                 });
 

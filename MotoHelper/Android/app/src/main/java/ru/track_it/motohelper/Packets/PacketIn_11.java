@@ -14,7 +14,7 @@ import ru.track_it.motohelper.Data;
 import static ru.track_it.motohelper.Data.accelArray;
 import static ru.track_it.motohelper.Data.accelData;
 import static ru.track_it.motohelper.Data.accelDataPointsLimit;
-import static ru.track_it.motohelper.Data.accelLock;
+
 
 public class PacketIn_11 extends AbstractInPacket {
 
@@ -56,9 +56,7 @@ public class PacketIn_11 extends AbstractInPacket {
         }
 
         //replace datasource for a View
-        synchronized (accelLock) {
-            accelArray.clear();
-            accelArray.addAll(tmpList);
-        }
+        accelArray.clear();
+        accelArray.addAll(tmpList);
     }
 }
