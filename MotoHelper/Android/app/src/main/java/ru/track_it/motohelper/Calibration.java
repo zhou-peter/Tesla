@@ -42,7 +42,7 @@ public class Calibration extends Fragment {
         graph.setData(new LineData());
         graph.setViewPortOffsets(0,0,0,0);
 
-        return inflater.inflate(R.layout.calibration_fragment, container, false);
+        return root;//inflater.inflate(R.layout.calibration_fragment, container, false);
     }
 
     @Override

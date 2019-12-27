@@ -14,9 +14,9 @@ TaskHandle_t gHandle;
 #define OUT_X_L			0x28
 
 //ODR3 ODR2 ODR1 ODR0 LPen Zen Yen Xen
-//100Hz
+
 #define CTRL_REG1		0x20
-#define CTRL_REG1_VALUE 0b01010111
+#define CTRL_REG1_VALUE 0b10010111
 
 
 
@@ -129,9 +129,9 @@ void ACCEL_readData()
 }
 
 void ACCEL_buildStruct(){
-	AccelData.x = getS16(&acc_buf, 0);
-	AccelData.y = getS16(&acc_buf, 2);
-	AccelData.z = getS16(&acc_buf, 4);
+	AccelData.x = getS16(&acc_buf, 0)>>6;
+	AccelData.y = getS16(&acc_buf, 2)>>6;
+	AccelData.z = getS16(&acc_buf, 4)>>6;
 }
 
 void ACCEL_NotifyTaskFromISR() {
