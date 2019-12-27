@@ -1,9 +1,12 @@
 package ru.track_it.motohelper;
 
-import com.jjoe64.graphview.series.LineGraphSeries;
+import com.github.mikephil.charting.data.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ThreeAxisData {
-    LineGraphSeries xAxisData=new LineGraphSeries();
-    LineGraphSeries yAxisData=new LineGraphSeries();
-    LineGraphSeries zAxisData=new LineGraphSeries();
+    List<Entry> xAxisData=new ArrayList<>();
+    List<Entry> yAxisData=new ArrayList<>();
+    List<Entry> zAxisData=new ArrayList<>();
 }

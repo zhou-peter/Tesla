@@ -6,7 +6,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
-import com.jjoe64.graphview.series.DataPoint;
+
+import com.github.mikephil.charting.data.Entry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +35,9 @@ public class CalibrationViewModel extends ViewModel {
                 int step = 0;
                 for(;index<data.size();index++){
                     AccelData ad=data.get(index);
-                    result.xAxisData.appendData(new DataPoint(step, ad.x), true, Data.pointsCountToShowOnGraph);
-                    result.yAxisData.appendData(new DataPoint(step, ad.y), true, Data.pointsCountToShowOnGraph);
-                    result.zAxisData.appendData(new DataPoint(step, ad.z), true, Data.pointsCountToShowOnGraph);
+                    result.xAxisData.add(new Entry(step, ad.x));
+                    result.yAxisData.add(new Entry(step, ad.y));
+                    result.zAxisData.add(new Entry(step, ad.z));
                     step++;
                 }
             }
@@ -50,5 +51,6 @@ public class CalibrationViewModel extends ViewModel {
 
     public void updateData(List<AccelData> newData){
         graphDataSource.postValue(newData);
+
     }
 }

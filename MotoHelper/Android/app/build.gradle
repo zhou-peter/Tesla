@@ -21,6 +21,9 @@ android {
         }
     }
 }
+repositories {
+    maven { url 'https://jitpack.io' }
+}
 
 dependencies {
 
@@ -34,7 +37,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:3.1.0'
 
-    implementation 'com.jjoe64:graphview:4.2.1'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
