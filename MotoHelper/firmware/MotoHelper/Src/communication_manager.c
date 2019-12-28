@@ -230,7 +230,7 @@ void createOutPacketAndSend(u8 command, u16 bodySize, u8* bodyData) {
 	}
 
 	u16 i = 0;
-	u16 txBufSize = 6 + bodySize;
+	u16 txBufSize = EMPTY_PACKET_SIZE + bodySize;
 	commOutBuf[0] = PACKET_START;
 	commOutBuf[1] = (u8) (txBufSize);
 	commOutBuf[2] = (u8) (txBufSize >> 8);
@@ -246,8 +246,8 @@ void createOutPacketAndSend(u8 command, u16 bodySize, u8* bodyData) {
 	for (i = 0; i < 4 + bodySize; i++) {
 		crc += commOutBuf[i];
 	}
-	commOutBuf[4 + bodySize] = crc;
-	commOutBuf[5 + bodySize] = crc ^ 0xAA;
+	commOutBuf[EMPTY_PACKET_SIZE - 2 + bodySize] = crc;
+	commOutBuf[EMPTY_PACKET_SIZE - 1 + bodySize] = crc ^ 0xAA;
 
 	COMM_SendData(txBufSize);
 }

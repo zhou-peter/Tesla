@@ -26,6 +26,7 @@ void sendAccelData()
 	//send as much as possable
 	//available data size
 	u16 bodySize = data.itemsCount * data.itemSize;
+	bodySize = 2 * data.itemSize;//test
 	bodySize+=4;
 	while (bodySize > COMM_OUT_MAX_BODY_SIZE) {
 		bodySize -= data.itemSize;

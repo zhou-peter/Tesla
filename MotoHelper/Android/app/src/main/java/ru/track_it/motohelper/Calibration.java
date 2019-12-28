@@ -69,7 +69,7 @@ public class Calibration extends Fragment {
         mViewModel.getGraphData().observe(this, new Observer<List<AccelData>>() {
             @Override
             public void onChanged(List<AccelData> threeAxisData) {
-
+                //add new data
                 for (AccelData ac : threeAxisData){
                     if (ac.ms>lastTimestamp){
                         xData.add(new Entry(ac.ms, ac.x));
@@ -78,7 +78,7 @@ public class Calibration extends Fragment {
                         lastTimestamp=ac.ms;
                     }
                 }
-
+                //clear old
                 while (xData.size()>Data.pointsCountToShowOnGraph){
                     xData.remove(0);
                     yData.remove(0);

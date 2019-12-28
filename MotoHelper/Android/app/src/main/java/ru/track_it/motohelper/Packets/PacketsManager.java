@@ -1,5 +1,6 @@
 package ru.track_it.motohelper.Packets;
 
+import android.os.Build;
 import android.util.Log;
 
 import java.io.Closeable;
@@ -252,15 +253,18 @@ public class PacketsManager implements Runnable, Closeable {
             }
             if (CommState == ReceiverStates.Processing) {
                 //check CRC
-                byte crc = 0;
+                int crc = 0;
                 //265-2=263
                 for (int i = 0; i < rxPackSize - 2; i++) {
-                    crc += rxBuf[offset+i];
+                    int nextByte = (rxBuf[offset+i] & 0xFF);
+                    crc += nextByte;
                 }
-                byte crcXOR = (byte) (crc ^ (byte) 0xAA);
+                byte crcXOR = (byte) (crc ^ 0xAA);
+
+                byte incomeCrc = rxBuf[offset+rxPackSize - 2];
+                byte incomeCrcXOR = rxBuf[offset+rxPackSize - 1];
                 //если контрольная сумма сошлась
-                if (crc == rxBuf[offset+rxPackSize - 2] &&
-                        crcXOR == rxBuf[offset+rxPackSize - 1]) {
+                if ((byte)crc ==  incomeCrc && crcXOR == incomeCrcXOR) {
                     enqeueIncomingPacket(offset);
                     //если получили 1.5-2 пакета за раз
                     int delta = rxIndex - (rxPackSize + offset);
