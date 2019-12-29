@@ -19,12 +19,6 @@ typedef enum
 	ATNameGetAnswerWait,
 	ATNameSet,
 	ATNameSetAnswerWait,
-	ATPinGet,
-	ATPinGetAnswerWait,
-	ATPin,
-	ATPinAnswerWait,
-	ATSpeed,
-	ATSpeedAnswerWait,
 	ATWaitStream
 }ATStates;
 
