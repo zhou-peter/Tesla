@@ -11,7 +11,7 @@ TaskHandle_t commHandle;
 #define BT_DISABLE GPIO_PIN_4
 #define BT_TX GPIO_PIN_2
 #define BT_PORT GPIOA
-#define HIGH_SPEED 57600
+#define HIGH_SPEED 19200
 #define LOW_SPEED 9600
 
 volatile u8 rxByte;
