@@ -26,7 +26,7 @@ void sendAccelData()
 	//send as much as possable
 	//available data size
 	u16 bodySize = data.itemsCount * data.itemSize;
-	bodySize = 2 * data.itemSize;//test
+	//testbodySize = 2 * data.itemSize;
 	bodySize+=4;
 	while (bodySize > COMM_OUT_MAX_BODY_SIZE) {
 		bodySize -= data.itemSize;
@@ -69,6 +69,7 @@ void KERNEL_Task() {
 		//if there is communication
 		if (CommState.CommDriverReady == TRUE && CommState.TxState == TxIdle)
 		{
+
 			//debug packet
 			if (debugPacket.pending==TRUE){
 				debugPacket.pending=FALSE;
@@ -80,6 +81,13 @@ void KERNEL_Task() {
 				timeToSend = FALSE;
 				sendAccelData();
 			}
+			/*
+			volatile u8* bodyPtr = &commOutBuf[COMM_OUT_BODY_OFFSET];
+			for (int i=0;i<15;i++){
+				*bodyPtr++ = 0xFF;
+				*bodyPtr++ = 0xAA;
+			}
+			createOutPacketAndSend(0x01, 30, NULL);*/
 		}
 
 

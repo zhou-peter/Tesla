@@ -239,11 +239,11 @@ final class CommunicationManagerBLE extends BluetoothGattCallback {
     private class InputStreamBLE extends InputStream {
 
         private AtomicBoolean awaiting = new AtomicBoolean(true);
-        private ConcurrentLinkedQueue<Byte> buffer = new ConcurrentLinkedQueue<>();
+        private ConcurrentLinkedQueue<Integer> buffer = new ConcurrentLinkedQueue<>();
 
         public void addBytes(byte[] buf) {
             for (byte b : buf) {
-                buffer.add(b);
+                buffer.add(b&0xFF);
             }
 
             synchronized (this) {
@@ -277,7 +277,8 @@ final class CommunicationManagerBLE extends BluetoothGattCallback {
                     awaiting.set(false);
                 }
             }
-            return buffer.poll();
+            int result = buffer.poll();
+            return result;
         }
     }
 

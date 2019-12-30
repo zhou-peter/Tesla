@@ -27,7 +27,7 @@ public class Calibration extends Fragment {
 
     private CalibrationViewModel mViewModel;
     View root;
-    private long lastTimestamp = 0;
+
     LineChart graph;
     LineDataSet xAxisDataSet, yAxisDataSet, zAxisDataSet;
     List<Entry> xData=new ArrayList<>();
@@ -46,7 +46,6 @@ public class Calibration extends Fragment {
         graph = (LineChart) root.findViewById(R.id.graph);
         //graph.animateXY(3000,3000);
         graph.setViewPortOffsets(0,0,0,0);
-
 
         xAxisDataSet =new LineDataSet(xData, "X");
         xAxisDataSet.setColor(Color.MAGENTA);
@@ -67,31 +66,42 @@ public class Calibration extends Fragment {
         mViewModel = ViewModelProviders.of(this).get(CalibrationViewModel.class);
         mViewModel.getGraphData().removeObservers(this);
         mViewModel.getGraphData().observe(this, new Observer<List<AccelData>>() {
+            /**
+             * @param threeAxisData Не 10-15 семплов а все что есть около 1000
+             */
             @Override
             public void onChanged(List<AccelData> threeAxisData) {
-                //add new data
-                for (AccelData ac : threeAxisData){
-                    if (ac.ms>lastTimestamp){
-                        xData.add(new Entry(ac.ms, ac.x));
-                        yData.add(new Entry(ac.ms, ac.y));
-                        zData.add(new Entry(ac.ms, ac.z));
-                        lastTimestamp=ac.ms;
-                    }
-                }
-                //clear old
-                while (xData.size()>Data.pointsCountToShowOnGraph){
-                    xData.remove(0);
-                    yData.remove(0);
-                    zData.remove(0);
-                }
+                int newDataSize = threeAxisData.size();
+                if (newDataSize>0){
 
-                xAxisDataSet.notifyDataSetChanged();
-                yAxisDataSet.notifyDataSetChanged();
-                zAxisDataSet.notifyDataSetChanged();
-                graph.notifyDataSetChanged();
-                graph.invalidate();
+                    xData.clear();
+                    yData.clear();
+                    zData.clear();
+
+                    int index = 0;
+                    if (newDataSize>Data.pointsCountToShowOnGraph){
+                        index = newDataSize-Data.pointsCountToShowOnGraph;
+                    }
+
+                    //добавляемм новые данные: если есть пробелы - заполняем их данные предидущего семпла
+                    for (;index<newDataSize;index++) {
+                        AccelData ac = threeAxisData.get(index);
+                            xData.add(new Entry(ac.ms, ac.x));
+                            yData.add(new Entry(ac.ms, ac.y));
+                            zData.add(new Entry(ac.ms, ac.z));
+                    }
+                    notifyDataChanged();
+                }
             }
         });
+    }
+
+    private void notifyDataChanged(){
+        xAxisDataSet.notifyDataSetChanged();
+        yAxisDataSet.notifyDataSetChanged();
+        zAxisDataSet.notifyDataSetChanged();
+        graph.notifyDataSetChanged();
+        graph.invalidate();
     }
 
     public CalibrationViewModel getModel(){

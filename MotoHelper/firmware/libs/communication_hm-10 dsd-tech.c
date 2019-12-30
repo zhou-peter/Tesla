@@ -11,7 +11,7 @@ TaskHandle_t commHandle;
 #define BT_DISABLE GPIO_PIN_4
 #define BT_TX GPIO_PIN_2
 #define BT_PORT GPIOA
-#define HIGH_SPEED 115200
+#define HIGH_SPEED 9600
 #define LOW_SPEED 9600
 
 volatile u8 rxByte;
@@ -173,9 +173,7 @@ bool configSendCommand(const u8* text, u8 length) {
 			for (i = 0; i < length; i++) {
 				commOutBuf[i] = *(text + i);
 			}
-			commOutBuf[i] = 0x0D;
-			commOutBuf[i + 1] = 0x0A;
-			COMM_SendData(length+2);
+			COMM_SendData(length);
 		}
 		lastAction = 15;
 		HC_StartTimer();
