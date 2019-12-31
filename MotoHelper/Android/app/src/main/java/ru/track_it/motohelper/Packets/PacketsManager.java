@@ -195,6 +195,13 @@ public class PacketsManager implements Runnable, Closeable {
                     offset++;
                 }
 
+                //не нашли старт байт
+                if (offset==rxBuf.length){
+                    rxIndex=0;
+                    stopTimer();
+                    break;
+                }
+
                 if (rxBuf[offset] == PACKET_START) {
                     CommState = ReceiverStates.ReceivingSize;
                     rxPackSize = 0;

@@ -251,17 +251,19 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
+                    final Calibration calibrationFragment = (Calibration) sectionsPagerAdapter.getItem(0);
+                    final List<AccelData> newData = Collections.unmodifiableList(Data.accelArray);
+                    Executors.MainThreadExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            calibrationFragment.getModel().updateData(newData);
+                        }
+                    });
+
                 } finally {
                     packetsProcessing.set(false);
                 }
-                final Calibration calibrationFragment = (Calibration) sectionsPagerAdapter.getItem(0);
-                final List<AccelData> newData = Collections.unmodifiableList(Data.accelArray);
-                Executors.MainThreadExecutor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        calibrationFragment.getModel().updateData(newData);
-                    }
-                });
+
 
             }
         }

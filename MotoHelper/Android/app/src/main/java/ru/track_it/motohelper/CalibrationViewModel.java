@@ -7,8 +7,6 @@ import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 
-import com.github.mikephil.charting.data.Entry;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +27,10 @@ public class CalibrationViewModel extends ViewModel {
         return graphData;
     }
 
+
+    /**
+     * @param newData
+     */
     public void updateData(List<AccelData> newData){
         graphDataSource.postValue(newData);
     }

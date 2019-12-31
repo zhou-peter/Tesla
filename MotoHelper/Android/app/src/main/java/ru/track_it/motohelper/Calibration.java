@@ -3,7 +3,6 @@ package ru.track_it.motohelper;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,10 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
+import com.androidplot.xy.BoundaryMode;
+import com.androidplot.xy.LineAndPointFormatter;
+import com.androidplot.xy.SimpleXYSeries;
+import com.androidplot.xy.XYPlot;
+import com.androidplot.xy.XYSeries;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +29,18 @@ public class Calibration extends Fragment {
     private CalibrationViewModel mViewModel;
     View root;
 
-    LineChart graph;
-    LineDataSet xAxisDataSet, yAxisDataSet, zAxisDataSet;
-    List<Entry> xData=new ArrayList<>();
-    List<Entry> yData=new ArrayList<>();
-    List<Entry> zData=new ArrayList<>();
+    XYPlot graph;
+    //unmodifiable list
+    List<AccelData> staticGraphData = new ArrayList<>();
+    //if data contains 1000 items, this index will have value 800
+    int graphDataOffset = 0;
+
+    SampleDynamicSeries xSeries = new SampleDynamicSeries(Axis.X, "X");
+    SampleDynamicSeries ySeries = new SampleDynamicSeries(Axis.Y, "Y");
+    SampleDynamicSeries zSeries = new SampleDynamicSeries(Axis.Y, "Z");
+
+    LineAndPointFormatter seriesFormat;
+
 
     public static Calibration newInstance() {
         return new Calibration();
@@ -43,21 +51,18 @@ public class Calibration extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         root = inflater.inflate(R.layout.calibration_fragment, container, false);
-        graph = (LineChart) root.findViewById(R.id.graph);
-        //graph.animateXY(3000,3000);
-        graph.setViewPortOffsets(0,0,0,0);
+        graph = (XYPlot) root.findViewById(R.id.graph);
 
-        xAxisDataSet =new LineDataSet(xData, "X");
-        xAxisDataSet.setColor(Color.MAGENTA);
-        yAxisDataSet =new LineDataSet(yData, "Y");
-        yAxisDataSet.setColor(Color.rgb(255,128, 0));//ORANGE
-        zAxisDataSet =new LineDataSet(zData, "Z");
-        zAxisDataSet.setColor(Color.BLUE);
 
-        LineData data=new LineData(xAxisDataSet, yAxisDataSet, zAxisDataSet);
-        graph.setData(data);
+        seriesFormat =
+                new LineAndPointFormatter(root.getContext(), R.xml.line_point_formatter_with_labels);
+        graph.addSeries(xSeries, seriesFormat);
+        graph.addSeries(ySeries, seriesFormat);
+        graph.addSeries(zSeries, seriesFormat);
 
-        return root;//inflater.inflate(R.layout.calibration_fragment, container, false);
+        //graph.setRangeBoundaries(Short.MIN_VALUE, Short.MAX_VALUE, BoundaryMode.FIXED);
+
+        return root;
     }
 
     @Override
@@ -72,40 +77,67 @@ public class Calibration extends Fragment {
             @Override
             public void onChanged(List<AccelData> threeAxisData) {
                 int newDataSize = threeAxisData.size();
-                if (newDataSize>0){
-
-                    xData.clear();
-                    yData.clear();
-                    zData.clear();
-
-                    int index = 0;
-                    if (newDataSize>Data.pointsCountToShowOnGraph){
-                        index = newDataSize-Data.pointsCountToShowOnGraph;
+                if (newDataSize > 0) {
+                    if (newDataSize > Data.pointsCountToShowOnGraph) {
+                        graphDataOffset = newDataSize - Data.pointsCountToShowOnGraph;
                     }
-
-                    //добавляемм новые данные: если есть пробелы - заполняем их данные предидущего семпла
-                    for (;index<newDataSize;index++) {
-                        AccelData ac = threeAxisData.get(index);
-                            xData.add(new Entry(ac.ms, ac.x));
-                            yData.add(new Entry(ac.ms, ac.y));
-                            zData.add(new Entry(ac.ms, ac.z));
-                    }
-                    notifyDataChanged();
+                    staticGraphData = threeAxisData;
+                    graph.redraw();
                 }
             }
         });
     }
 
-    private void notifyDataChanged(){
-        xAxisDataSet.notifyDataSetChanged();
-        yAxisDataSet.notifyDataSetChanged();
-        zAxisDataSet.notifyDataSetChanged();
-        graph.notifyDataSetChanged();
-        graph.invalidate();
-    }
 
-    public CalibrationViewModel getModel(){
+    public CalibrationViewModel getModel() {
         return mViewModel;
     }
 
+    enum Axis {
+        X,
+        Y,
+        Z,
+    }
+
+    class SampleDynamicSeries implements XYSeries {
+
+
+        private Axis accelAxis;
+        private String title;
+
+        SampleDynamicSeries(Axis seriesIndex, String title) {
+            this.accelAxis = seriesIndex;
+            this.title = title;
+        }
+
+        @Override
+        public String getTitle() {
+            return title;
+        }
+
+        @Override
+        public int size() {
+            return staticGraphData.size() > Data.pointsCountToShowOnGraph ?
+                    Data.pointsCountToShowOnGraph : staticGraphData.size();
+        }
+
+        @Override
+        public Number getX(int index) {
+            return index;
+        }
+
+        @Override
+        public Number getY(int index) {
+            AccelData sample = staticGraphData.get(graphDataOffset + index);
+            switch (accelAxis) {
+                case X:
+                    return sample.x;
+                case Y:
+                    return sample.y;
+                case Z:
+                    return sample.z;
+            }
+            return 0;
+        }
+    }
 }
