@@ -274,12 +274,16 @@ public class PacketsManager implements Runnable, Closeable {
                 if ((byte)crc ==  incomeCrc && crcXOR == incomeCrcXOR) {
                     enqeueIncomingPacket(offset);
                     //если получили 1.5-2 пакета за раз
-                    int delta = rxIndex - (rxPackSize + offset);
-                    if (delta > 0) {
-                        shift(offset+ rxPackSize, delta);
+                    offset+=rxPackSize;
+                    int delta = rxIndex - offset;
+                    if (delta>0){
+                        shift(offset, delta);
+                        offset = 0;
+                        rxIndex=delta;
+                    }else{
+                        offset = 0;
+                        rxIndex=0;
                     }
-                    rxIndex = delta;
-                    offset = 0;
                     CommState = ReceiverStates.WaitingStart;
                     //goto start
                     continue;
@@ -298,9 +302,11 @@ public class PacketsManager implements Runnable, Closeable {
      * @param count
      */
     private void shift(int offset, int count){
-        for (int i = 0; i < count; i++) {
+        int i = 0;
+        for (; i < count; i++) {
             rxBuf[i] = rxBuf[offset + i];
         }
+        i=0;
     }
 
     private void enqeueIncomingPacket(int offset) {
@@ -328,7 +334,7 @@ public class PacketsManager implements Runnable, Closeable {
                     pack.ApplyBody(rxBuf, offset+BODY_OFFSET, bodySize);
                 }
                 receivedPackets.add(pack);
-                Log.v(LOG_TAG, "Packet enqueued " + pack.toString());
+                Log.d(LOG_TAG, "Packet enqueued " + pack.toString());
                 if (packetsListener!=null){
                     Executors.BackGroundThreadPool.execute(new Runnable() {
                         @Override

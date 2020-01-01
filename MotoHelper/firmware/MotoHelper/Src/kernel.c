@@ -23,10 +23,12 @@ void KERNEL_Init() {
 
 void sendAccelData()
 {
-	//send as much as possable
+	//send 8*8=64
+	//64+4+6
+	//пакет BLE =20
 	//available data size
-	u16 bodySize = data.itemsCount * data.itemSize;
-	//testbodySize = 2 * data.itemSize;
+
+	u16 bodySize = 8 * data.itemSize;
 	bodySize+=4;
 	while (bodySize > COMM_OUT_MAX_BODY_SIZE) {
 		bodySize -= data.itemSize;
