@@ -12,13 +12,12 @@
 #define COMM_IN_BUF_SIZE 20
 //при скорости 115200 пакет из 80 байт будет предаваться
 //по юарту 7мс
-#define COMM_OUT_BUF_SIZE 28
+#define COMM_OUT_BUF_SIZE 80
 //размер тела специального дебаг пакета
 #define DEBUG_BODY_SIZE 10
 
-#define COMM_OUT_BODY_OFFSET 3
-#define EMPTY_PACKET_SIZE 4
-#define MAX_BODY_SIZE 20-4
+#define COMM_OUT_BODY_OFFSET 4
+#define EMPTY_PACKET_SIZE 6
 #define COMM_OUT_MAX_BODY_SIZE (COMM_OUT_BUF_SIZE-EMPTY_PACKET_SIZE)
 #define COMM_IN_MAX_BODY_SIZE (COMM_IN_BUF_SIZE-EMPTY_PACKET_SIZE)
 

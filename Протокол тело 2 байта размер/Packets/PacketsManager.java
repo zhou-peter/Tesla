@@ -23,8 +23,8 @@ public class PacketsManager implements Runnable, Closeable {
     private static final int TIMER_PERIOD = 10;
     private static final int KEEP_ALIVE_PERIOD = 500;
     private static final int BUF_SIZE_RX = 200;
-    private static final int BODY_OFFSET = 3;
-    private static final int EMPTY_SIZE = 4;
+    private static final int BODY_OFFSET = 4;
+    private static final int EMPTY_SIZE = 6;
     private static final String LOG_TAG = "PacketManager";
     private static final Object[] constructorArgs = new Object[]{};
     private static final Map<Integer, Constructor> inPacketsConstructors = new HashMap<>();
@@ -219,8 +219,8 @@ public class PacketsManager implements Runnable, Closeable {
                 }
             }
             if (CommState == ReceiverStates.ReceivingSize) {
-                if (rxIndex > offset+2) {
-                    int inPacksize = rxBuf[offset+1] & 0xFF;
+                if (rxIndex > offset+3) {
+                    int inPacksize = rxBuf[offset+1] | rxBuf[offset+2] << 8;
                     if (inPacksize < EMPTY_SIZE) {
                         Log.v(LOG_TAG, "Слишком маленький пакет");
                         offset++;
@@ -262,15 +262,16 @@ public class PacketsManager implements Runnable, Closeable {
                 //check CRC
                 int crc = 0;
                 //265-2=263
-                for (int i = 0; i < rxPackSize - 1; i++) {
+                for (int i = 0; i < rxPackSize - 2; i++) {
                     int nextByte = (rxBuf[offset+i] & 0xFF);
                     crc += nextByte;
                 }
+                byte crcXOR = (byte) (crc ^ 0xAA);
 
-                byte incomeCrc = rxBuf[offset+rxPackSize - 1];
-
+                byte incomeCrc = rxBuf[offset+rxPackSize - 2];
+                byte incomeCrcXOR = rxBuf[offset+rxPackSize - 1];
                 //если контрольная сумма сошлась
-                if ((byte)crc ==  incomeCrc) {
+                if ((byte)crc ==  incomeCrc && crcXOR == incomeCrcXOR) {
                     enqeueIncomingPacket(offset);
                     //если получили 1.5-2 пакета за раз
                     offset+=rxPackSize;
@@ -309,8 +310,8 @@ public class PacketsManager implements Runnable, Closeable {
     }
 
     private void enqeueIncomingPacket(int offset) {
-        int inPacksize = rxBuf[offset+1];
-        int packetNumber = rxBuf[offset+2];
+        int inPacksize = rxBuf[offset+1] | rxBuf[offset+2] << 8;
+        int packetNumber = rxBuf[offset+3];
 
         try {
             Constructor c;
@@ -326,7 +327,7 @@ public class PacketsManager implements Runnable, Closeable {
             AbstractInPacket pack = (AbstractInPacket) c.newInstance(constructorArgs);
 
             if (pack != null) {
-                pack.Command = packetNumber;
+                pack.Command = rxBuf[offset+3];
                 int bodySize = inPacksize - EMPTY_SIZE;
                 if (bodySize > 0) {
                     pack.BodySize = bodySize;

@@ -60,7 +60,7 @@ public class Calibration extends Fragment {
         graph.addSeries(ySeries, seriesFormat);
         graph.addSeries(zSeries, seriesFormat);
 
-        //graph.setRangeBoundaries(Short.MIN_VALUE, Short.MAX_VALUE, BoundaryMode.FIXED);
+        graph.setRangeBoundaries(Data.minAccel, Data.maxAccel, BoundaryMode.FIXED);
 
         return root;
     }

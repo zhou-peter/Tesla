@@ -5,7 +5,6 @@
 #include "communication_manager.h"
 #include "accelerometer_manager.h"
 
-
 extern void KERNEL_TimeToSend();
 
 volatile u8 dataBuffer[sizeof(AccelData_t) * 10];
@@ -21,41 +20,36 @@ void KERNEL_Init() {
 	accelTimerToSend = addTimer(20, TRUE, &KERNEL_TimeToSend);
 }
 
-void sendAccelData()
-{
-	//send 8*8=64
-	//64+4+6
-	//пакет BLE =20
-	//available data size
+void sendAccelData() {
+	if (data.itemsCount >= 2) {
+		//пакет BLE =20
+		//(6*2)+4
 
-	u16 bodySize = 8 * data.itemSize;
-	bodySize+=4;
-	while (bodySize > COMM_OUT_MAX_BODY_SIZE) {
-		bodySize -= data.itemSize;
+		u16 bodySize = 2 * data.itemSize;
+		bodySize += 4;
+
+		volatile u8* bodyPtr = &commOutBuf[COMM_OUT_BODY_OFFSET];
+		u32 ms = AccelState.ms;
+
+		copy(&ms, bodyPtr, 4);
+		bodyPtr += 4;
+
+		int i = 0;
+
+		for (i = data.itemsCount - 1; i >= data.itemsCount - 3; i--) {
+			volatile u8* accelDataPtr = getItem(&data, i);
+
+			copy(accelDataPtr, bodyPtr, data.itemSize);
+			bodyPtr += data.itemSize;
+		}
+
+		createOutPacketAndSend(0x11, bodySize, NULL);
 	}
-
-	volatile u8* bodyPtr = &commOutBuf[COMM_OUT_BODY_OFFSET];
-	u32 ms = AccelState.ms;
-
-	copy(&ms, bodyPtr, 4);
-	bodyPtr+=4;
-
-	int i = 0;
-	for (i = data.itemsCount - 1; i >= 0; i--) {
-		volatile u8* accelDataPtr = getItem(&data, i);
-		//AccelData_t accelData = (AccelData_t)(*accelDataPtr);
-		copy(accelDataPtr, bodyPtr, data.itemSize);
-		bodyPtr+=data.itemSize;
-	}
-
-	createOutPacketAndSend(0x11, bodySize, NULL);
 }
 
-void KERNEL_TimeToSend()
-{
+void KERNEL_TimeToSend() {
 	timeToSend = TRUE;
 }
-
 
 void KERNEL_Task() {
 
@@ -67,32 +61,29 @@ void KERNEL_Task() {
 			AccelState.State = AccelShouldRequest;
 		}
 
-
 		//if there is communication
-		if (CommState.CommDriverReady == TRUE && CommState.TxState == TxIdle)
-		{
+		if (CommState.CommDriverReady == TRUE && CommState.TxState == TxIdle) {
 
 			//debug packet
-			if (debugPacket.pending==TRUE){
-				debugPacket.pending=FALSE;
-				createOutPacketAndSend(debugPacket.command, debugPacket.size, &debugPacket.body[0]);
+			if (debugPacket.pending == TRUE) {
+				debugPacket.pending = FALSE;
+				createOutPacketAndSend(debugPacket.command, debugPacket.size,
+						&debugPacket.body[0]);
 			}
 			//every 20 ms send something
-			else if (CommState.AtLeastOnePacketReceived==TRUE
-					&&  data.itemsCount > 0 && timeToSend == TRUE) {
+			else if (CommState.AtLeastOnePacketReceived == TRUE
+					&& data.itemsCount > 0 && timeToSend == TRUE) {
 				timeToSend = FALSE;
 				sendAccelData();
 			}
 			/*
-			volatile u8* bodyPtr = &commOutBuf[COMM_OUT_BODY_OFFSET];
-			for (int i=0;i<15;i++){
-				*bodyPtr++ = 0xFF;
-				*bodyPtr++ = 0xAA;
-			}
-			createOutPacketAndSend(0x01, 30, NULL);*/
+			 volatile u8* bodyPtr = &commOutBuf[COMM_OUT_BODY_OFFSET];
+			 for (int i=0;i<15;i++){
+			 *bodyPtr++ = 0xFF;
+			 *bodyPtr++ = 0xAA;
+			 }
+			 createOutPacketAndSend(0x01, 30, NULL);*/
 		}
-
-
 
 		osDelay(1);
 	}

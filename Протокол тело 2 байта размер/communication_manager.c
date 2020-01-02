@@ -166,8 +166,8 @@ void COMM_Task() {
 				}
 			}
 		} else if (CommState.RxState == ReceivingSize) {
-			if (CommState.rxIndex > 2) {
-				u16 inPacksize = commInBuf[1];
+			if (CommState.rxIndex > 3) {
+				u16 inPacksize = commInBuf[1] + (commInBuf[2] * 256);
 				if (inPacksize < EMPTY_PACKET_SIZE) {
 					create_rx_err(0x02);
 					continue;
@@ -198,13 +198,14 @@ void COMM_Task() {
 			stopTimeoutTimer();
 			//check CRC
 			u8 crc = 0;
-
-			for (i = 0; i < CommState.rxPacketSize - 1; i++) {
+			//265-2=263
+			for (i = 0; i < CommState.rxPacketSize - 2; i++) {
 				crc += commInBuf[i];
 			}
-
+			u8 xorCRC = crc ^ 0xAA;
 			//если контрольная сумма сошлась
-			if (crc == commInBuf[CommState.rxPacketSize - 1]) {
+			if (crc == commInBuf[CommState.rxPacketSize - 2]
+					&& xorCRC == commInBuf[CommState.rxPacketSize - 1]) {
 				CommState.RxState = RxProcessing;
 				stopTimeoutTimer();
 				processPacket();
@@ -227,15 +228,13 @@ void createOutPacketAndSend(u8 command, u16 bodySize, u8* bodyData) {
 	if (CommState.TxState == TxSending) {
 		return;
 	}
-	if (bodySize > MAX_BODY_SIZE){
-		return;
-	}
 
 	u16 i = 0;
 	u16 txBufSize = EMPTY_PACKET_SIZE + bodySize;
 	commOutBuf[0] = PACKET_START;
 	commOutBuf[1] = (u8) (txBufSize);
-	commOutBuf[2] = command;
+	commOutBuf[2] = (u8) (txBufSize >> 8);
+	commOutBuf[3] = command;
 
 	if (bodySize > 0 && bodyData != NULL) {
 		for (i = 0; i < bodySize; i++) {
@@ -244,10 +243,11 @@ void createOutPacketAndSend(u8 command, u16 bodySize, u8* bodyData) {
 	}
 
 	u8 crc = 0;
-	for (i = 0; i < 3 + bodySize; i++) {
+	for (i = 0; i < 4 + bodySize; i++) {
 		crc += commOutBuf[i];
 	}
-	commOutBuf[EMPTY_PACKET_SIZE - 1 + bodySize] = crc;
+	commOutBuf[EMPTY_PACKET_SIZE - 2 + bodySize] = crc;
+	commOutBuf[EMPTY_PACKET_SIZE - 1 + bodySize] = crc ^ 0xAA;
 
 	COMM_SendData(txBufSize);
 }
