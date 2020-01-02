@@ -38,7 +38,6 @@ void sendAccelData() {
 
 		for (i = data.itemsCount - 1; i >= data.itemsCount - 3; i--) {
 			volatile u8* accelDataPtr = getItem(&data, i);
-
 			copy(accelDataPtr, bodyPtr, data.itemSize);
 			bodyPtr += data.itemSize;
 		}

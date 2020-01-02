@@ -38,7 +38,7 @@ public class Utils {
 
 
     public static final short getInt16(byte[] buf, int offset){
-        short value = buf[offset];
+        short value = (short)(buf[offset] & 0xFF);
         value |=buf[offset+1]<<8;
         return value;
     }

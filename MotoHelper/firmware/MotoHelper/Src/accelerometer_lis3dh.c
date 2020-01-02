@@ -14,10 +14,10 @@ TaskHandle_t gHandle;
 #define OUT_X_L			0x28
 
 //ODR3 ODR2 ODR1 ODR0 LPen Zen Yen Xen
-
 #define CTRL_REG1		0x20
 #define CTRL_REG1_VALUE 0b10010111
 
+//ИТОГо 2G 10bit разрешение, все оси, 100Гц
 
 
 
@@ -129,9 +129,11 @@ void ACCEL_readData()
 }
 
 void ACCEL_buildStruct(){
-	AccelData.x = getS16(&acc_buf, 0)>>6;
+	s16 xValue = getS16(&acc_buf, 0);
+	AccelData.x = xValue>>6;
 	AccelData.y = getS16(&acc_buf, 2)>>6;
 	AccelData.z = getS16(&acc_buf, 4)>>6;
+	;
 }
 
 void ACCEL_NotifyTaskFromISR() {

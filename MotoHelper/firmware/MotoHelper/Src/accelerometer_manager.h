@@ -33,9 +33,9 @@ typedef struct
 
 typedef struct
 {
-	s16		z:16;
-	s16		y:16;
 	s16		x:16;
+	s16		y:16;
+	s16		z:16;
 } AccelData_t;
 
 extern TaskHandle_t gHandle;

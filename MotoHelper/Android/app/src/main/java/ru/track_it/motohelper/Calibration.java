@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 
 import com.androidplot.xy.BoundaryMode;
 import com.androidplot.xy.LineAndPointFormatter;
-import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
 
@@ -37,9 +36,9 @@ public class Calibration extends Fragment {
 
     SampleDynamicSeries xSeries = new SampleDynamicSeries(Axis.X, "X");
     SampleDynamicSeries ySeries = new SampleDynamicSeries(Axis.Y, "Y");
-    SampleDynamicSeries zSeries = new SampleDynamicSeries(Axis.Y, "Z");
+    SampleDynamicSeries zSeries = new SampleDynamicSeries(Axis.Z, "Z");
 
-    LineAndPointFormatter seriesFormat;
+
 
 
     public static Calibration newInstance() {
@@ -54,11 +53,15 @@ public class Calibration extends Fragment {
         graph = (XYPlot) root.findViewById(R.id.graph);
 
 
-        seriesFormat =
-                new LineAndPointFormatter(root.getContext(), R.xml.line_point_formatter_with_labels);
-        graph.addSeries(xSeries, seriesFormat);
-        graph.addSeries(ySeries, seriesFormat);
-        graph.addSeries(zSeries, seriesFormat);
+        LineAndPointFormatter seriesFormatX =
+                new LineAndPointFormatter(root.getContext(), R.xml.line_format_x);
+        LineAndPointFormatter seriesFormatY =
+                new LineAndPointFormatter(root.getContext(), R.xml.line_format_y);
+        LineAndPointFormatter seriesFormatZ =
+                new LineAndPointFormatter(root.getContext(), R.xml.line_format_z);
+        graph.addSeries(xSeries, seriesFormatX);
+        graph.addSeries(ySeries, seriesFormatY);
+        graph.addSeries(zSeries, seriesFormatZ);
 
         graph.setRangeBoundaries(Data.minAccel, Data.maxAccel, BoundaryMode.FIXED);
 

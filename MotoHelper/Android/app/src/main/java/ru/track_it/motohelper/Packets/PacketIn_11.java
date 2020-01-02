@@ -29,6 +29,7 @@ public class PacketIn_11 extends AbstractInPacket {
             newAccelData.ms = timestamp;
             newAccelData.x = Utils.getInt16(buf, j);
             newAccelData.y = Utils.getInt16(buf, j + 2);
+            int z = Utils.getInt16(buf, j + 4);
             newAccelData.z = Utils.getInt16(buf, j + 4);
             tmpData.put(newAccelData.ms, newAccelData);
             timestamp -= Data.samplePeriod;
