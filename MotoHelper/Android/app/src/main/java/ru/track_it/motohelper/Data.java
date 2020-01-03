@@ -12,8 +12,7 @@ public class Data {
     public static final int accelDataPointsLimit = 1000;    //10s
     public static final int pointsCountToShowOnGraph = 50; //0.5s
 
-    public static final int accelDataResolutionBits = 10;
-    public static final int maxAccel = 1<<(accelDataResolutionBits+1);
+    public static final int maxAccel = 512;
     public static final int minAccel = -maxAccel;
 
 

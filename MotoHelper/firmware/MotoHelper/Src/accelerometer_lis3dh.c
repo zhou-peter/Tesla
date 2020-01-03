@@ -32,12 +32,12 @@ HAL_StatusTypeDef readDMA(u8 count){
 }
 
 void ACCEL_Wait() {
-	const TickType_t xBlockTime = pdMS_TO_TICKS(30);
-	u32 ticks1 = xTaskGetTickCount();
+	const TickType_t xBlockTime = pdMS_TO_TICKS(3);
 	ulTaskNotifyTake(pdFALSE, xBlockTime);
-	u32 ticks2 = xTaskGetTickCount();
-	ticks2-=ticks1;
 
+	//u32 ticks1 = xTaskGetTickCount();
+	//u32 ticks2 = xTaskGetTickCount();
+	//ticks2-=ticks1;
 }
 
 void ACCEL_Error(){
@@ -90,7 +90,7 @@ reconfigure:
 	{
 		writeRegister(CTRL_REG1, CTRL_REG1_VALUE);
 		osDelay(2);
-		AccelState.State=AccelReady;
+		AccelState.State=AccelShouldRequest;
 
 	}else{
 		goto reconfigure;

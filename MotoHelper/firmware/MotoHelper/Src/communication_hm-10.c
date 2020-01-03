@@ -10,6 +10,7 @@ TaskHandle_t commHandle;
 #define AT_TIMEOUT 1
 #define BT_DISABLE GPIO_PIN_4
 #define BT_TX GPIO_PIN_2
+#define BT_RX GPIO_PIN_3
 #define BT_PORT GPIOA
 #define HIGH_SPEED 115200
 #define LOW_SPEED 9600
@@ -286,12 +287,13 @@ void COMM_Driver_Configure() {
 		HAL_UART_DeInit(uart);
 		//pull down uart tx
 		GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-		GPIO_InitStruct.Pin = GPIO_PIN_2;
+		GPIO_InitStruct.Pin = BT_TX | BT_RX;
 		GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 		GPIO_InitStruct.Pull = GPIO_NOPULL;
 		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 		HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 		HAL_GPIO_WritePin(BT_PORT, BT_TX, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(BT_PORT, BT_RX, GPIO_PIN_RESET);
 		//discharge capacitors
 		osDelay(2000);
 

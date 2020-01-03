@@ -32,22 +32,18 @@ void ACCEL_Task(){
 		  {
 			  ACCEL_buildStruct();
 			  //put new data to the queue;
-			  osDelay(30);
-			  AccelState.State=AccelShouldRequest;
+			  //await another thread
 			  ACCEL_Wait();
 		  }else{
+			  //second attemp in a 1 ms
 			  osDelay(1);
 		  }
-	  }
-	  else if (AccelState.State==AccelReady){
-		  AccelState.State=AccelShouldRequest;
-		  ACCEL_Wait();
 	  }
 	  else if (AccelState.State==AccelError){
 		  Accelerometer_ReConfig();
 	  }
 	  else{
-		  osDelay(1);
+		  ACCEL_Wait();
 	  }
   }
 }
@@ -56,7 +52,7 @@ void ACCEL_Task(){
 
 void ACCEL_PeriodElapsedCallback() {
 	AccelState.ms+=10;
-	if (AccelState.State==AccelReady)
+	if (AccelState.State==AccelDataRetrived)
 	{
 		AccelState.State=AccelShouldRequest;
 		ACCEL_NotifyTaskFromISR();

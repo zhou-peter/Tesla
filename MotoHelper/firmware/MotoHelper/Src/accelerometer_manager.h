@@ -16,8 +16,7 @@ typedef enum
 {
 	AccelIdle,
 	AccelConfig,
-	AccelReady,		//sleeping
-	AccelShouldRequest,
+	AccelShouldRequest, //setup by timer
 	AccelDataRetriving,//reading data
 	AccelDataRetrived,//moved from I2C to tmp buf
 	AccelError

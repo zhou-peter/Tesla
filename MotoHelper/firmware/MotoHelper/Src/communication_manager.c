@@ -90,7 +90,7 @@ void stopKeppAliveTimer() {
 }
 
 void commSleep() {
-	const TickType_t xBlockTime = pdMS_TO_TICKS(10);
+	const TickType_t xBlockTime = pdMS_TO_TICKS(2);
 	ulTaskNotifyTake(pdFALSE, xBlockTime);
 }
 

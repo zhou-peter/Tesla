@@ -3,6 +3,7 @@ package ru.track_it.motohelper;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.graphics.Canvas;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.androidplot.Plot;
+import com.androidplot.PlotListener;
 import com.androidplot.xy.BoundaryMode;
 import com.androidplot.xy.LineAndPointFormatter;
 import com.androidplot.xy.XYPlot;
@@ -21,6 +24,7 @@ import com.androidplot.xy.XYSeries;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 public class Calibration extends Fragment {
@@ -31,13 +35,12 @@ public class Calibration extends Fragment {
     XYPlot graph;
     //unmodifiable list
     List<AccelData> staticGraphData = new ArrayList<>();
-    //if data contains 1000 items, this index will have value 800
-    int graphDataOffset = 0;
+
 
     SampleDynamicSeries xSeries = new SampleDynamicSeries(Axis.X, "X");
     SampleDynamicSeries ySeries = new SampleDynamicSeries(Axis.Y, "Y");
     SampleDynamicSeries zSeries = new SampleDynamicSeries(Axis.Z, "Z");
-
+    ReentrantLock graphDataModifierLock=new ReentrantLock();
 
 
 
@@ -64,6 +67,7 @@ public class Calibration extends Fragment {
         graph.addSeries(zSeries, seriesFormatZ);
 
         graph.setRangeBoundaries(Data.minAccel, Data.maxAccel, BoundaryMode.FIXED);
+        graph.addListener(graphListener);
 
         return root;
     }
@@ -75,21 +79,33 @@ public class Calibration extends Fragment {
         mViewModel.getGraphData().removeObservers(this);
         mViewModel.getGraphData().observe(this, new Observer<List<AccelData>>() {
             /**
-             * @param threeAxisData Не 10-15 семплов а все что есть около 1000
+             * @param threeAxisData
              */
             @Override
             public void onChanged(List<AccelData> threeAxisData) {
                 int newDataSize = threeAxisData.size();
                 if (newDataSize > 0) {
-                    if (newDataSize > Data.pointsCountToShowOnGraph) {
-                        graphDataOffset = newDataSize - Data.pointsCountToShowOnGraph;
+                    if (graphDataModifierLock.tryLock()) {
+                        staticGraphData = threeAxisData;
+                        graphDataModifierLock.unlock();
+                        graph.redraw();
                     }
-                    staticGraphData = threeAxisData;
-                    graph.redraw();
                 }
             }
         });
     }
+
+    PlotListener graphListener=new PlotListener() {
+        @Override
+        public void onBeforeDraw(Plot source, Canvas canvas) {
+            graphDataModifierLock.lock();
+        }
+
+        @Override
+        public void onAfterDraw(Plot source, Canvas canvas) {
+            graphDataModifierLock.unlock();
+        }
+    };
 
 
     public CalibrationViewModel getModel() {
@@ -120,8 +136,7 @@ public class Calibration extends Fragment {
 
         @Override
         public int size() {
-            return staticGraphData.size() > Data.pointsCountToShowOnGraph ?
-                    Data.pointsCountToShowOnGraph : staticGraphData.size();
+            return staticGraphData.size();
         }
 
         @Override
@@ -131,7 +146,10 @@ public class Calibration extends Fragment {
 
         @Override
         public Number getY(int index) {
-            AccelData sample = staticGraphData.get(graphDataOffset + index);
+            if (index>=staticGraphData.size()){
+                return 0;
+            }
+            AccelData sample = staticGraphData.get(index);
             switch (accelAxis) {
                 case X:
                     return sample.x;

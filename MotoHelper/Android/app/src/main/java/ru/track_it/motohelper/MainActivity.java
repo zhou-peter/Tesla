@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -36,6 +37,10 @@ import ru.track_it.motohelper.Packets.PacketsListener;
 import ru.track_it.motohelper.Packets.PacketsManager;
 import ru.track_it.motohelper.Packets.Utils;
 import ru.track_it.motohelper.ui.main.SectionsPagerAdapter;
+
+import static ru.track_it.motohelper.Data.accelArray;
+import static ru.track_it.motohelper.Data.accelData;
+import static ru.track_it.motohelper.Data.accelDataPointsLimit;
 
 @RuntimePermissions
 public class MainActivity extends AppCompatActivity {
@@ -250,9 +255,31 @@ public class MainActivity extends AppCompatActivity {
                                 packet.DefaultProcess();
                         }
                     }
+                    //create temprory sorted list
+                    List<AccelData> tmpList = new ArrayList<>(accelData.size());
+                    tmpList.addAll(accelData.values());
+                    Collections.sort(tmpList, Data.accelDataSorter);
+
+                    //trim
+                    if (tmpList.size() > accelDataPointsLimit) {
+                        int delta = tmpList.size() - accelDataPointsLimit;
+                        while (--delta > 0) {
+                            AccelData oldData = tmpList.get(0);
+                            tmpList.remove(oldData);
+                            accelData.remove(oldData.ms);
+                        }
+                    }
+
+                    //replace datasource for a View
+                    accelArray.clear();
+                    accelArray.addAll(tmpList);
+
+                    //отправляем Data.pointsCountToShowOnGraph или меньше байт
+                    final List<AccelData> newData = accelArray.size() > Data.pointsCountToShowOnGraph ?
+                            accelArray.subList(accelArray.size()-Data.pointsCountToShowOnGraph, accelArray.size()-1) :
+                            Collections.unmodifiableList(Data.accelArray);
 
                     final Calibration calibrationFragment = (Calibration) sectionsPagerAdapter.getItem(0);
-                    final List<AccelData> newData = Collections.unmodifiableList(Data.accelArray);
                     Executors.MainThreadExecutor.execute(new Runnable() {
                         @Override
                         public void run() {
