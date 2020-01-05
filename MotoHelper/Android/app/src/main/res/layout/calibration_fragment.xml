@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".Calibration">
 
-    <com.androidplot.xy.XYPlot
+    <ru.track_it.motohelper.Graph.GraphCanvas
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:id="@+id/graph"

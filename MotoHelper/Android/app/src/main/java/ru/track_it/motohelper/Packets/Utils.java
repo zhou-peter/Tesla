@@ -50,11 +50,10 @@ public class Utils {
     }*/
 
     public static final long getUInt32(byte[] buf, int offset){
-        int value = buf[offset];
+        long value = buf[offset] & 0xFF;
         value |=buf[offset+1]<<8;
         value |=buf[offset+2]<<16;
         value |=buf[offset+3]<<24;
-        long value2 = value & 0xFFFFFFFFl;
-        return value2;
+        return value;
     }
 }

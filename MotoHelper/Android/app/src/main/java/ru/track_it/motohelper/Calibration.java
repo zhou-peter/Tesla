@@ -10,37 +10,32 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.androidplot.Plot;
-import com.androidplot.PlotListener;
-import com.androidplot.xy.BoundaryMode;
-import com.androidplot.xy.LineAndPointFormatter;
-import com.androidplot.xy.XYPlot;
-import com.androidplot.xy.XYSeries;
+
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
+
+import ru.track_it.motohelper.Graph.GraphCanvas;
+import ru.track_it.motohelper.Graph.GraphDataProvider;
 
 
 public class Calibration extends Fragment {
 
     private CalibrationViewModel mViewModel;
     View root;
+    boolean canRun=true;
+    GraphCanvas graph;
+    List<AccelData> accelData=new ArrayList<>();
+    MyGraphDataProvider dataProvider=new MyGraphDataProvider();
 
-    XYPlot graph;
-    //unmodifiable list
-    List<AccelData> staticGraphData = new ArrayList<>();
-
-
-    SampleDynamicSeries xSeries = new SampleDynamicSeries(Axis.X, "X");
-    SampleDynamicSeries ySeries = new SampleDynamicSeries(Axis.Y, "Y");
-    SampleDynamicSeries zSeries = new SampleDynamicSeries(Axis.Z, "Z");
-    ReentrantLock graphDataModifierLock=new ReentrantLock();
 
 
 
@@ -53,24 +48,25 @@ public class Calibration extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         root = inflater.inflate(R.layout.calibration_fragment, container, false);
-        graph = (XYPlot) root.findViewById(R.id.graph);
+        graph = (GraphCanvas) root.findViewById(R.id.graph);
 
+        graph.setSeriesCount(3);
+        graph.setDataProvider(dataProvider);
 
-        LineAndPointFormatter seriesFormatX =
-                new LineAndPointFormatter(root.getContext(), R.xml.line_format_x);
-        LineAndPointFormatter seriesFormatY =
-                new LineAndPointFormatter(root.getContext(), R.xml.line_format_y);
-        LineAndPointFormatter seriesFormatZ =
-                new LineAndPointFormatter(root.getContext(), R.xml.line_format_z);
-        graph.addSeries(xSeries, seriesFormatX);
-        graph.addSeries(ySeries, seriesFormatY);
-        graph.addSeries(zSeries, seriesFormatZ);
+        for (int i=0; i<Data.pointsCountToShowOnGraph+1; i++){
+            AccelData ad = new AccelData();
+            ad.x=i;
+            ad.y=-i;
+            ad.z=i*i;
+            accelData.add(ad);
+        }
 
-        graph.setRangeBoundaries(Data.minAccel, Data.maxAccel, BoundaryMode.FIXED);
-        graph.addListener(graphListener);
+        new Thread(dataProvider).start();
 
         return root;
     }
+
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -78,87 +74,107 @@ public class Calibration extends Fragment {
         mViewModel = ViewModelProviders.of(this).get(CalibrationViewModel.class);
         mViewModel.getGraphData().removeObservers(this);
         mViewModel.getGraphData().observe(this, new Observer<List<AccelData>>() {
-            /**
-             * @param threeAxisData
-             */
             @Override
-            public void onChanged(List<AccelData> threeAxisData) {
-                int newDataSize = threeAxisData.size();
-                if (newDataSize > 0) {
-                    if (graphDataModifierLock.tryLock()) {
-                        staticGraphData = threeAxisData;
-                        graphDataModifierLock.unlock();
-                        graph.redraw();
-                    }
-                }
+            public synchronized void onChanged(List<AccelData> data) {
+                accelData = data;
             }
         });
     }
 
-    PlotListener graphListener=new PlotListener() {
-        @Override
-        public void onBeforeDraw(Plot source, Canvas canvas) {
-            graphDataModifierLock.lock();
-        }
-
-        @Override
-        public void onAfterDraw(Plot source, Canvas canvas) {
-            graphDataModifierLock.unlock();
-        }
-    };
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        canRun = false;
+    }
 
 
     public CalibrationViewModel getModel() {
         return mViewModel;
     }
 
-    enum Axis {
-        X,
-        Y,
-        Z,
-    }
-
-    class SampleDynamicSeries implements XYSeries {
 
 
-        private Axis accelAxis;
-        private String title;
+    private class MyGraphDataProvider implements GraphDataProvider, Runnable {
 
-        SampleDynamicSeries(Axis seriesIndex, String title) {
-            this.accelAxis = seriesIndex;
-            this.title = title;
+        //MEM pages for drawing
+        int[] xData=new int[Data.pointsCountToShowOnGraph];
+        int[] yData=new int[Data.pointsCountToShowOnGraph];
+        int[] zData=new int[Data.pointsCountToShowOnGraph];
+
+        @Override
+        public int getItemsCount() {
+            return Data.pointsCountToShowOnGraph;
         }
 
         @Override
-        public String getTitle() {
-            return title;
-        }
-
-        @Override
-        public int size() {
-            return staticGraphData.size();
-        }
-
-        @Override
-        public Number getX(int index) {
-            return index;
-        }
-
-        @Override
-        public Number getY(int index) {
-            if (index>=staticGraphData.size()){
-                return 0;
-            }
-            AccelData sample = staticGraphData.get(index);
-            switch (accelAxis) {
-                case X:
-                    return sample.x;
-                case Y:
-                    return sample.y;
-                case Z:
-                    return sample.z;
+        public int getItemValue(int seriesIndex, int index) {
+            switch (seriesIndex) {
+                case 0:
+                    return xData[index];
+                case 1:
+                    return yData[index];
+                case 2:
+                    return zData[index];
             }
             return 0;
         }
+
+        @Override
+        public int getMaxValue() {
+            return Data.maxAccel;
+        }
+
+        @Override
+        public int getMinValue() {
+            return Data.minAccel;
+        }
+
+        @Override
+        public int getSeriesColor(int seriesIndex) {
+            switch (seriesIndex){
+                case 0:
+                    return 0xFFFF0000;
+                case 1:
+                    return 0xFF00FF00;
+                case 2:
+                    return 0xFF0000FF;
+            }
+            return 0xFFFFFFFF;
+        }
+
+        Runnable redrawer=new Runnable() {
+            @Override
+            public void run() {
+                graph.invalidate();
+            }
+        };
+
+        @Override
+        public void run() {
+            while(canRun){
+
+                try {
+                    final List<AccelData> data = accelData;
+                    if (data!=null){
+                        int newDataSize = data.size();
+                        if (newDataSize >= Data.pointsCountToShowOnGraph) {
+                            int stopIndex = newDataSize - Data.pointsCountToShowOnGraph;
+                            for (int i = newDataSize-1, j=Data.pointsCountToShowOnGraph-1;
+                                 i>=stopIndex; i--, j--){
+                                AccelData accelData=data.get(i);
+                                xData[j]=accelData.x;
+                                yData[j]=accelData.y;
+                                zData[j]=accelData.z;
+                            }
+                            Executors.MainThreadExecutor.execute(redrawer);
+                        }
+                    }
+                    Thread.sleep(30);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
+
 }

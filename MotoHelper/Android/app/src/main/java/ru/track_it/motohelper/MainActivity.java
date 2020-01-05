@@ -274,18 +274,16 @@ public class MainActivity extends AppCompatActivity {
                     accelArray.clear();
                     accelArray.addAll(tmpList);
 
-                    //отправляем Data.pointsCountToShowOnGraph или меньше байт
-                    final List<AccelData> newData = accelArray.size() > Data.pointsCountToShowOnGraph ?
-                            accelArray.subList(accelArray.size()-Data.pointsCountToShowOnGraph, accelArray.size()-1) :
-                            Collections.unmodifiableList(Data.accelArray);
-
-                    final Calibration calibrationFragment = (Calibration) sectionsPagerAdapter.getItem(0);
-                    Executors.MainThreadExecutor.execute(new Runnable() {
-                        @Override
-                        public void run() {
+                    //отправляем новые данные
+                    Calibration calibrationFragment = (Calibration) sectionsPagerAdapter.getItem(0);
+                    if (calibrationFragment !=null && calibrationFragment.getModel()!=null) {
+                        try {
+                            List<AccelData> newData = new ArrayList<>(accelArray);
                             calibrationFragment.getModel().updateData(newData);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
-                    });
+                    }
 
                 } finally {
                     packetsProcessing.set(false);

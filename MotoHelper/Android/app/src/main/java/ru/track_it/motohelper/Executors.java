@@ -21,4 +21,8 @@ public class Executors {
     public static final ThreadPoolExecutor BackGroundThreadPool=new ThreadPoolExecutor(3,5,600,
             TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
 
+    public static boolean isGUIThread(){
+        return Looper.myLooper() == Looper.getMainLooper();
+    }
+
 }

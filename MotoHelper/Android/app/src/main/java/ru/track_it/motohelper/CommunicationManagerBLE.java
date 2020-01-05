@@ -80,7 +80,9 @@ final class CommunicationManagerBLE extends BluetoothGattCallback {
     public void closeSocket() {
         try {
             socketConnected = false;
-
+            if (mBluetoothGatt !=null) {
+                mBluetoothGatt.close();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
