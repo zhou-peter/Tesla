@@ -14,7 +14,7 @@ public class GraphCanvas extends View {
     private int seriesCount = 0;
     private GraphDataProvider dataProvider;
     private Paint paint=new Paint();
-    // -\|/
+
     private int spinnerCounter=0;
 
     public GraphCanvas(Context context) {
@@ -53,14 +53,13 @@ public class GraphCanvas extends View {
         }
         drawSpinner(canvas);
 
-
         int width = getWidth();
         int height = getHeight();
         int minValue = dataProvider.getMinValue();
         int dataHeight = dataProvider.getMaxValue() - minValue;
         int dataWidth = dataProvider.getItemsCount();
         float yScale = (float) height / (float) dataHeight;
-        float xScale = (float) width / (float) dataWidth;
+        float xScale = (float) width / (float) (dataWidth-2);
 
 
         if (dataHeight > 0 && dataWidth > 0 && seriesCount > 0) {
@@ -98,18 +97,13 @@ public class GraphCanvas extends View {
     private  void drawSpinner(Canvas canvas)
     {
         int offset = 30;
-
-        switch ( spinnerCounter){
-            case 0:
-                canvas.drawText("-",offset, offset, paint);
-            case 1:
-                canvas.drawText("\\",offset, offset, paint);
-            case 2:
-                canvas.drawText("/",offset, offset, paint);
-        }
-        spinnerCounter++;
-        if (spinnerCounter>=3){
+        canvas.save();
+        canvas.rotate(spinnerCounter, offset/2, offset/2);
+        canvas.drawLine(-offset/2, 0, offset/2, 0, paint);
+        spinnerCounter+=10;
+        if (spinnerCounter>=360){
             spinnerCounter=0;
         }
+        canvas.restore();
     }
 }

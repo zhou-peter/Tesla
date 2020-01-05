@@ -246,6 +246,7 @@ public class MainActivity extends AppCompatActivity {
         public void onNewPacketsCame() {
             if (packetsProcessing.compareAndSet(false, true)) {
                 try {
+                    Calibration calibrationFragment = (Calibration) sectionsPagerAdapter.getItem(0);
                     while (!packetsManager.receivedPackets.isEmpty()) {
                         AbstractInPacket packet = packetsManager.receivedPackets.poll();
                         switch (packet.Command) {
@@ -275,7 +276,9 @@ public class MainActivity extends AppCompatActivity {
                     accelArray.addAll(tmpList);
 
                     //отправляем новые данные
-                    Calibration calibrationFragment = (Calibration) sectionsPagerAdapter.getItem(0);
+                    //long lastTimestamp = accelArray.get(accelArray.size()-1).ms;
+                    //calibrationFragment.lastTimestamp = lastTimestamp;
+
                     if (calibrationFragment !=null && calibrationFragment.getModel()!=null) {
                         try {
                             List<AccelData> newData = new ArrayList<>(accelArray);

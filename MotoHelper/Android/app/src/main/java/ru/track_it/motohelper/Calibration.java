@@ -14,8 +14,7 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-
+import android.widget.TextView;
 
 
 import java.util.ArrayList;
@@ -29,10 +28,12 @@ import ru.track_it.motohelper.Graph.GraphDataProvider;
 
 public class Calibration extends Fragment {
 
+
     private CalibrationViewModel mViewModel;
     View root;
     boolean canRun=true;
     GraphCanvas graph;
+    TextView debugText;
     List<AccelData> accelData=new ArrayList<>();
     MyGraphDataProvider dataProvider=new MyGraphDataProvider();
 
@@ -49,6 +50,7 @@ public class Calibration extends Fragment {
 
         root = inflater.inflate(R.layout.calibration_fragment, container, false);
         graph = (GraphCanvas) root.findViewById(R.id.graph);
+        debugText = (TextView)root.findViewById(R.id.debugText);
 
         graph.setSeriesCount(3);
         graph.setDataProvider(dataProvider);
@@ -97,9 +99,9 @@ public class Calibration extends Fragment {
     private class MyGraphDataProvider implements GraphDataProvider, Runnable {
 
         //MEM pages for drawing
-        int[] xData=new int[Data.pointsCountToShowOnGraph];
-        int[] yData=new int[Data.pointsCountToShowOnGraph];
-        int[] zData=new int[Data.pointsCountToShowOnGraph];
+        volatile int[] xData=new int[Data.pointsCountToShowOnGraph];
+        volatile int[] yData=new int[Data.pointsCountToShowOnGraph];
+        volatile int[] zData=new int[Data.pointsCountToShowOnGraph];
 
         @Override
         public int getItemsCount() {
@@ -145,6 +147,9 @@ public class Calibration extends Fragment {
         Runnable redrawer=new Runnable() {
             @Override
             public void run() {
+                /*if (accelData!=null && accelData.size()>0){
+                    debugText.setText(String.valueOf(lastTimestamp));
+                }*/
                 graph.invalidate();
             }
         };
