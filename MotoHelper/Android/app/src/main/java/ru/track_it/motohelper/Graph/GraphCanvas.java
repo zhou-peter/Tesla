@@ -2,19 +2,21 @@ package ru.track_it.motohelper.Graph;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GraphCanvas extends View {
 
     private int seriesCount = 0;
     private GraphDataProvider dataProvider;
     private Paint paint=new Paint();
-
+    private List<CustomDrawer> customDrawers =new ArrayList<>();
     private int spinnerCounter=0;
 
     public GraphCanvas(Context context) {
@@ -44,6 +46,13 @@ public class GraphCanvas extends View {
 
     public void setDataProvider(GraphDataProvider dataProvider) {
         this.dataProvider = dataProvider;
+    }
+
+    public void addCustomDrawer(CustomDrawer drawer){
+        customDrawers.add(drawer);
+    }
+    public void clearCustomDrawers(){
+        customDrawers.clear();
     }
 
     @Override
@@ -78,6 +87,10 @@ public class GraphCanvas extends View {
                     prevY = y;
                 }
             }
+        }
+
+        for (CustomDrawer drawer : customDrawers){
+            drawer.onDrawAfter(canvas, width, height);
         }
     }
 

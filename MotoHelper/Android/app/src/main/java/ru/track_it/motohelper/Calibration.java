@@ -3,6 +3,8 @@ package ru.track_it.motohelper;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.os.Bundle;
 
@@ -22,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
+import ru.track_it.motohelper.Graph.CustomDrawer;
 import ru.track_it.motohelper.Graph.GraphCanvas;
 import ru.track_it.motohelper.Graph.GraphDataProvider;
 
@@ -36,7 +39,7 @@ public class Calibration extends Fragment {
     TextView debugText;
     List<AccelData> accelData=new ArrayList<>();
     MyGraphDataProvider dataProvider=new MyGraphDataProvider();
-
+    Bitmap rawMotorcyclist;
 
 
 
@@ -51,9 +54,12 @@ public class Calibration extends Fragment {
         root = inflater.inflate(R.layout.calibration_fragment, container, false);
         graph = (GraphCanvas) root.findViewById(R.id.graph);
         debugText = (TextView)root.findViewById(R.id.debugText);
+        rawMotorcyclist = BitmapFactory.decodeResource(getResources(), R.drawable.motorcyclist);
+
 
         graph.setSeriesCount(3);
         graph.setDataProvider(dataProvider);
+        graph.addCustomDrawer(dataProvider);
 
         for (int i=0; i<Data.pointsCountToShowOnGraph+1; i++){
             AccelData ad = new AccelData();
@@ -96,12 +102,18 @@ public class Calibration extends Fragment {
 
 
 
-    private class MyGraphDataProvider implements GraphDataProvider, Runnable {
+    private class MyGraphDataProvider implements GraphDataProvider, Runnable, CustomDrawer {
 
         //MEM pages for drawing
         volatile int[] xData=new int[Data.pointsCountToShowOnGraph];
         volatile int[] yData=new int[Data.pointsCountToShowOnGraph];
         volatile int[] zData=new int[Data.pointsCountToShowOnGraph];
+        Bitmap motorcyiclist;
+        int motorcyclistWidth;
+        int motorcyclistHeight;
+        int motorcyclistX;
+        int motorcyclistY;
+        float motorcycleAngle = 0;
 
         @Override
         public int getItemsCount() {
@@ -164,13 +176,25 @@ public class Calibration extends Fragment {
                         int newDataSize = data.size();
                         if (newDataSize >= Data.pointsCountToShowOnGraph) {
                             int stopIndex = newDataSize - Data.pointsCountToShowOnGraph;
+                            float avgX=0;
+                            float avgZ=1;
+                            float avgSamles=3;
                             for (int i = newDataSize-1, j=Data.pointsCountToShowOnGraph-1;
                                  i>=stopIndex; i--, j--){
                                 AccelData accelData=data.get(i);
                                 xData[j]=accelData.x;
                                 yData[j]=accelData.y;
                                 zData[j]=accelData.z;
+                                //среднее по последним трем точкам
+                                if (j>=Data.pointsCountToShowOnGraph-avgSamles-1){
+                                    avgX+=accelData.x;
+                                    avgZ+=accelData.z;
+                                }
                             }
+                            avgX/=avgSamles;
+                            avgZ/=avgSamles;
+                            float tgA = avgX/avgZ;
+                            motorcycleAngle = (float)Math.toDegrees(Math.atan(tgA));
                             Executors.MainThreadExecutor.execute(redrawer);
                         }
                     }
@@ -179,6 +203,23 @@ public class Calibration extends Fragment {
                     e.printStackTrace();
                 }
             }
+        }
+
+        @Override
+        public void onDrawAfter(Canvas canvas, int width, int height) {
+            if (motorcyiclist==null){
+                motorcyclistWidth = width/4;
+                motorcyclistHeight = rawMotorcyclist.getHeight()*motorcyclistWidth/rawMotorcyclist.getWidth();
+                //resize to 1.618 of the height
+                motorcyiclist = Bitmap.createScaledBitmap(rawMotorcyclist, motorcyclistWidth, motorcyclistHeight, false);
+                motorcyclistX = (width*3/4);
+                motorcyclistY = (height-10);
+            }
+            canvas.save();
+            canvas.translate(motorcyclistX, motorcyclistY);
+            canvas.rotate(motorcycleAngle);
+            canvas.drawBitmap(motorcyiclist, -motorcyclistWidth/2, - motorcyclistHeight, null);
+            canvas.restore();
         }
     }
 
