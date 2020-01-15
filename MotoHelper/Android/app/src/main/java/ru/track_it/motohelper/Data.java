@@ -10,7 +10,7 @@ public class Data {
 
     public static final int samplePeriod = 10;
     public static final int accelDataPointsLimit = 1000;    //10s
-    public static final int pointsCountToShowOnGraph = 100; //0.5s
+    public static final int pointsCountToShowOnGraph = 100; //1s
 
     public static final int maxAccel = 512;
     public static final int minAccel = -maxAccel;

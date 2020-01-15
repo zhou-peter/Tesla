@@ -176,25 +176,31 @@ public class Calibration extends Fragment {
                         int newDataSize = data.size();
                         if (newDataSize >= Data.pointsCountToShowOnGraph) {
                             int stopIndex = newDataSize - Data.pointsCountToShowOnGraph;
+                           /*
                             float avgX=0;
                             float avgZ=1;
                             float avgSamles=3;
+                            */
                             for (int i = newDataSize-1, j=Data.pointsCountToShowOnGraph-1;
                                  i>=stopIndex; i--, j--){
                                 AccelData accelData=data.get(i);
                                 xData[j]=accelData.x;
                                 yData[j]=accelData.y;
                                 zData[j]=accelData.z;
+                                /*
                                 //среднее по последним трем точкам
                                 if (j>=Data.pointsCountToShowOnGraph-avgSamles-1){
                                     avgX+=accelData.x;
                                     avgZ+=accelData.z;
                                 }
+                                 */
                             }
+                            /*
                             avgX/=avgSamles;
                             avgZ/=avgSamles;
                             float tgA = avgX/avgZ;
                             motorcycleAngle = (float)Math.toDegrees(Math.atan(tgA));
+                            */
                             Executors.MainThreadExecutor.execute(redrawer);
                         }
                     }
