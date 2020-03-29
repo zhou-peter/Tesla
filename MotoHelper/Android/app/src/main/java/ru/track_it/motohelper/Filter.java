@@ -15,6 +15,7 @@ public class Filter {
 
     public static class AccelerationResult{
         int value;
+        int count;
         long lastMS;
     }
 
@@ -108,6 +109,7 @@ public class Filter {
 
         AccelerationResult result = new AccelerationResult();
         result.value = avgX;
+        result.count = count;
         result.lastMS = data[targetIndex].ms;
         return result;
     }
