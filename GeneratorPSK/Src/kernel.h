@@ -20,7 +20,9 @@
 #define MAX_TWO_WAVES_COUNT 100
 
 
-
+#define GPIOT GPIOA
+#define PIN_HI GPIO_PIN_7
+#define PIN_LOW GPIO_PIN_8
 
 typedef struct
 {
@@ -44,8 +46,13 @@ typedef struct
 
 } UsingConfiguration_t;
 
-
-
+typedef enum {
+	Accumulating,
+	Shifting,
+	AfterShifted,
+	TwoWaveGenerating,
+	TwoWaveNotGenerating
+} Stage_t;
 
 extern void Kernel_Init(TIM_HandleTypeDef* mainTimer);
 extern void Kernel_Task();
