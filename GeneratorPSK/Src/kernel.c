@@ -25,7 +25,7 @@ void Kernel_Init(TIM_HandleTypeDef* mainTimer) {
 }
 
 void buildConfig(volatile UsingConfiguration_t* config) {
-	config->index = 0;
+	config->index = -1;
 	config->shiftIndex = configuration.accumulationCount;
 	config->twoWaveIndex = config->shiftIndex + configuration.shiftingCount;
 	config->endIndex = config->twoWaveIndex + configuration.twoWavesCount;
@@ -46,6 +46,7 @@ void Kernel_Task() {
 	buildConfig(&usingConfig1);
 	usingConfig = &usingConfig1;
 
+	HAL_TIM_Base_Start(htim);
 	HAL_TIM_Base_Start_IT(htim);
 	HAL_TIM_OC_Start_IT(htim, TIM_CHANNEL_1);
 
@@ -69,24 +70,21 @@ void Kernel_Timer() {
 			HAL_GPIO_WritePin(GPIOT, PIN_HI, GPIO_PIN_SET);
 		}
 		break;
-Shifting_1:
-	case Shifting:
+		Shifting_1: case Shifting:
 		HAL_GPIO_WritePin(GPIOT, PIN_HI, GPIO_PIN_RESET);
 		//actual shifting
-		if (usingConfig->phaseShift>0)
-		{
+		if (usingConfig->phaseShift > 0) {
 			htim->Instance->PSC += usingConfig->phaseShift;
 			stage = AfterShifted;
 		}
 		break;
 	case AfterShifted:
-		if (usingConfig->index >= usingConfig->twoWaveIndex) {
+		if (usingConfig->index == usingConfig->twoWaveIndex) {
 			stage = TwoWaveGenerating;
 			goto TwoWaveGen_1;
 		}
 		break;
-TwoWaveGen_1:
-	case TwoWaveGenerating:
+		TwoWaveGen_1: case TwoWaveGenerating:
 		deadtime();
 		HAL_GPIO_WritePin(GPIOT, PIN_HI, GPIO_PIN_SET);
 		break;
@@ -98,15 +96,16 @@ TwoWaveGen_1:
 }
 
 void Kernel_HalfTimer() {
+
 	HAL_GPIO_WritePin(GPIOT, PIN_HI, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(GPIOT, PIN_LOW, GPIO_PIN_RESET);
+
 	switch (stage) {
 	case Shifting:
-		if (usingConfig->index == usingConfig->shiftIndex &&
-				usingConfig->phaseShift<0)
-		{
-				htim->Instance->PSC += usingConfig->phaseShift;
-				stage = AfterShifted;
+		if (usingConfig->index == usingConfig->shiftIndex
+				&& usingConfig->phaseShift < 0) {
+			htim->Instance->PSC += usingConfig->phaseShift;
+			stage = AfterShifted;
 		}
 		break;
 	case Accumulating:
@@ -114,6 +113,13 @@ void Kernel_HalfTimer() {
 		deadtime();
 		HAL_GPIO_WritePin(GPIOT, PIN_LOW, GPIO_PIN_SET);
 		break;
+	default:
+		break;
+	}
+
+	if (usingConfig->index == usingConfig->endIndex) {
+		usingConfig->index = -1;
+		stage = Accumulating;
 	}
 }
 

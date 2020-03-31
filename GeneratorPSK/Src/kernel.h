@@ -36,7 +36,7 @@ typedef struct
 
 typedef struct
 {
-	u16 index:16;
+	s32 index:16;
 	u16 version:16;
 	u16	shiftIndex:16;
 	s16	phaseShift:16;
