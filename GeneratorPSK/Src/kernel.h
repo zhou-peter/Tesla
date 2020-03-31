@@ -5,7 +5,7 @@
 #ifndef __KERNEL_H
 #define __KERNEL_H
 
-#define MIN_ACCUMULATION_COUNT 4
+#define MIN_ACCUMULATION_COUNT 2
 #define MAX_ACCUMULATION_COUNT 1000
 
 #define MIN_SHIFT_COUNT 1
@@ -16,7 +16,7 @@
 //+90deg
 #define MAX_PHASE 250
 
-#define MIN_TWO_WAVES_COUNT 4
+#define MIN_TWO_WAVES_COUNT 3
 #define MAX_TWO_WAVES_COUNT 100
 
 
@@ -47,11 +47,11 @@ typedef struct
 } UsingConfiguration_t;
 
 typedef enum {
-	Accumulating,
-	Shifting,
-	AfterShifted,
-	TwoWaveGenerating,
-	TwoWaveNotGenerating
+	Accumulating = 0,
+	Shifting = 1,
+	AfterShifted = 2,
+	TwoWaveGenerating = 3,
+	TwoWaveNotGenerating = 4
 } Stage_t;
 
 extern void Kernel_Init(TIM_HandleTypeDef* mainTimer);

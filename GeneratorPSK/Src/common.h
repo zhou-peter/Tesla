@@ -25,7 +25,7 @@ typedef struct
 
 
 
-extern TimerConf_t calculatePeriodAndPrescaler(u32 freq);
+extern void calculatePeriodAndPrescaler(u32 freq, TimerConf_t* timerConf);
 extern s16 getS16(volatile u8* buf, u8 offset);
 extern void copy(void* src, void* dst, u16 count);
 
