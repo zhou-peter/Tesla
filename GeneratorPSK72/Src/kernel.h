@@ -56,6 +56,5 @@ typedef enum {
 
 extern void Kernel_Init(TIM_HandleTypeDef* mainTimer);
 extern void Kernel_Task();
-extern void Kernel_Timer();
-
+extern void Kernel_TIM_IRQHandler();
 #endif

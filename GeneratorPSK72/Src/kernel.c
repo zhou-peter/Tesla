@@ -32,10 +32,10 @@ void buildConfig(volatile UsingConfiguration_t* config) {
 	config->twoWaveIndex = config->shiftIndex + configuration.shiftingCount;
 	config->endIndex = config->twoWaveIndex + configuration.twoWavesCount;
 	/*
-	if (config->endIndex % 2 != 0) {
-		config->endIndex++;
-	}
-	*/
+	 if (config->endIndex % 2 != 0) {
+	 config->endIndex++;
+	 }
+	 */
 	//calculate phase shift
 	//if set early, dec in ouputcompare (50)
 	//if set later, inc in timer period
@@ -75,11 +75,9 @@ void Kernel_Timer() {
 		Shifting_1: case Shifting:
 		HAL_GPIO_WritePin(GPIOT, PIN_HI, GPIO_PIN_RESET);
 		//actual shifting
-		if (usingConfig->phaseShift==0)
-		{
+		if (usingConfig->phaseShift == 0) {
 			stage = AfterShifted;
-		}
-		else if (usingConfig->phaseShift > 0) {
+		} else if (usingConfig->phaseShift > 0) {
 			htim->Instance->CNT += usingConfig->phaseShift;
 			stage = AfterShifted;
 		}
@@ -136,14 +134,37 @@ void Kernel_HalfTimer() {
 	}
 }
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *atim) {
-	if (atim == htim) {
+void Kernel_TIM_IRQHandler() {
+	/* Capture compare 1 event */
+	if (__HAL_TIM_GET_FLAG(htim, TIM_FLAG_CC1) != RESET
+			&& __HAL_TIM_GET_IT_SOURCE(htim, TIM_IT_CC1) != RESET) {
+		__HAL_TIM_CLEAR_IT(htim, TIM_IT_CC1);
+		//htim->Channel = HAL_TIM_ACTIVE_CHANNEL_1;
+		/* Output compare event */
+
+		Kernel_HalfTimer();
+
+		//htim->Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
+
+	}
+	/* TIM Update event */
+	else if (__HAL_TIM_GET_FLAG(htim, TIM_FLAG_UPDATE) != RESET
+			&& __HAL_TIM_GET_IT_SOURCE(htim, TIM_IT_UPDATE) != RESET) {
+		__HAL_TIM_CLEAR_IT(htim, TIM_IT_UPDATE);
 		Kernel_Timer();
 	}
 }
 
-void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *atim) {
-	if (atim == htim) {
-		Kernel_HalfTimer();
-	}
-}
+/*
+ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *atim) {
+ if (atim == htim) {
+ Kernel_Timer();
+ }
+ }
+
+ void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *atim) {
+ if (atim == htim) {
+ Kernel_HalfTimer();
+ }
+ }
+ */
