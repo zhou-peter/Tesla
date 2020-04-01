@@ -58,8 +58,8 @@ void Kernel_Task() {
 
 }
 
-void Kernel_Timer() {
-	HAL_GPIO_WritePin(GPIOT, PIN_LOW, GPIO_PIN_RESET);
+static inline void Kernel_Timer() {
+	GPIOT->BRR = PIN_LOW;
 	usingConfig->index++;
 
 	switch (stage) {
@@ -68,12 +68,11 @@ void Kernel_Timer() {
 			stage = Shifting;
 			goto Shifting_1;
 		} else {
-			deadtime();
-			HAL_GPIO_WritePin(GPIOT, PIN_HI, GPIO_PIN_SET);
+			GPIOT->BSRR = PIN_HI;
 		}
 		break;
 		Shifting_1: case Shifting:
-		HAL_GPIO_WritePin(GPIOT, PIN_HI, GPIO_PIN_RESET);
+		GPIOT->BRR = PIN_HI;
 		//actual shifting
 		if (usingConfig->phaseShift == 0) {
 			stage = AfterShifted;
@@ -89,20 +88,17 @@ void Kernel_Timer() {
 		}
 		break;
 		TwoWaveGen_1: case TwoWaveGenerating:
-		deadtime();
-		HAL_GPIO_WritePin(GPIOT, PIN_HI, GPIO_PIN_SET);
+		GPIOT->BSRR = PIN_HI;
 		break;
 	case TwoWaveNotGenerating:
-		HAL_GPIO_WritePin(GPIOT, PIN_HI, GPIO_PIN_RESET);
+		GPIOT->BRR = PIN_HI;
 		break;
 
 	}
 }
 
-void Kernel_HalfTimer() {
-
-	HAL_GPIO_WritePin(GPIOT, PIN_HI, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOT, PIN_LOW, GPIO_PIN_RESET);
+static inline void Kernel_HalfTimer() {
+	GPIOT->BRR = PIN_HI;
 
 	switch (stage) {
 	case Shifting:
@@ -113,12 +109,10 @@ void Kernel_HalfTimer() {
 		}
 		break;
 	case Accumulating:
-		deadtime();
-		HAL_GPIO_WritePin(GPIOT, PIN_LOW, GPIO_PIN_SET);
+		GPIOT->BSRR = PIN_LOW;
 		break;
 	case TwoWaveGenerating:
-		deadtime();
-		HAL_GPIO_WritePin(GPIOT, PIN_LOW, GPIO_PIN_SET);
+		GPIOT->BSRR = PIN_LOW;
 		stage = TwoWaveNotGenerating;
 		break;
 	case TwoWaveNotGenerating:
@@ -134,7 +128,7 @@ void Kernel_HalfTimer() {
 	}
 }
 
-void Kernel_TIM_IRQHandler() {
+inline void Kernel_TIM_IRQHandler() {
 	/* Capture compare 1 event */
 	if (__HAL_TIM_GET_FLAG(htim, TIM_FLAG_CC1) != RESET
 			&& __HAL_TIM_GET_IT_SOURCE(htim, TIM_IT_CC1) != RESET) {
