@@ -42,8 +42,4 @@ volatile void nop()
 
 volatile void deadtime()
 {
-	asm("NOP");
-	asm("NOP");
-	asm("NOP");
-	asm("NOP");
 }

@@ -2,19 +2,20 @@
 #include "kernel.h"
 
 volatile Configuration_t configuration;
-volatile Stage_t stage;
 volatile UsingConfiguration_t* usingConfig;
 volatile UsingConfiguration_t usingConfig1;
 volatile UsingConfiguration_t usingConfig2;
+
+Stage_t stage;
 TimerConf_t timerConf;
 
 TIM_HandleTypeDef* htim;
 
 void Kernel_Init(TIM_HandleTypeDef* mainTimer) {
 	//setup default values
-	configuration.accumulationCount = 3;
+	configuration.accumulationCount = MIN_ACCUMULATION_COUNT;
 	configuration.shiftingCount = MIN_SHIFT_COUNT;
-	configuration.phaseShiftPercentX10 = -1;
+	configuration.phaseShiftPercentX10 = 0;
 	configuration.twoWavesCount = MIN_TWO_WAVES_COUNT;
 
 	htim = mainTimer;
@@ -30,9 +31,11 @@ void buildConfig(volatile UsingConfiguration_t* config) {
 	config->shiftIndex = configuration.accumulationCount;
 	config->twoWaveIndex = config->shiftIndex + configuration.shiftingCount;
 	config->endIndex = config->twoWaveIndex + configuration.twoWavesCount;
+	/*
 	if (config->endIndex % 2 != 0) {
 		config->endIndex++;
 	}
+	*/
 	//calculate phase shift
 	//if set early, dec in ouputcompare (50)
 	//if set later, inc in timer period
@@ -72,7 +75,11 @@ void Kernel_Timer() {
 		Shifting_1: case Shifting:
 		HAL_GPIO_WritePin(GPIOT, PIN_HI, GPIO_PIN_RESET);
 		//actual shifting
-		if (usingConfig->phaseShift >= 0) {
+		if (usingConfig->phaseShift==0)
+		{
+			stage = AfterShifted;
+		}
+		else if (usingConfig->phaseShift > 0) {
 			htim->Instance->CNT += usingConfig->phaseShift;
 			stage = AfterShifted;
 		}
