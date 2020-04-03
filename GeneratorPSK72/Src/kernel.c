@@ -4,46 +4,43 @@
 volatile Configuration_t configuration;
 volatile UsingConfiguration_t* usingConfig;
 volatile UsingConfiguration_t usingConfig1;
-volatile UsingConfiguration_t usingConfig2;
 
 Stage_t stage;
+s32 index;
 TimerConf_t timerConf;
 
 TIM_HandleTypeDef* htim;
 
 void Kernel_Init(TIM_HandleTypeDef* mainTimer) {
+
 	//setup default values
 	configuration.accumulationCount = MIN_ACCUMULATION_COUNT;
 	configuration.shiftingCount = MIN_SHIFT_COUNT;
-	configuration.phaseShiftPercentX10 = 0;
+	configuration.phaseShift = 0;
 	configuration.twoWavesCount = MIN_TWO_WAVES_COUNT;
 
 	htim = mainTimer;
 
 	calculatePeriodAndPrescaler(62000, &timerConf);
+
 	htim->Instance->PSC = timerConf.Prescaler;
 	htim->Instance->ARR = timerConf.Period;
 	htim->Instance->CCR1 = timerConf.Period / 2;
 }
 
 void buildConfig(volatile UsingConfiguration_t* config) {
-	config->index = -1;
+	index = -1;
 	config->shiftIndex = configuration.accumulationCount;
 	config->twoWaveIndex = config->shiftIndex + configuration.shiftingCount;
 	config->endIndex = config->twoWaveIndex + configuration.twoWavesCount;
-	/*
-	 if (config->endIndex % 2 != 0) {
-	 config->endIndex++;
-	 }
-	 */
+
 	//calculate phase shift
 	//if set early, dec in ouputcompare (50)
 	//if set later, inc in timer period
-	config->phaseShift = timerConf.Period * configuration.phaseShiftPercentX10
-			/ 1000;
-	config->version = configuration.version;
+	config->phaseShift = configuration.phaseShift;
 }
 
+volatile bool dir = TRUE;
 void Kernel_Task() {
 
 	buildConfig(&usingConfig1);
@@ -52,6 +49,8 @@ void Kernel_Task() {
 	HAL_TIM_OC_Start_IT(htim, TIM_CHANNEL_1);
 	HAL_TIM_Base_Start_IT(htim);
 
+	s32 maxShift = (timerConf.Period / 4) - 10;
+	configuration.phaseShift = (-1) * maxShift;
 	while (1) {
 		nop();
 	}
@@ -60,11 +59,11 @@ void Kernel_Task() {
 
 static inline void Kernel_Timer() {
 	GPIOT->BRR = PIN_LOW;
-	usingConfig->index++;
+	index++;
 
 	switch (stage) {
 	case Accumulating:
-		if (usingConfig->index == usingConfig->shiftIndex) {
+		if (index == usingConfig->shiftIndex) {
 			stage = Shifting;
 			goto Shifting_1;
 		} else {
@@ -82,7 +81,7 @@ static inline void Kernel_Timer() {
 		}
 		break;
 	case AfterShifted:
-		if (usingConfig->index == usingConfig->twoWaveIndex) {
+		if (index == usingConfig->twoWaveIndex) {
 			stage = TwoWaveGenerating;
 			goto TwoWaveGen_1;
 		}
@@ -102,8 +101,7 @@ static inline void Kernel_HalfTimer() {
 
 	switch (stage) {
 	case Shifting:
-		if (usingConfig->index == usingConfig->shiftIndex
-				&& usingConfig->phaseShift < 0) {
+		if (index == usingConfig->shiftIndex && usingConfig->phaseShift < 0) {
 			htim->Instance->CNT += usingConfig->phaseShift;
 			stage = AfterShifted;
 		}
@@ -122,9 +120,11 @@ static inline void Kernel_HalfTimer() {
 		break;
 	}
 
-	if (usingConfig->index >= usingConfig->endIndex) {
-		usingConfig->index = -1;
+	if (index >= usingConfig->endIndex) {
+		index = -1;
 		stage = Accumulating;
+		//сетапим новую конфигурацию
+		buildConfig(usingConfig);
 	}
 }
 
@@ -133,13 +133,9 @@ inline void Kernel_TIM_IRQHandler() {
 	if (__HAL_TIM_GET_FLAG(htim, TIM_FLAG_CC1) != RESET
 			&& __HAL_TIM_GET_IT_SOURCE(htim, TIM_IT_CC1) != RESET) {
 		__HAL_TIM_CLEAR_IT(htim, TIM_IT_CC1);
-		//htim->Channel = HAL_TIM_ACTIVE_CHANNEL_1;
+
 		/* Output compare event */
-
 		Kernel_HalfTimer();
-
-		//htim->Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
-
 	}
 	/* TIM Update event */
 	else if (__HAL_TIM_GET_FLAG(htim, TIM_FLAG_UPDATE) != RESET
@@ -149,16 +145,3 @@ inline void Kernel_TIM_IRQHandler() {
 	}
 }
 
-/*
- void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *atim) {
- if (atim == htim) {
- Kernel_Timer();
- }
- }
-
- void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *atim) {
- if (atim == htim) {
- Kernel_HalfTimer();
- }
- }
- */

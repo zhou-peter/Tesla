@@ -30,20 +30,16 @@ typedef struct
 	u16	shiftingCount:16;
 	u16 twoWavesCount:16;
 	u16 springCount:16;	//can not be more than some ove aboves
-	s16	phaseShiftPercentX10:16; //25% == 90deg, 250 == 25%
-	u16 version:16;
+	s16	phaseShift:16; //25% == 90deg, 250 == 25%
 } Configuration_t;
 
 typedef struct
 {
-	s32 index:16;
-	u16 version:16;
 	u16	shiftIndex:16;
 	s16	phaseShift:16;
 	u16	twoWaveIndex:16;
 	u16 endIndex:16;
 	u16 springIndex:16;
-
 } UsingConfiguration_t;
 
 typedef enum {
