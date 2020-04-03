@@ -4,14 +4,30 @@
 volatile Configuration_t configuration;
 volatile UsingConfiguration_t* usingConfig;
 volatile UsingConfiguration_t usingConfig1;
-
+//ADC1 IN1 halfwave
+//IN2 shift area
+//IN3 twowave area
+//IN4 phase
+volatile u16 ADC_Buf[4];
+#define ADC_MAX 4096
+#define ADC_MIDDLE 2048
+//максимальный сдвиг - это 90 градусов или 1/4 периода
+s32 maxShift;
 Stage_t stage;
 s32 index;
 TimerConf_t timerConf;
 
-TIM_HandleTypeDef* htim;
 
-void Kernel_Init(TIM_HandleTypeDef* mainTimer) {
+TIM_HandleTypeDef* htim;
+ADC_HandleTypeDef* hadc;
+DMA_HandleTypeDef* hdma_adc;
+
+void Kernel_Init(TIM_HandleTypeDef* mainTimer, ADC_HandleTypeDef* p_hadc,
+		DMA_HandleTypeDef* p_hdma_adc) {
+
+	htim = mainTimer;
+	hadc = p_hadc;
+	hdma_adc = p_hdma_adc;
 
 	//setup default values
 	configuration.accumulationCount = MIN_ACCUMULATION_COUNT;
@@ -19,13 +35,13 @@ void Kernel_Init(TIM_HandleTypeDef* mainTimer) {
 	configuration.phaseShift = 0;
 	configuration.twoWavesCount = MIN_TWO_WAVES_COUNT;
 
-	htim = mainTimer;
-
 	calculatePeriodAndPrescaler(62000, &timerConf);
-
+	maxShift = (timerConf.Period / 4) - 5;
 	htim->Instance->PSC = timerConf.Prescaler;
 	htim->Instance->ARR = timerConf.Period;
 	htim->Instance->CCR1 = timerConf.Period / 2;
+
+	HAL_ADC_Start_DMA(hadc, &ADC_Buf, 4);
 }
 
 void buildConfig(volatile UsingConfiguration_t* config) {
@@ -40,7 +56,25 @@ void buildConfig(volatile UsingConfiguration_t* config) {
 	config->phaseShift = configuration.phaseShift;
 }
 
-volatile bool dir = TRUE;
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* p_hdma)
+{
+	u16 shiftValue = ADC_Buf[3];
+	if (shiftValue>=0 && shiftValue<ADC_MAX)
+	{
+		if (shiftValue>=ADC_MIDDLE)
+		{
+			shiftValue-=ADC_MIDDLE;
+			//умножаем maxShift на понижающий коэффициент
+			configuration.phaseShift = maxShift * shiftValue / ADC_MIDDLE;
+		}else{
+			configuration.phaseShift =
+					(-1) * maxShift * shiftValue / ADC_MIDDLE;
+		}
+
+	}
+}
+
+
 void Kernel_Task() {
 
 	buildConfig(&usingConfig1);
@@ -49,8 +83,8 @@ void Kernel_Task() {
 	HAL_TIM_OC_Start_IT(htim, TIM_CHANNEL_1);
 	HAL_TIM_Base_Start_IT(htim);
 
-	s32 maxShift = (timerConf.Period / 4) - 10;
-	configuration.phaseShift = (-1) * maxShift;
+
+
 	while (1) {
 		nop();
 	}

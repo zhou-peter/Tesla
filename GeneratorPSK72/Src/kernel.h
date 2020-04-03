@@ -50,7 +50,8 @@ typedef enum {
 	TwoWaveNotGenerating = 4
 } Stage_t;
 
-extern void Kernel_Init(TIM_HandleTypeDef* mainTimer);
+extern void Kernel_Init(TIM_HandleTypeDef* mainTimer, ADC_HandleTypeDef* p_hadc,
+		DMA_HandleTypeDef* p_hdma_adc);
 extern void Kernel_Task();
 extern void Kernel_TIM_IRQHandler();
 #endif
