@@ -17,12 +17,15 @@
 #define MAX_PHASE 250
 
 #define MIN_TWO_WAVES_COUNT 3
-#define MAX_TWO_WAVES_COUNT 100
+#define MAX_TWO_WAVES_COUNT 500
 
 
 #define GPIOT GPIOA
 #define PIN_HI GPIO_PIN_7
 #define PIN_LOW GPIO_PIN_8
+
+#define PIN_LOW_PWR GPIO_PIN_10
+#define PIN_HI_PWR GPIO_PIN_11
 
 typedef struct
 {
@@ -39,7 +42,7 @@ typedef struct
 	s16	phaseShift:16;
 	u16	twoWaveIndex:16;
 	u16 endIndex:16;
-	u16 springIndex:16;
+	u16 lowPowerIndex:16;
 } UsingConfiguration_t;
 
 typedef enum {

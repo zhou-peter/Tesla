@@ -17,7 +17,6 @@ Stage_t stage;
 s32 index;
 TimerConf_t timerConf;
 
-
 TIM_HandleTypeDef* htim;
 ADC_HandleTypeDef* hadc;
 DMA_HandleTypeDef* hdma_adc;
@@ -45,7 +44,6 @@ void Kernel_Init(TIM_HandleTypeDef* mainTimer, ADC_HandleTypeDef* p_hadc,
 }
 
 void buildConfig(volatile UsingConfiguration_t* config) {
-	index = -1;
 	config->shiftIndex = configuration.accumulationCount;
 	config->twoWaveIndex = config->shiftIndex + configuration.shiftingCount;
 	config->endIndex = config->twoWaveIndex + configuration.twoWavesCount;
@@ -54,26 +52,46 @@ void buildConfig(volatile UsingConfiguration_t* config) {
 	//if set early, dec in ouputcompare (50)
 	//if set later, inc in timer period
 	config->phaseShift = configuration.phaseShift;
+
+	//
+	config->lowPowerIndex = config->twoWaveIndex + MIN_TWO_WAVES_COUNT - 1;
 }
 
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* p_hdma)
-{
-	u16 shiftValue = ADC_Buf[3];
-	if (shiftValue>=0 && shiftValue<ADC_MAX)
-	{
-		if (shiftValue>=ADC_MIDDLE)
-		{
-			shiftValue-=ADC_MIDDLE;
-			//умножаем maxShift на понижающий коэффициент
-			configuration.phaseShift = maxShift * shiftValue / ADC_MIDDLE;
-		}else{
-			configuration.phaseShift =
-					(-1) * maxShift * shiftValue / ADC_MIDDLE;
-		}
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* p_hdma) {
 
+	u16 value = ADC_Buf[0];
+	//зона пол волны
+	if (value >= 0 && value < ADC_MAX) {
+		configuration.accumulationCount = MAX_ACCUMULATION_COUNT
+				* value / ADC_MAX;
 	}
-}
 
+	//зона паузы
+	value = ADC_Buf[1];
+	if (value >= 0 && value < ADC_MAX) {
+		configuration.shiftingCount = MAX_SHIFT_COUNT * value / ADC_MAX;
+	}
+
+	//зона двухволнового режима
+	value = ADC_Buf[2];
+	if (value >= 0 && value < ADC_MAX) {
+		configuration.twoWavesCount = MAX_TWO_WAVES_COUNT * value / ADC_MAX;
+	}
+
+	//фаза
+	value = ADC_Buf[3];
+	if (value >= 0 && value < ADC_MAX) {
+		if (value >= ADC_MIDDLE) {
+			value -= ADC_MIDDLE;
+			//умножаем maxShift на понижающий коэффициент
+			configuration.phaseShift = maxShift * value / ADC_MIDDLE;
+		} else {
+			value = ADC_MIDDLE - value;
+			configuration.phaseShift = (-1) * maxShift * value / ADC_MIDDLE;
+		}
+	}
+
+}
 
 void Kernel_Task() {
 
@@ -82,8 +100,6 @@ void Kernel_Task() {
 
 	HAL_TIM_OC_Start_IT(htim, TIM_CHANNEL_1);
 	HAL_TIM_Base_Start_IT(htim);
-
-
 
 	while (1) {
 		nop();
@@ -140,6 +156,11 @@ static inline void Kernel_HalfTimer() {
 			stage = AfterShifted;
 		}
 		break;
+	case AfterShifted:
+		//set high voltage power supply
+		GPIOT->BRR = PIN_LOW_PWR;
+		GPIOT->BSRR = PIN_HI_PWR;
+		break;
 	case Accumulating:
 		GPIOT->BSRR = PIN_LOW;
 		break;
@@ -154,6 +175,11 @@ static inline void Kernel_HalfTimer() {
 		break;
 	}
 
+	if (index >= usingConfig->lowPowerIndex) {
+		//set low voltage power supply
+		GPIOT->BRR = PIN_HI_PWR;
+		GPIOT->BSRR = PIN_LOW_PWR;
+	}
 	if (index >= usingConfig->endIndex) {
 		index = -1;
 		stage = Accumulating;
