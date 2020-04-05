@@ -62,20 +62,25 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* p_hdma) {
 	u16 value = ADC_Buf[0];
 	//зона пол волны
 	if (value >= 0 && value < ADC_MAX) {
-		configuration.accumulationCount = MAX_ACCUMULATION_COUNT
-				* value / ADC_MAX;
+		configuration.accumulationCount = MIN_ACCUMULATION_COUNT +
+				((MAX_ACCUMULATION_COUNT - MIN_ACCUMULATION_COUNT)
+				* value / ADC_MAX);
 	}
 
 	//зона паузы
 	value = ADC_Buf[1];
 	if (value >= 0 && value < ADC_MAX) {
-		configuration.shiftingCount = MAX_SHIFT_COUNT * value / ADC_MAX;
+		configuration.shiftingCount = MIN_SHIFT_COUNT +
+				((MAX_SHIFT_COUNT-MIN_SHIFT_COUNT)
+				* value / ADC_MAX);
 	}
 
 	//зона двухволнового режима
 	value = ADC_Buf[2];
 	if (value >= 0 && value < ADC_MAX) {
-		configuration.twoWavesCount = MAX_TWO_WAVES_COUNT * value / ADC_MAX;
+		configuration.twoWavesCount = MIN_TWO_WAVES_COUNT +
+				((MAX_TWO_WAVES_COUNT -MIN_TWO_WAVES_COUNT)
+				* value / ADC_MAX);
 	}
 
 	//фаза
