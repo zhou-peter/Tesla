@@ -53,8 +53,7 @@ void buildConfig(volatile UsingConfiguration_t* config) {
 	//if set later, inc in timer period
 	config->phaseShift = configuration.phaseShift;
 
-	//
-	config->lowPowerIndex = config->twoWaveIndex + MIN_TWO_WAVES_COUNT - 1;
+	config->lowPowerIndex = config->twoWaveIndex + configuration.twoWavesCount / 2;
 }
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* p_hdma) {
@@ -62,25 +61,25 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* p_hdma) {
 	u16 value = ADC_Buf[0];
 	//зона пол волны
 	if (value >= 0 && value < ADC_MAX) {
-		configuration.accumulationCount = MIN_ACCUMULATION_COUNT +
-				((MAX_ACCUMULATION_COUNT - MIN_ACCUMULATION_COUNT)
-				* value / ADC_MAX);
+		configuration.accumulationCount = MIN_ACCUMULATION_COUNT
+				+ ((MAX_ACCUMULATION_COUNT - MIN_ACCUMULATION_COUNT) * value
+						/ ADC_MAX);
 	}
 
 	//зона паузы
 	value = ADC_Buf[1];
 	if (value >= 0 && value < ADC_MAX) {
-		configuration.shiftingCount = MIN_SHIFT_COUNT +
-				((MAX_SHIFT_COUNT-MIN_SHIFT_COUNT)
-				* value / ADC_MAX);
+		configuration.shiftingCount = MIN_SHIFT_COUNT
+				+ ((MAX_SHIFT_COUNT - MIN_SHIFT_COUNT) * value / ADC_MAX);
 	}
 
 	//зона двухволнового режима
 	value = ADC_Buf[2];
 	if (value >= 0 && value < ADC_MAX) {
-		configuration.twoWavesCount = MIN_TWO_WAVES_COUNT +
-				((MAX_TWO_WAVES_COUNT -MIN_TWO_WAVES_COUNT)
-				* value / ADC_MAX);
+		configuration.twoWavesCount =
+				MIN_TWO_WAVES_COUNT
+						+ ((MAX_TWO_WAVES_COUNT - MIN_TWO_WAVES_COUNT) * value
+								/ ADC_MAX);
 	}
 
 	//фаза
@@ -90,9 +89,19 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* p_hdma) {
 			value -= ADC_MIDDLE;
 			//умножаем maxShift на понижающий коэффициент
 			configuration.phaseShift = maxShift * value / ADC_MIDDLE;
+			if (configuration.phaseShift < 10) {
+				GPIOC->BRR = GPIO_PIN_13;
+			} else {
+				GPIOC->BSRR = GPIO_PIN_13;
+			}
 		} else {
 			value = ADC_MIDDLE - value;
 			configuration.phaseShift = (-1) * maxShift * value / ADC_MIDDLE;
+			if (configuration.phaseShift > -10) {
+				GPIOC->BRR = GPIO_PIN_13;
+			} else {
+				GPIOC->BSRR = GPIO_PIN_13;
+			}
 		}
 	}
 
