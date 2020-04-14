@@ -34,7 +34,7 @@ void Kernel_Init(TIM_HandleTypeDef* mainTimer, ADC_HandleTypeDef* p_hadc,
 	configuration.phaseShift = 0;
 	configuration.twoWavesCount = MIN_TWO_WAVES_COUNT;
 
-	calculatePeriodAndPrescaler(62000, &timerConf);
+	calculatePeriodAndPrescaler(550000, &timerConf);
 	maxShift = (timerConf.Period / 4) - 5;
 	htim->Instance->PSC = timerConf.Prescaler;
 	htim->Instance->ARR = timerConf.Period;
