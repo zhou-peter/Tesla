@@ -242,6 +242,9 @@ void ADC1_2_IRQHandler(void)
 
 
 /* USER CODE BEGIN 1 */
-
+void TIM3_IRQHandler(void)
+{
+	Kernel_TIM_IRQHandler();
+}
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -121,7 +121,7 @@ void Kernel_Task() {
 
 }
 
-static inline void Kernel_Timer() {
+void Kernel_Timer() {
 	GPIOT->BRR = PIN_LOW;
 	index++;
 
@@ -160,7 +160,7 @@ static inline void Kernel_Timer() {
 	}
 }
 
-static inline void Kernel_HalfTimer() {
+void Kernel_HalfTimer() {
 	GPIOT->BRR = PIN_HI;
 
 	switch (stage) {
@@ -202,7 +202,7 @@ static inline void Kernel_HalfTimer() {
 	}
 }
 
-inline void Kernel_TIM_IRQHandler() {
+void Kernel_TIM_IRQHandler() {
 	/* Capture compare 1 event */
 	if (__HAL_TIM_GET_FLAG(htim, TIM_FLAG_CC1) != RESET
 			&& __HAL_TIM_GET_IT_SOURCE(htim, TIM_IT_CC1) != RESET) {
