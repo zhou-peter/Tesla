@@ -38,11 +38,11 @@ typedef struct
 
 typedef struct
 {
-	u16	shiftIndex:16;
-	s16	phaseShift:16;
-	u16	twoWaveIndex:16;
-	u16 endIndex:16;
-	u16 lowPowerIndex:16;
+	u32	shiftIndex:16;
+	s32	phaseShift:16;
+	u32	twoWaveIndex:16;
+	u32 endIndex:16;
+	u32 lowPowerIndex:16;
 } UsingConfiguration_t;
 
 typedef enum {
@@ -56,5 +56,6 @@ typedef enum {
 extern void Kernel_Init(TIM_HandleTypeDef* mainTimer, ADC_HandleTypeDef* p_hadc,
 		DMA_HandleTypeDef* p_hdma_adc);
 extern void Kernel_Task();
-extern void Kernel_TIM_IRQHandler();
+extern volatile UsingConfiguration_t* GET_CONFIGA();
+
 #endif

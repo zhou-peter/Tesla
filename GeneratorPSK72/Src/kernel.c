@@ -3,7 +3,8 @@
 
 volatile Configuration_t configuration;
 volatile UsingConfiguration_t* usingConfig;
-volatile UsingConfiguration_t usingConfig1;
+//volatile UsingConfiguration_t usingConfig1;
+
 //ADC1 IN1 halfwave
 //IN2 shift area
 //IN3 twowave area
@@ -34,7 +35,7 @@ void Kernel_Init(TIM_HandleTypeDef* mainTimer, ADC_HandleTypeDef* p_hadc,
 	configuration.phaseShift = 0;
 	configuration.twoWavesCount = MIN_TWO_WAVES_COUNT;
 
-	calculatePeriodAndPrescaler(528000, &timerConf);
+	calculatePeriodAndPrescaler(62000, &timerConf);
 	maxShift = (timerConf.Period / 4) - 5;
 	htim->Instance->PSC = timerConf.Prescaler;
 	htim->Instance->ARR = timerConf.Period;
@@ -108,9 +109,9 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* p_hdma) {
 }
 
 void Kernel_Task() {
+	usingConfig = GET_CONFIGA();
+	buildConfig(usingConfig);
 
-	buildConfig(&usingConfig1);
-	usingConfig = &usingConfig1;
 
 	GPIOT->BSRR = PIN_HI;
 	GPIOT->BSRR = PIN_LOW;
