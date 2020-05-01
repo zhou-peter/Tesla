@@ -206,12 +206,14 @@ void Kernel_HalfTimer() {
 	}
 }
 
+volatile u32 sr = 0;
 void Kernel_TIM_IRQHandler() {
 	/* Capture compare 1 event */
 	if (__HAL_TIM_GET_FLAG(htim, TIM_FLAG_CC1) != RESET
 			&& __HAL_TIM_GET_IT_SOURCE(htim, TIM_IT_CC1) != RESET) {
-		__HAL_TIM_CLEAR_IT(htim, TIM_IT_CC1);
 
+		__HAL_TIM_CLEAR_IT(htim, TIM_IT_CC1);
+		sr = htim->Instance->SR;
 		/* Output compare event */
 		Kernel_HalfTimer();
 	}
@@ -219,7 +221,13 @@ void Kernel_TIM_IRQHandler() {
 	else if (__HAL_TIM_GET_FLAG(htim, TIM_FLAG_UPDATE) != RESET
 			&& __HAL_TIM_GET_IT_SOURCE(htim, TIM_IT_UPDATE) != RESET) {
 		__HAL_TIM_CLEAR_IT(htim, TIM_IT_UPDATE);
+		sr = htim->Instance->SR;
+
 		Kernel_Timer();
+	}
+	else
+	{
+		sr = 1;
 	}
 }
 

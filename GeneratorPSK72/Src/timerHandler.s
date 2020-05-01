@@ -35,10 +35,10 @@ TIM3_IRQHandler:
 
 	@load SR of TIM3
 	ldr r2, T3
-	ldr r0, [r2]
-	movw r1, TIMER_UPDATE_FLAG
-	tst r0, r1			//r1 == 1
-	bne  period			//
+	ldr r4, [r2]
+	movw r5, TIMER_UPDATE_FLAG
+	tst r4, r5			//r1 == 1
+	bne  period
 	b	half_period
 
 
@@ -48,22 +48,20 @@ period:
 	ldr r0, A_BSRR
 	movw r1, GPIO_PIN_LOW
 	str	r1, [r0]
-						@clear flag ->Instance->SR = ~(__INTERRUPT__))
-	movw r1, TIMER_UPDATE_FLAG
-	mvn	r1,	r1
-	str r1, [r2]		//TIM3_SR = ~(1)
 	b exit
 
 half_period:
 	ldr r0, A_BSRR		@ GPIOA->BSRR = (GPIO_PIN_LOW)|(GPIO_PIN_HI)
 	movw r1, GPIO_PIN_HI
 	str	r1, [r0]
-						//TIM3_SR = ~(2)
-	movw r1, TIMER_CC1_FLAG
-	mvn	r1,	r1
-	str r1, [r2]
-exit:
 
+
+exit:
+	movw r0, #0
+	str r0, [r2]	// clear bit UIF (1)
+	ldr r1, [r2]
+	cmp r1, r0
+	//bne exit
 	bx	lr
 	.fnend
 
