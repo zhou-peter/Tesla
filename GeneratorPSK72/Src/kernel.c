@@ -35,13 +35,13 @@ void Kernel_Init(TIM_HandleTypeDef* mainTimer, ADC_HandleTypeDef* p_hadc,
 	configuration.phaseShift = 0;
 	configuration.twoWavesCount = MIN_TWO_WAVES_COUNT;
 
-	calculatePeriodAndPrescaler(62000, &timerConf);
+	calculatePeriodAndPrescaler(200000, &timerConf);
 	maxShift = (timerConf.Period / 4) - 5;
 	htim->Instance->PSC = timerConf.Prescaler;
 	htim->Instance->ARR = timerConf.Period;
 	htim->Instance->CCR1 = timerConf.Period / 2;
 
-	HAL_ADC_Start_DMA(hadc, &ADC_Buf, 4);
+	//HAL_ADC_Start_DMA(hadc, &ADC_Buf, 4);
 }
 
 void buildConfig(volatile UsingConfiguration_t* config) {

@@ -48,20 +48,21 @@ period:
 	ldr r0, A_BSRR
 	movw r1, GPIO_PIN_LOW
 	str	r1, [r0]
+clear_flag_p:
+	mvn	r5, r5
+	str r5, [r2]
 	b exit
 
 half_period:
 	ldr r0, A_BSRR		@ GPIOA->BSRR = (GPIO_PIN_LOW)|(GPIO_PIN_HI)
 	movw r1, GPIO_PIN_HI
 	str	r1, [r0]
-
+clear_flag_hp:
+	movw r5, TIMER_CC1_FLAG
+	mvn	r5, r5
+	str r5, [r2]
 
 exit:
-	movw r0, #0
-	str r0, [r2]	// clear bit UIF (1)
-	ldr r1, [r2]
-	cmp r1, r0
-	//bne exit
 	bx	lr
 	.fnend
 
