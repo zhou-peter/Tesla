@@ -15,7 +15,8 @@ typedef enum {FALSE = 0, TRUE = !FALSE} bool;
 #define u8 uint8_t
 #define s8 int8_t
 
-
+#define ADC_MAX 4096	//исключительно
+#define ADC_MIDDLE 2048
 
 typedef struct
 {
