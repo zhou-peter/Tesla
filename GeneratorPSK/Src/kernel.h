@@ -50,8 +50,11 @@ extern volatile UsingConfiguration_t usingConfig2;
 extern volatile UsingConfiguration_t* inModifyConfig;
 
 
+
+
+
 extern void Kernel_Init(TIM_HandleTypeDef* mainTimer, TIM_HandleTypeDef* halfTimer, ADC_HandleTypeDef* p_hadc,
-		DMA_HandleTypeDef* p_hdma_adc, DAC_HandleTypeDef* p_hdac);
+		DMA_HandleTypeDef* p_hdma_adc, DAC_HandleTypeDef* hdac);
 extern void Kernel_Task();
 
 #endif

@@ -5,7 +5,9 @@
 #include <stdio.h>
 
 #include "stm32f1xx_hal.h"
+#include "cmsis_os.h"
 #include "stm32f1xx_hal.h"
+
 
 typedef enum {FALSE = 0, TRUE = !FALSE} bool;
 #define u32 uint32_t
