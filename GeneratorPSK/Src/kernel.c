@@ -35,27 +35,30 @@ void Kernel_Init(TIM_HandleTypeDef* mainTimer, TIM_HandleTypeDef* halfTimer,
 	htimHalfWave->Instance->ARR = 2;
 	htimHalfWave->Instance->CCR4 = 1;
 
-	DAC_Regular = 2095;
-	DAC_Shift = 2000;
+	DAC_Regular = 3500;
+	DAC_Shift = 3000;
 
 	HAL_DAC_SetValue(hdacPtr, DAC_CHANNEL_1, DAC_ALIGN_12B_R, DAC_Regular);
 	HAL_DAC_Start(hdacPtr, DAC_CHANNEL_1);
 
-	/*
+	HAL_DAC_SetValue(hdacPtr, DAC_CHANNEL_2, DAC_ALIGN_12B_R, DAC_Shift);
+	HAL_DAC_Start(hdacPtr, DAC_CHANNEL_2);
 
 
-	 HAL_DAC_Start(hdac, DAC_CHANNEL_1);
-	 //HAL_DAC_Start(hdac, DAC_CHANNEL_2);
-
-	 HAL_DAC_SetValue(hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R,  DAC_Regular);
-	 //HAL_DAC_SetValue(hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R,  DAC_Shift);
 
 	 HAL_TIM_Base_Start_IT(htim);
+
 	 HAL_ADC_Start_DMA(hadc, &ADC_Buf, 4);
 
+	 htim->Instance->ARR=25;
+	 htim->Instance->CCR1=15;
+	 htim->Instance->CCR2=17;
 
 	 HAL_TIM_Base_Start(htim);
-	 HAL_TIM_Base_Start(htimHalfWave);*/
+	 HAL_TIM_PWM_Start(htim, TIM_CHANNEL_1);
+	 HAL_TIM_PWM_Start(htim, TIM_CHANNEL_2);
+
+	 //HAL_TIM_Base_Start(htimHalfWave);
 
 }
 
