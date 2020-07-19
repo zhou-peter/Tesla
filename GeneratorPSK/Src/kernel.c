@@ -51,14 +51,19 @@ void Kernel_Init(TIM_HandleTypeDef* mainTimer, TIM_HandleTypeDef* halfTimer,
 	 HAL_ADC_Start_DMA(hadc, &ADC_Buf, 4);
 
 	 htim->Instance->ARR=25;
-	 htim->Instance->CCR1=15;
-	 htim->Instance->CCR2=17;
+	 htim->Instance->CCR1=15;//shift start
+	 htim->Instance->CCR2=16;//shift stop
+	 htim->Instance->CCR3=18;//pause stop
+	 htim->Instance->CCR4=25-1;//hv stop
 
 	 HAL_TIM_Base_Start(htim);
 	 HAL_TIM_PWM_Start(htim, TIM_CHANNEL_1);
 	 HAL_TIM_PWM_Start(htim, TIM_CHANNEL_2);
+	 HAL_TIM_PWM_Start(htim, TIM_CHANNEL_3);
+	 HAL_TIM_PWM_Start(htim, TIM_CHANNEL_4);
 
-	 //HAL_TIM_Base_Start(htimHalfWave);
+	 HAL_TIM_Base_Start(htimHalfWave);
+	 HAL_TIM_PWM_Start(htimHalfWave, TIM_CHANNEL_4);
 
 }
 
