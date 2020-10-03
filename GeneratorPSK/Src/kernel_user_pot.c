@@ -1,30 +1,16 @@
 #include "kernel.h"
+#include "kernel_user_pot.h"
 
 
+volatile u16 ADC_Buf[5];
 
-volatile u16 ADC_Buf[4];
-
-//максимальный сдвиг - это 90 градусов или 1/4 периода
-#define MAX_SHIFT 88
-
-//ADC1 IN1 halfwave
-//IN2 shift area
-//IN3 twowave area
-//IN4 phase
-
-
-void buildConfig(volatile UsingConfiguration_t* config) {
-
-	config->updating = TRUE;
-	config->shiftStart = configuration.accumulationCount;
-	config->shiftStop = config->shiftStart + 1;
-	config->pauseStop = config->shiftStop + configuration.pauseCount;
-	config->twoWaveStart = config->shiftStop;
-	config->endIndex = config->twoWaveStart + configuration.twoWavesCount;
-	config->updating = FALSE;
-}
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* p_hdma) {
+
+	if (configuration.reading == TRUE)
+	{
+		return;
+	}
 
 	u16 value = ADC_Buf[0];
 	//зона пол волны
@@ -57,19 +43,9 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* p_hdma) {
 			value -= ADC_MIDDLE;
 			//умножаем MAX_SHIFT на понижающий коэффициент
 			configuration.phaseShift = MAX_SHIFT * value / ADC_MIDDLE;
-			if (configuration.phaseShift < 10) {
-				GPIOC->BRR = GPIO_PIN_13;
-			} else {
-				GPIOC->BSRR = GPIO_PIN_13;
-			}
 		} else {
 			value = ADC_MIDDLE - value;
 			configuration.phaseShift = (-1) * MAX_SHIFT * value / ADC_MIDDLE;
-			if (configuration.phaseShift > -10) {
-				GPIOC->BRR = GPIO_PIN_13;
-			} else {
-				GPIOC->BSRR = GPIO_PIN_13;
-			}
 		}
 	}
 

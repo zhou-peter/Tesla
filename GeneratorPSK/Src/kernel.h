@@ -5,24 +5,15 @@
 #ifndef __KERNEL_H
 #define __KERNEL_H
 
-#define MIN_ACCUMULATION_COUNT 2
-#define MAX_ACCUMULATION_COUNT 1000
-
-#define MIN_PAUSE_COUNT 1
-#define MAX_PAUSE_COUNT 100
-
-//-90deg
-#define MIN_PHASE -250
-//+90deg
-#define MAX_PHASE 250
-
-#define MIN_TWO_WAVES_COUNT 3
-#define MAX_TWO_WAVES_COUNT 100
 
 
-#define GPIOT GPIOA
-#define PIN_HI GPIO_PIN_7
-#define PIN_LOW GPIO_PIN_8
+
+#define GPIO_LED GPIOB
+#define GPIO_LED_R GPIO_PIN_1
+#define GPIO_LED_G GPIO_PIN_2
+
+#define GPIO_BUTTON GPIOA
+#define GPIO_BUTTON_WORK GPIO_PIN_0
 
 typedef struct
 {
@@ -30,8 +21,9 @@ typedef struct
 	u16	pauseCount:16;
 	u16 twoWavesCount:16;
 	u16 springCount:16;	//can not be more than some ove aboves
-	s16	phaseShift:16; //25% == 90deg, 250 == 25%
-	u16 tmp:16;
+	s16	phaseShift:16;
+	bool reading:1; //for struct locking
+	u16 tmp:15;
 } Configuration_t;
 
 typedef struct
@@ -41,13 +33,25 @@ typedef struct
 	u16	pauseStop:16;
 	u16	twoWaveStart:16;
 	u16 endIndex:16;
-	bool updating:1;
+	bool updating:1; //for struct locking
+	u16 tmp2:15;
 } UsingConfiguration_t;
 
+typedef enum
+{
+	KernelIdle,
+	KernelFlatGenerating, //Green light
+	KernelWorking			//Green blink
+} KernelStates_t;
+
+typedef struct
+{
+	KernelStates_t KernelState;
+	bool zeroAngle;
+} Env_t;
+
 extern volatile Configuration_t configuration;
-extern volatile UsingConfiguration_t usingConfig1;
-extern volatile UsingConfiguration_t usingConfig2;
-extern volatile UsingConfiguration_t* inModifyConfig;
+extern volatile UsingConfiguration_t usingConfig;
 
 
 
@@ -56,5 +60,7 @@ extern volatile UsingConfiguration_t* inModifyConfig;
 extern void Kernel_Init(TIM_HandleTypeDef* mainTimer, TIM_HandleTypeDef* halfTimer, ADC_HandleTypeDef* p_hadc,
 		DMA_HandleTypeDef* p_hdma_adc, DAC_HandleTypeDef* hdac);
 extern void Kernel_Task();
+extern void UserDisplayTask();
+extern void Kernel_TImer1Update();
 
 #endif

@@ -8,7 +8,18 @@
 #ifndef KERNEL_USER_POT_H_
 #define KERNEL_USER_POT_H_
 
-extern volatile u16 ADC_Buf[4];
+extern volatile u16 ADC_Buf[5];
 
+#define MIN_ACCUMULATION_COUNT 2
+#define MAX_ACCUMULATION_COUNT 1000
+
+#define MIN_PAUSE_COUNT 1
+#define MAX_PAUSE_COUNT 100
+
+#define MIN_TWO_WAVES_COUNT 3
+#define MAX_TWO_WAVES_COUNT 100
+
+//максимальный сдвиг - это 90 градусов или 1/4 периода
+#define MAX_SHIFT 88
 
 #endif /* KERNEL_USER_POT_H_ */
