@@ -33,13 +33,13 @@ typedef struct
 	u16	pauseStop:16;
 	u16	twoWaveStart:16;
 	u16 endIndex:16;
+	u16	phaseAngle:13;
 	bool updating:1; //for struct locking
-	u16 tmp2:15;
+	u16 tmp2:2;
 } UsingConfiguration_t;
 
 typedef enum
 {
-	KernelIdle,
 	KernelFlatGenerating, //Green light
 	KernelWorking			//Green blink
 } KernelStates_t;
@@ -48,6 +48,7 @@ typedef struct
 {
 	KernelStates_t KernelState;
 	bool zeroAngle;
+	bool periodElapsed;
 } Env_t;
 
 extern volatile Configuration_t configuration;
@@ -61,6 +62,6 @@ extern void Kernel_Init(TIM_HandleTypeDef* mainTimer, TIM_HandleTypeDef* halfTim
 		DMA_HandleTypeDef* p_hdma_adc, DAC_HandleTypeDef* hdac);
 extern void Kernel_Task();
 extern void UserDisplayTask();
-extern void Kernel_TImer1Update();
+extern void TIM1_PeriodElapsedCallback();
 
 #endif

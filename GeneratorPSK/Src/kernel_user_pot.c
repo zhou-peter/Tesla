@@ -1,14 +1,11 @@
 #include "kernel.h"
 #include "kernel_user_pot.h"
 
-
 volatile u16 ADC_Buf[5];
-
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* p_hdma) {
 
-	if (configuration.reading == TRUE)
-	{
+	if (configuration.reading == TRUE) {
 		return;
 	}
 
@@ -23,8 +20,11 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* p_hdma) {
 	//зона паузы
 	value = ADC_Buf[1];
 	if (value >= 0 && value < ADC_MAX) {
-		configuration.pauseCount = MIN_PAUSE_COUNT
-				+ ((MAX_PAUSE_COUNT - MIN_PAUSE_COUNT) * value / ADC_MAX);
+		configuration.pauseCount = ((MAX_PAUSE_COUNT - MIN_PAUSE_COUNT) * value
+				/ ADC_MAX);
+		if (configuration.pauseCount < MIN_PAUSE_COUNT) {
+			configuration.pauseCount = MIN_PAUSE_COUNT;
+		}
 	}
 
 	//зона двухволнового режима
