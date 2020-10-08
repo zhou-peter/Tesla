@@ -3,9 +3,9 @@
 #include "kernel_user_pot.h"
 #include "stm32f1xx_hal_dac.h"
 
-#define DAC_BOTTOM	1570
+#define DAC_BOTTOM	1575
 #define DAC_MIDDLE	1600
-#define DAC_TOP		2000
+#define DAC_TOP		1715
 
 TIM_HandleTypeDef* htim;
 TIM_HandleTypeDef* htimHalfWave;
@@ -75,7 +75,7 @@ void buildConfig() {
 	usingConfig.shiftStart = configuration.accumulationCount;
 	usingConfig.shiftStop = usingConfig.shiftStart + 1;
 	usingConfig.pauseStop = usingConfig.shiftStart + configuration.pauseCount;
-	usingConfig.twoWaveStart = usingConfig.shiftStop;
+	usingConfig.twoWaveStart = usingConfig.pauseStop;
 	usingConfig.endIndex = usingConfig.twoWaveStart
 			+ configuration.twoWavesCount;
 	if (configuration.phaseShift >= 0) {
@@ -108,23 +108,25 @@ void moveConfigToPerepheral() {
 	//htim->Instance->CCR4=6;//hv stop
 
 	//обновляем угол (основная частота не меняется)
-	DAC_Shift=usingConfig.phaseAngle;
+	DAC_Shift = usingConfig.phaseAngle;
 	HAL_DAC_SetValue(hdacPtr, DAC_CHANNEL_2, DAC_ALIGN_12B_R, DAC_Shift);
 	HAL_DAC_Start(hdacPtr, DAC_CHANNEL_2);
 }
 
 void enableGeneration(bool withPWM) {
-	HAL_TIM_Base_Start_IT(htim);
+	HAL_TIM_Base_Stop_IT(htim);
 	if (withPWM) {
 		HAL_TIM_PWM_Start(htim, TIM_CHANNEL_1);
 		HAL_TIM_PWM_Start(htim, TIM_CHANNEL_2);
 		HAL_TIM_PWM_Start(htim, TIM_CHANNEL_3);
 		HAL_TIM_PWM_Start(htim, TIM_CHANNEL_4);
+		HAL_TIM_Base_Start_IT(htim);
 	} else {
 		HAL_TIM_PWM_Stop(htim, TIM_CHANNEL_1);
 		HAL_TIM_PWM_Stop(htim, TIM_CHANNEL_2);
 		HAL_TIM_PWM_Stop(htim, TIM_CHANNEL_3);
 		HAL_TIM_PWM_Stop(htim, TIM_CHANNEL_4);
+		htim->Instance->CNT=0;
 	}
 }
 
@@ -132,6 +134,8 @@ void Kernel_Task() {
 
 	buildConfigSafe();
 	moveConfigToPerepheral();
+	osDelay(2000);
+
 	enableGeneration(FALSE);
 
 	while (1) {
@@ -184,6 +188,20 @@ void TIM1_PeriodElapsedCallback() {
 }
 
 void UserDisplayTask() {
+
+	//boot blink
+	u8 i;
+	for (i = 0; i < 10; i++) {
+		osDelay(250);
+		GPIO_LED->BRR = GPIO_LED_R;
+		GPIO_LED->BRR = GPIO_LED_G;
+		if (i % 2 == 0) {
+			GPIO_LED->BSRR = GPIO_LED_R;
+		} else {
+			GPIO_LED->BSRR = GPIO_LED_G;
+		}
+	}
+
 	bool blinkLight = TRUE;
 	while (1) {
 		//красный светодиод
