@@ -10,7 +10,7 @@ namespace VimeoDownloader.JsClasses
     public class audio
     {
         public static string path = "audio/";
-        public ulong id { get; set; }
+        public string id { get; set; }
         public string base_url { get; set; }
         [JsonProperty("segments")]
         public segment[] segments { get; set; }

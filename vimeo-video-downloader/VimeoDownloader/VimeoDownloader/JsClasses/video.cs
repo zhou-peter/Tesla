@@ -10,7 +10,7 @@ namespace VimeoDownloader.JsClasses
     public class video
     {
         public static string path = "video/";
-        public ulong id { get; set; }
+        public string id { get; set; }
         public string base_url { get; set; }
 
         [JsonProperty("width")]

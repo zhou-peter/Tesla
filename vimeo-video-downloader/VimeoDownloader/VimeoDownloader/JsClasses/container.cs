@@ -9,7 +9,7 @@ namespace VimeoDownloader.JsClasses
 {
     public class container
     {
-        public ulong clip_id { get; set; }
+        public string clip_id { get; set; }
         public string base_url { get; set; }
         [JsonProperty("video")]
         public video[] videos;

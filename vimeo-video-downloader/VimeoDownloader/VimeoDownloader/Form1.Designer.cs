@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxInit = new System.Windows.Forms.TextBox();
             this.buttonInit = new System.Windows.Forms.Button();
@@ -61,6 +62,7 @@
             this.textBoxInit.Name = "textBoxInit";
             this.textBoxInit.Size = new System.Drawing.Size(981, 20);
             this.textBoxInit.TabIndex = 1;
+            this.textBoxInit.Text = resources.GetString("textBoxInit.Text");
             // 
             // buttonInit
             // 
@@ -192,7 +194,7 @@
             this.Controls.Add(this.textBoxInit);
             this.Controls.Add(this.label1);
             this.Name = "Form1";
-            this.Text = "Vimeo Video Downloader (sinushkin_alexey@mail.ru) v.1.1";
+            this.Text = "Vimeo Video Downloader (sinushkin_alexey@mail.ru) v.1.2";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);

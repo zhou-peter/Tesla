@@ -117,4 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="textBoxInit.Text" xml:space="preserve">
+    <value>https://49vod-adaptive.akamaized.net/exp=1602856643~acl=%2F05e0e825-508c-4aaf-90e6-57f56d22bd30%2F%2A~hmac=4c556665ad19b9dcf33accc2c2e540935836af94e30ba02e9ed3fb4c728072d7/05e0e825-508c-4aaf-90e6-57f56d22bd30/sep/video/ea30a873,a74bddef,b7b92873,5d60c13f,4c0be899/master.json?base64_init=1</value>
+  </data>
 </root>
