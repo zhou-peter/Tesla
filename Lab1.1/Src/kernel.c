@@ -36,8 +36,11 @@ void kernel_init(TIM_HandleTypeDef* p_mainTimer, ADC_HandleTypeDef* p_hadc,
 
 void kernel_mainLoop()
 {
-	HAL_TIM_OC_Start_IT(mainTimer, TIM_CHANNEL_1);
-	HAL_TIM_OC_Start_IT(mainTimer, TIM_CHANNEL_2);
+	HAL_TIM_PWM_Start(mainTimer, TIM_CHANNEL_1);
+	HAL_TIMEx_PWMN_Start(mainTimer, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(mainTimer, TIM_CHANNEL_2);
+
+	//HAL_TIM_OC_Start_IT(mainTimer, TIM_CHANNEL_2);
 	HAL_TIM_Base_Start_IT(mainTimer);
 
 
@@ -62,6 +65,7 @@ void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim){
 
 	}
 }
+
 void HAL_GPIO_EXTI_Callback(u16 pin){
 	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0)) {
 		//ут€гиваем вниз
