@@ -9,7 +9,7 @@ TIM_HandleTypeDef* mainTimer;
 ADC_HandleTypeDef* hadc;
 DMA_HandleTypeDef* hdma_adc;
 TimerConf_t timerConf;
-u16 shortStartValue;
+volatile u16 shortStartValue;
 
 u16 getShortStartValue()
 {
@@ -51,13 +51,16 @@ void kernel_mainLoop()
 		if (HAL_ADC_GetState(hadc) & HAL_ADC_STATE_READY != 0) {
 			HAL_ADC_Start_DMA(hadc, &ADC_Buf, ADC_CHANNELS);
 		}
+		shortStartValue = getShortStartValue();
 
 	}
 }
 
 void TIM1_PeriodElapsedCallback(){
 	//восстанавливаем утягиватель вниз (отключаем)
-	GPIOB->BRR=GPIO_SHORT_STOP;
+	GPIOB->BSRR=GPIO_SHORT_STOP;
+	//обновляем время срабатывания коротилки
+	mainTimer->Instance->CCR2 = shortStartValue;
 }
 
 void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim){
@@ -67,8 +70,8 @@ void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim){
 }
 
 void HAL_GPIO_EXTI_Callback(u16 pin){
-	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0)) {
+	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0)==GPIO_PIN_SET) {
 		//утягиваем вниз
-		GPIOB->BSRR=GPIO_SHORT_STOP;
+		GPIOB->BRR=GPIO_SHORT_STOP;
 	}
 }
