@@ -7,7 +7,8 @@
 #define GPIO_SHORT_STOP GPIO_PIN_11
 
 
-extern void kernel_init(TIM_HandleTypeDef* p_mainTimer, ADC_HandleTypeDef* p_hadc,
+extern void kernel_init(TIM_HandleTypeDef* p_mainTimer, TIM_HandleTypeDef* p_pauseTimer,
+		ADC_HandleTypeDef* p_hadc,
 		DMA_HandleTypeDef* p_hdma_adc);
 extern void kernel_mainLoop();
 

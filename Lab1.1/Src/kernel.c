@@ -4,32 +4,58 @@
 #include "stm32f1xx_hal_adc.h"
 
 #define FREQ 3410
+#define PAUSE_MAX 50
 
 TIM_HandleTypeDef* mainTimer;
+TIM_HandleTypeDef* pauseTimer;
 ADC_HandleTypeDef* hadc;
 DMA_HandleTypeDef* hdma_adc;
 TimerConf_t timerConf;
 volatile u16 shortStartValue;
+volatile u16 shortStopValue;
+volatile u16 pausePeriod;
 
 u16 getShortStartValue()
 {
-	return (timerConf.Period / 2) * getShortcutOffset();
+	return (timerConf.Period / 2) * up_getShortcutOffset();
+}
+u16 getShortLength()
+{
+	return (timerConf.Period / 2) * up_getShortcutLength();
+}
+u16 getPauseSize()
+{
+	u16 result = PAUSE_MAX * up_getPauseSize();
+	if (result==0){
+		result=1;
+	}
+	return result;
 }
 
-void kernel_init(TIM_HandleTypeDef* p_mainTimer, ADC_HandleTypeDef* p_hadc,
+
+void kernel_init(TIM_HandleTypeDef* p_mainTimer, TIM_HandleTypeDef* p_pauseTimer,
+		ADC_HandleTypeDef* p_hadc,
 		DMA_HandleTypeDef* p_hdma_adc)
 {
 	mainTimer = p_mainTimer;
+	pauseTimer = p_pauseTimer;
 	hadc = p_hadc;
 	hdma_adc = p_hdma_adc;
 
 	calculatePeriodAndPrescaler(FREQ, &timerConf);
+
+	shortStartValue = getShortStartValue();
+	shortStopValue = shortStartValue + getShortLength();
+	pausePeriod = getPauseSize();
+
 	mainTimer->Instance->PSC = timerConf.Prescaler;
 	mainTimer->Instance->ARR = timerConf.Period;
 	mainTimer->Instance->CCR1 = timerConf.Period / 2;
-
-	shortStartValue = getShortStartValue();
 	mainTimer->Instance->CCR2 = shortStartValue;
+	mainTimer->Instance->CCR3 = shortStopValue;
+
+	pauseTimer->Instance->ARR = pausePeriod;
+	pauseTimer->Instance->CCR2 = 1;
 
 	HAL_ADC_Start_DMA(hadc, &ADC_Buf, ADC_CHANNELS);
 }
@@ -51,8 +77,16 @@ void kernel_mainLoop()
 		if (HAL_ADC_GetState(hadc) & HAL_ADC_STATE_READY != 0) {
 			HAL_ADC_Start_DMA(hadc, &ADC_Buf, ADC_CHANNELS);
 		}
-		shortStartValue = getShortStartValue();
 
+		shortStartValue = getShortStartValue();
+		shortStopValue = shortStartValue + getShortLength();
+
+		u16 newPauseSize = getPauseSize();
+		if (newPauseSize != pausePeriod)
+		{
+			pausePeriod = newPauseSize;
+			pauseTimer->Instance->ARR = pausePeriod;
+		}
 	}
 }
 
@@ -61,6 +95,7 @@ void TIM1_PeriodElapsedCallback(){
 	GPIOB->BSRR=GPIO_SHORT_STOP;
 	//обновляем время срабатывания коротилки
 	mainTimer->Instance->CCR2 = shortStartValue;
+	mainTimer->Instance->CCR3 = shortStopValue;
 }
 
 void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim){
