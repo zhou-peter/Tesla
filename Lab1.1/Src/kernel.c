@@ -62,6 +62,9 @@ void kernel_init(TIM_HandleTypeDef* p_mainTimer, TIM_HandleTypeDef* p_pauseTimer
 
 void kernel_mainLoop()
 {
+	HAL_TIM_PWM_Start(pauseTimer, TIM_CHANNEL_2);
+	HAL_TIM_Base_Start_IT(pauseTimer);
+
 	HAL_TIM_PWM_Start(mainTimer, TIM_CHANNEL_1);
 	HAL_TIMEx_PWMN_Start(mainTimer, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(mainTimer, TIM_CHANNEL_2);
