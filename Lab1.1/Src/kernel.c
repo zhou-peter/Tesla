@@ -50,9 +50,9 @@ void kernel_init(TIM_HandleTypeDef* p_mainTimer, TIM_HandleTypeDef* p_pauseTimer
 
 	mainTimer->Instance->PSC = timerConf.Prescaler;
 	mainTimer->Instance->ARR = timerConf.Period;
-	mainTimer->Instance->CCR1 = timerConf.Period / 2;
+	mainTimer->Instance->CCR3 = timerConf.Period / 2;
 	mainTimer->Instance->CCR2 = shortStartValue;
-	mainTimer->Instance->CCR3 = shortStopValue;
+	mainTimer->Instance->CCR4 = shortStopValue;
 
 	pauseTimer->Instance->ARR = pausePeriod;
 	pauseTimer->Instance->CCR2 = 1;
@@ -65,11 +65,10 @@ void kernel_mainLoop()
 	HAL_TIM_PWM_Start(pauseTimer, TIM_CHANNEL_2);
 	HAL_TIM_Base_Start_IT(pauseTimer);
 
-	HAL_TIM_PWM_Start(mainTimer, TIM_CHANNEL_1);
-	HAL_TIMEx_PWMN_Start(mainTimer, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(mainTimer, TIM_CHANNEL_3);
+	HAL_TIMEx_PWMN_Start(mainTimer, TIM_CHANNEL_3);
 	HAL_TIM_PWM_Start(mainTimer, TIM_CHANNEL_2);
-
-	//HAL_TIM_OC_Start_IT(mainTimer, TIM_CHANNEL_2);
+	HAL_TIM_PWM_Start(mainTimer, TIM_CHANNEL_4);
 	HAL_TIM_Base_Start_IT(mainTimer);
 
 
@@ -98,7 +97,7 @@ void TIM1_PeriodElapsedCallback(){
 	GPIOB->BSRR=GPIO_SHORT_STOP;
 	//обновляем время срабатывания коротилки
 	mainTimer->Instance->CCR2 = shortStartValue;
-	mainTimer->Instance->CCR3 = shortStopValue;
+	mainTimer->Instance->CCR4 = shortStopValue;
 }
 
 void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim){

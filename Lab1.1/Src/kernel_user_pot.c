@@ -2,7 +2,7 @@
 #include "kernel_user_pot.h"
 
 volatile u16 ADC_Buf[ADC_CHANNELS];
-#define edge 20
+#define edge 2
 volatile float offsetValue=(float)edge/(float)ADC_MAX;
 volatile float shortLength=(float)edge/(float)ADC_MAX;
 volatile float pauseSize=(float)edge/(float)ADC_MAX;
