@@ -49,7 +49,7 @@ void kernel_init(TIM_HandleTypeDef* p_mainTimer, TIM_HandleTypeDef* p_pauseTimer
 
 	shortStartValue = getShortStartValue();
 	shortStopValue = shortStartValue + getShortLength();
-	pausePeriod = getPauseSize();
+
 
 	mainTimer->Instance->PSC = timerConf.Prescaler;
 	mainTimer->Instance->ARR = timerConf.Period;
@@ -58,7 +58,7 @@ void kernel_init(TIM_HandleTypeDef* p_mainTimer, TIM_HandleTypeDef* p_pauseTimer
 	mainTimer->Instance->CCR2 = shortStartValue;
 	mainTimer->Instance->CCR4 = shortStopValue;
 
-	pauseTimer->Instance->ARR = pausePeriod;
+	pauseTimer->Instance->ARR = PAUSE_MAX;
 	pauseTimer->Instance->CCR2 = 1;
 
 	HAL_ADC_Start_DMA(hadc, &ADC_Buf, ADC_CHANNELS);
@@ -88,16 +88,30 @@ void kernel_mainLoop()
 		shortStopValue = shortStartValue + getShortLength();
 
 		u16 newPauseSize = getPauseSize();
+		//изменился потенцометр по прерываниям
 		if (newPauseSize != pausePeriod)
 		{
-			pausePeriod = newPauseSize;
-			// отключаем прерывания
-			if (pausePeriod==0){
-				HAL_TIM_PWM_Stop(pauseTimer, TIM_CHANNEL_2);
+			if (newPauseSize==0 || pausePeriod==0){
+				//переключаем режим порта
+				GPIO_InitTypeDef GPIO_InitStruct = {0};
+				GPIO_InitStruct.Pin = GPIO_PIN_3;
+				GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+				// отключаем прерывания
+				if (newPauseSize==0){
+					HAL_TIM_PWM_Stop(pauseTimer, TIM_CHANNEL_2);
+					GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+					HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+					GPIOB->BSRR=GPIO_PIN_3;
+				}else{
+					pauseTimer->Instance->ARR = newPauseSize;
+					GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+					HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+					HAL_TIM_PWM_Start(pauseTimer, TIM_CHANNEL_2);
+				}
 			}else{
-				pauseTimer->Instance->ARR = pausePeriod;
-				HAL_TIM_PWM_Start(pauseTimer, TIM_CHANNEL_2);
+				pauseTimer->Instance->ARR = newPauseSize;
 			}
+			pausePeriod = newPauseSize;
 		}
 	}
 }

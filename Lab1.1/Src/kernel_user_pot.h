@@ -8,7 +8,7 @@
 #ifndef KERNEL_USER_POT_H_
 #define KERNEL_USER_POT_H_
 
-#define ADC_CHANNELS 3
+#define ADC_CHANNELS 5
 
 extern volatile u16 ADC_Buf[ADC_CHANNELS];
 
