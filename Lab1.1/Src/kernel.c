@@ -3,8 +3,11 @@
 #include "kernel_user_pot.h"
 #include "stm32f1xx_hal_adc.h"
 
-#define FREQ 3410
-#define PAUSE_MAX 50
+#define FREQ 9000
+//ѕодкорачивани€ - длительность %
+#define SHORT_MAX 10
+//ѕрерывани€ - сколько периодов бездействи€
+#define PAUSE_MAX 25
 
 TIM_HandleTypeDef* mainTimer;
 TIM_HandleTypeDef* pauseTimer;
@@ -14,21 +17,21 @@ TimerConf_t timerConf;
 volatile u16 shortStartValue;
 volatile u16 shortStopValue;
 volatile u16 pausePeriod;
+volatile float duty; // 40 %
 
 u16 getShortStartValue()
 {
-	return (timerConf.Period / 2) * up_getShortcutOffset();
+	//подкорачивание начинаетс€ только после окончани€ накачки
+	//но не позже 3/4 периода
+	return duty + ((duty/2) * up_getShortcutOffset());
 }
 u16 getShortLength()
 {
-	return (timerConf.Period / 2) * up_getShortcutLength();
+	return SHORT_MAX * up_getShortcutLength();
 }
 u16 getPauseSize()
 {
 	u16 result = PAUSE_MAX * up_getPauseSize();
-	if (result==0){
-		result=1;
-	}
 	return result;
 }
 
@@ -50,7 +53,8 @@ void kernel_init(TIM_HandleTypeDef* p_mainTimer, TIM_HandleTypeDef* p_pauseTimer
 
 	mainTimer->Instance->PSC = timerConf.Prescaler;
 	mainTimer->Instance->ARR = timerConf.Period;
-	mainTimer->Instance->CCR3 = timerConf.Period / 2;
+	duty = (float)timerConf.Period * 0.4F;
+	mainTimer->Instance->CCR3 = duty;
 	mainTimer->Instance->CCR2 = shortStartValue;
 	mainTimer->Instance->CCR4 = shortStopValue;
 
@@ -87,7 +91,13 @@ void kernel_mainLoop()
 		if (newPauseSize != pausePeriod)
 		{
 			pausePeriod = newPauseSize;
-			pauseTimer->Instance->ARR = pausePeriod;
+			// отключаем прерывани€
+			if (pausePeriod==0){
+				HAL_TIM_PWM_Stop(pauseTimer, TIM_CHANNEL_2);
+			}else{
+				pauseTimer->Instance->ARR = pausePeriod;
+				HAL_TIM_PWM_Start(pauseTimer, TIM_CHANNEL_2);
+			}
 		}
 	}
 }
