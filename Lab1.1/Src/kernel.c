@@ -4,8 +4,6 @@
 #include "stm32f1xx_hal_adc.h"
 
 #define FREQ 9000
-//Подкорачивания - длительность %
-#define SHORT_MAX 10
 //Прерывания - сколько периодов бездействия
 #define PAUSE_MAX 25
 
@@ -27,7 +25,7 @@ u16 getShortStartValue()
 }
 u16 getShortLength()
 {
-	return SHORT_MAX * up_getShortcutLength();
+	return (duty/3) * up_getShortcutLength();
 }
 u16 getPauseSize()
 {
